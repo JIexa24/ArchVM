@@ -1,4 +1,4 @@
-#include "../include/sc_command.h"
+#include "./../include/sc_command.h"
 
 /*
   ERR_WRONG_ADDR -1
