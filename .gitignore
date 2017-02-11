@@ -1,3 +1,3 @@
-/./lib/*
-/./simpleComputer/obj/*.o
-/./consoleSC/obj/*o
+/lib/*
+/simpleComputer/obj/*.o
+/consoleSC/obj/*o
