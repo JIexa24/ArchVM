@@ -15,10 +15,20 @@
   const int countCmd = 13;
 */
 
-int sc_commandEncode(int* value, int command, int operand)
+extern int localRAM[sizeRAM];
+extern short int sc_register;
+
+extern int correctCommands[];
+    
+
+int sc_commandEncode(int command, int operand, int* value)
 {
-  void *commandPtr = bsearch(&command, correctCommands, countCmd,
-                             sizeof(int), intCompare);
+  int *commandPtr = NULL;/*bsearch(&command, correctCommands, countCmd,
+                             sizeof(int), intCompare);*/
+  int i; 
+  for (i = 0; i < countCmd; i++) {
+    if (command == correctCommands[i]) commandPtr = &(correctCommands[i]);
+  }
   if (commandPtr != NULL) {
     *value = (command << 7) | operand;
     return 0;
@@ -29,21 +39,25 @@ int sc_commandEncode(int* value, int command, int operand)
 /*------------------------------------------------------------------------------*/
 int sc_commandDecode(int value, int* command, int* operand)
 {
-void *correctCommand;
-int attribute = (value >> 14) & 1;
-int tmpCommand, tmpOperand;
+  void *correctCommand;
+  int attribute = (value >> 14) & 1;
+  int tmpCommand, tmpOperand, i;
 
   if (attribute == 0) {
     tmpCommand = (value >> 7) & 0x7F;
     tmpOperand = value & 0x7F;
-    correctCommand = bsearch(&tmpCommand, correctCommands, countCmd,
-							 sizeof(int), intCompare);
+    for (i = 0; i < countCmd; i ++) {
+      if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
+    }
+    /*correctCommand = bsearch(&tmpCommand, correctCommands, countCmd,
+							 sizeof(int), intCompare);*/
     if (correctCommand != NULL) {
       *command = tmpCommand;
       *operand = tmpOperand;
     } else {
       return ERR_UNCORRECT_COMMAND;
     }
+  return 0;
   } else {
     return ERR_ATTRIBUTE_BIT;
   }

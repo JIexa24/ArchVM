@@ -14,7 +14,12 @@
                                0x40, 0x41, 0x42, 0x43, 0x59};
   const int countCmd = 13;
 */
- 
+
+extern int localRAM[sizeRAM];
+extern short int sc_register;
+
+extern int correctCommands[];   
+
 int sc_memoryInit()
 {
   for (int i = 0; i < sizeRAM; i++) {
@@ -28,6 +33,7 @@ int sc_memorySet(int addres, int value)
 {
   if ((addres < sizeRAM) && (addres >=0)) { 
     localRAM[addres] = value;
+    return 0;
   } else {
     return ERR_WRONG_ADDR;
   }

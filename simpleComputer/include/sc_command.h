@@ -7,7 +7,7 @@
 
 #include "./sc.h"
 
-int sc_commandEncode(int* value, int command, int operand);
+int sc_commandEncode(int command, int operand, int* value);
 
 int sc_commandDecode(int value, int* command, int* operand);
 

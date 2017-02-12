@@ -1,4 +1,13 @@
 /lib/*.a
 /simpleComputer/obj/*.o
+/simpleComputer/src/main.c
+/simpleComputer/src/memory
+/simpleComputer/src/*.out
 /consoleSC/obj/*o
 /consoleSC/src/main.c
+/consoleSC/src/*.out
+/bc/src/main.c
+/bc/obj/*.o
+/bc/src/*.out
+
+

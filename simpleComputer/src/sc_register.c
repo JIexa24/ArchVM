@@ -1,4 +1,4 @@
-#include "..../include/sc_register.h"
+#include "./../include/sc_register.h"
 
 /*
   ERR_WRONG_ADDR -1
@@ -14,6 +14,12 @@
                                0x40, 0x41, 0x42, 0x43, 0x59};
   const int countCmd = 13;
 */
+
+extern int localRAM[sizeRAM];
+extern short int sc_register;
+
+extern int* correctCommands;
+
 
 int sc_regInit(void)
 {
@@ -39,6 +45,7 @@ int sc_regSet(int scRegister, int value)
 /*------------------------------------------------------------------------------*/
 int sc_regGet(int scRegister, int* value)
 {
+  *value = 0;
   if ((scRegister >= 0) && (scRegister <=4)) {
     *value = BITCHECK(sc_register, scRegister);
   } else { 

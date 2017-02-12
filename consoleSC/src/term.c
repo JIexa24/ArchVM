@@ -1,11 +1,13 @@
 #include "./../include/term.h"
 
+/*infocmp*/
+
 int mt_clrscr()
 {
   printf("\E[H\E[2J");
   return 0;
 }
-
+/*------------------------------------------------------------------------------*/
 int mt_gotoXY(int x, int y)
 {
   int rows, cols;
@@ -18,7 +20,7 @@ int mt_gotoXY(int x, int y)
     return -1;
   }
 }
-
+/*------------------------------------------------------------------------------*/
 int mt_getscreensize(int *rows, int *cols)
 {
   struct winsize w;
@@ -30,7 +32,7 @@ int mt_getscreensize(int *rows, int *cols)
     return -1;
   }
 }
-
+/*------------------------------------------------------------------------------*/
 int mt_setfgcolor(enum colors color)
 {
   switch (color) {
@@ -66,7 +68,7 @@ int mt_setfgcolor(enum colors color)
   }
   return 0;
 }
-
+/*------------------------------------------------------------------------------*/
 int mt_setbgcolor(enum colors color)
 {
   switch (color) {
