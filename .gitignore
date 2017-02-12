@@ -3,7 +3,6 @@
 /simpleComputer/src/memory
 /simpleComputer/src/*.out
 /consoleSC/obj/*o
-/consoleSC/src/main.c
 /consoleSC/src/*.out
 /bc/src/main.c
 /bc/obj/*.o

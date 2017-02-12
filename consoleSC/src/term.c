@@ -13,7 +13,7 @@ int mt_gotoXY(int x, int y)
   int rows, cols;
 
   mt_getscreensize(&rows, &cols);
-  if ((y < rows) && (x < cols) && (x >= 0) && (y >= 0)) {
+  if (((y < rows) && (y >= 0)) && ((x < cols) && (x >= 0))) {
     printf("\E[%d;%dH", y, x);
     return 0;
   } else {
