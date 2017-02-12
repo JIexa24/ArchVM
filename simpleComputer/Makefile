@@ -18,3 +18,8 @@ all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 clean:
 	rm -f ./obj/*.o
 
+tst: ./tst/main.o
+	$(CC) ./tst/main.o -lSimpleComputer -L../lib/
+
+./tst/main.o: ./tst/main.c
+	$(CC) -c ./tst/main.c -o ./tst/main.o $(CFLAGS)

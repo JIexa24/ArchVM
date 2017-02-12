@@ -10,3 +10,8 @@ all: ./obj/term.o
 clean:
 	rm -f ./obj/*.o
 
+tst: ./tst/main.o
+	$(CC) ./tst/main.o -lTerm -L../lib/
+
+./tst/main.o: ./tst/main.c
+	$(CC) -c ./tst/main.c -o ./tst/main.o $(CFLAGS)
