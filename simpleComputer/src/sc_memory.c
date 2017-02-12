@@ -3,7 +3,7 @@
 /*
   ERR_WRONG_ADDR -1
   ERR_OPEN_FILE -2
-  ERR_FILE_SIZE -3
+  ERR_FILE -3
   ERR_UNCORRECT_COMMAND -4
   ERR_ATTRIBUTE_BIT -5
   ERR_WRONG_FLAG -6
@@ -62,7 +62,7 @@ int sc_memorySave(char* filename)
     write = fwrite(localRAM, sizeof(*localRAM) * sizeRAM, 1, data);
     fclose(data);
     if (write != 1)
-      return ERR_FILE_SIZE;
+      return ERR_FILE;
     else
       return 0;
   }
@@ -84,7 +84,7 @@ int sc_memoryLoad(char* filename)
   }
   fclose(data);
   if (read != 1) {
-    return ERR_FILE_SIZE;
+    return ERR_FILE;
   } else {
     return 0;
   }
