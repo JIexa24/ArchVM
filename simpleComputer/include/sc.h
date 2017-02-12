@@ -10,10 +10,13 @@
 #define countCmd 13 
  
 #define FLAG_OVERFLOW 0    // overflow flag
-#define FLAG_DIVISION 1
+#define FLAG_DIVISION 1    // ZERO
 #define FLAG_OUTMEM 2      // out of memory
-#define FLAG_INTERRUPT 3   // interrupt
+#define FLAG_INTERRUPT 3   // interrupt (ISIG)
 #define FLAG_COMMAND 4     // wrong command
+#define FLAG_ODD 5         // 
+//#define FLAG_CANON 6       // data from queue input
+#define FLAG_ECHO 6        // print simb drom stdin
 
 #define ERR_WRONG_ADDR -1
 #define ERR_OPEN_FILE -2
