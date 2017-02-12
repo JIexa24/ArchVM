@@ -9,5 +9,7 @@
 /bc/src/main.c
 /bc/obj/*.o
 /bc/src/*.out
+/bc/src/bigchars
+/bc/src/bigtest
 
 
