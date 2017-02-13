@@ -2,7 +2,7 @@
 #include "./../include/sc_command.h"
 #include "./../include/sc_memory.h"
 
-extern int localRAM[sizeRAM];
+extern int localRAM[];
 extern short int sc_register;
 
 extern int correctCommands[];

@@ -22,4 +22,6 @@
 /readKey/obj/*.o
 /readKey/*.out
 
-
+/cpu/*
+/asm/*
+/basic/*
