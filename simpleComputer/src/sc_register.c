@@ -29,7 +29,7 @@ int sc_regInit(void)
 /*------------------------------------------------------------------------------*/
 int sc_regSet(int scRegister, int value)
 {
-  if ((scRegister >= 0) && (scRegister <=4)) {
+  if ((scRegister >= 0) && (scRegister <=6) && (value >= 0) && (value < 2)) {
     if (value == 1) {
       BITSET(sc_register, scRegister);
     } else if (value == 0) {
@@ -46,7 +46,7 @@ int sc_regSet(int scRegister, int value)
 int sc_regGet(int scRegister, int* value)
 {
   *value = 0;
-  if ((scRegister >= 0) && (scRegister <=4)) {
+  if ((scRegister >= 0) && (scRegister <=6)) {
     *value = BITCHECK(sc_register, scRegister);
   } else { 
     return ERR_WRONG_FLAG;
