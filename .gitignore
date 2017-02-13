@@ -22,6 +22,7 @@
 /readKey/tst/*.o
 /readKey/obj/*.o
 /readKey/*.out
+/readKey/termsettings
 
 /cpu/tst/*.o
 /cpu/obj/*.o
