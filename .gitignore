@@ -1,4 +1,5 @@
 /lib/*.a
+/cmplt
 
 /simpleComputer/obj/*.o
 /simpleComputer/src/memory
