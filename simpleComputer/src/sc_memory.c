@@ -32,7 +32,7 @@ int sc_memoryInit()
 /*------------------------------------------------------------------------------*/
 int sc_memorySet(int addres, int value)
 {
-  if ((addres < sizeRAM) && (addres >=0)) { 
+  if ((addres < sizeRAM) && (addres >= 0)) { 
     localRAM[addres] = value;
     return 0;
   } else {
