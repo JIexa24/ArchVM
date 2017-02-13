@@ -11,10 +11,15 @@
 /consoleSC/tst/*.o
 /consoleSC/*.out
 
-/bc/src/main.c
+/bc/tst/*.o
 /bc/obj/*.o
-/bc/src/*.out
-/bc/src/bigchars
-/bc/src/bigtest
+/bc/*.out
+/bc/bigchars
+/bc/bigtest
+
+/readKey/*
+/readKey/tst/*.o
+/readKey/obj/*.o
+/readKey/*.out
 
 
