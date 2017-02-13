@@ -16,7 +16,7 @@
 #define FLAG_COMMAND 4     // wrong command
 #define FLAG_ODD 5         // 
 //#define FLAG_CANON 6       // data from queue input
-#define FLAG_ECHO 6        // print simb drom stdin
+// print simb drom stdin
 
 #define ERR_WRONG_ADDR -1
 #define ERR_OPEN_FILE -2
