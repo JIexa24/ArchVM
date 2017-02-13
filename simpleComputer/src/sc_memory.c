@@ -1,4 +1,5 @@
 #include "./../include/sc_memory.h"
+#include "./../include/sc_register.h"
 
 /*
   ERR_WRONG_ADDR -1
