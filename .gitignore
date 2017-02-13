@@ -18,7 +18,6 @@
 /bc/bigchars
 /bc/bigtest
 
-/readKey/*
 /readKey/tst/*.o
 /readKey/obj/*.o
 /readKey/*.out
