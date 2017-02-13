@@ -14,4 +14,16 @@
 void CU();
 int ALU(int command, int operand);
 
+int timerHand(int sig);
+
+void refreshGui(int position);
+void printBoxes();
+void printCounter();
+void printKeys(int x, int y);
+void printLabels();
+void printOperation(int position);
+void printFlags(int x, int y);
+int printMcell(int *bigchars, int pos)
+
+
 #endif

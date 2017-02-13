@@ -2,7 +2,7 @@
 
 extern accumulator;
 extern int localRAM[];
-
+extern int instructionRegisterCount;
 void CU()
 {
     int command, operand;
@@ -56,3 +56,4 @@ int ALU(int command, int operand)
     sc_regSet(FLAG_ODD, accumulator & 1);
 	return 0;
 }
+/*------------------------------------------------------------------------------*/
