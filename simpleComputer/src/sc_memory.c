@@ -35,6 +35,7 @@ int sc_memorySet(int addres, int value)
     localRAM[addres] = value;
     return 0;
   } else {
+    sc_regSet(FLAG_OUTMEM, 1);
     return ERR_WRONG_ADDR;
   }
 }
@@ -45,6 +46,7 @@ int sc_memoryGet(int addres, int* value)
     *value = localRAM[addres];
     return 0;
   } else {
+    sc_regSet(FLAG_OUTMEM, 1);
     return ERR_WRONG_ADDR;
   }
 }
