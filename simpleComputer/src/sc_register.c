@@ -15,7 +15,7 @@
   const int countCmd = 13;
 */
 
-extern int localRAM[sizeRAM];
+extern int localRAM[];
 extern short int sc_register;
 
 extern int* correctCommands;
