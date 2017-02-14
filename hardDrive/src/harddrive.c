@@ -91,7 +91,11 @@ int a_lba2large(tLARGE geometry, tLBA LBA, tLARGE* LARGE)
   return 0;
 }
 /*------------------------------------------------------------------------------*/
-int a_lba2idechs(tIDECHS geometry, tLBA LBA,tIDECHS* IDECHS);
+int a_lba2idechs(tIDECHS geometry, tLBA LBA,tIDECHS* IDECHS)
+{
+  return 0;
+}
+/*------------------------------------------------------------------------------*/
 int a_chs2lba(tCHS geometry, tCHS CHS, tLBA* LBA)
 {
   return 0;
