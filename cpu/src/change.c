@@ -1,9 +1,9 @@
 #include "./../include/cpu.h"
 
-extern accumulator;
+extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
-extern sc_register;
+extern short int sc_register;
 
 int changeAccumulator(int pos)
 {
@@ -20,6 +20,25 @@ int changeAccumulator(int pos)
     return -1;
   }
   return 0;
+}
+/*------------------------------------------------------------------------------*/
+int changeInstRegisterCount(int pos)
+{
+	int plusFlag, num;
+
+	refreshGui(pos);
+	if (scanNum(&plusFlag, &num) != 0) {
+		printf("Not a number!");
+		return -1;
+	}
+	if ((num >= 0) && (num < 0x100)) {
+		instructionRegisterCount = num;
+	}
+	else {
+		printf("Accumutalor range: from 0 to 99 (0x63)");
+		return -1;
+	}
+	return 0;
 }
 /*------------------------------------------------------------------------------*/
 int scanNum(int *plusFlag, int *n)

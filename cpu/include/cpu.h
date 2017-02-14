@@ -26,6 +26,7 @@ void printFlags(int x, int y);
 int printMcell(int *bigchars, int pos)
 
 int changeAccumulator(int pos);
+int changeInstRegisterCount(int pos);
 int scanNum(int *plusFlag, int *n);
 
 #endif
