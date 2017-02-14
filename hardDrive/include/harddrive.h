@@ -20,14 +20,12 @@ typedef struct TIDECHS {
 } tIDECHS;
 
 typedef struct TLBA { 
-	unsigned int countCylinder
-	unsigned int countHead;
-	unsigned int countSector;
+	unsigned int lba;
 } tLBA;
 
-int g_lba2chs(tLBA, tCHS* CHS);
-int g_lba2large(tLBA, tLARGE* LARGE);
-int g_lba2idechs(tLBA, tIDECHS* IDECHS);
+int g_lba2chs(tLBA LBA, tCHS* CHS);
+int g_lba2large(tLBA LBA, tLARGE* LARGE);
+int g_lba2idechs(tLBA LBA, tIDECHS* IDECHS);
 int g_chs2large(tCHS CHS, tLARGE* LARGE);
 int g_chs2lba(tCHS CHS, tLBA* LBA);
 int g_chs2idechs(tIDECHS IDECHS, tLBA* LBA);
@@ -38,7 +36,7 @@ int g_idechs2chs(tIDECHS IDECHS, tCHS* CHS);
 int g_idechs2lagre(tIDECHS IDECHS, tLARGE* LARGE);
 int g_idechs2lba(tIDECHS IDECHS, tLBA* LBA);
 int a_lba2chs(tCHS geometry, tLBA LBA, tCHS* CHS);
-int a_lba2large(tLARGE geometry, tLBA LBA, tLARGE* );
+int a_lba2large(tLARGE geometry, tLBA LBA, tLARGE* LARGE);
 int a_lba2idechs(tIDECHS geometry, tLBA LBA,tIDECHS* IDECHS);
 int a_chs2lba(tCHS geometry, tCHS CHS, tLBA* LBA);
 int a_large2lba(tLARGE geometry, tLARGE LARGE, tLBA* LBA);
