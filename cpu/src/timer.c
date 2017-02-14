@@ -7,9 +7,10 @@ extern short int sc_register;
 
 void timerHand(int sig)
 {
-	refreshGui(instructionRegister);
-	CU();
-	instructionRegisterCount++;
-	if (!BIT_CHECK(sc_register, FLAG_INTERRUPT))
-		alarm(1);
+  refreshGui(instructionRegister);
+  CU();
+  instructionRegisterCount++;
+  if (!BIT_CHECK(sc_register, FLAG_INTERRUPT)) {
+    alarm(1);
+  }
 }
