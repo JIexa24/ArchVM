@@ -15,8 +15,8 @@ int g_lba2chs(tLBA LBA, tCHS* CHS)
     }
   }
   CHS->countSector = 63;
-  CHS->countHead= divider;
-  CHS->countCylinderC = temp1 / divider;
+  CHS->countHead = divider;
+  CHS->countCylinder = temp1 / divider;
   return 0;
 }
 /*------------------------------------------------------------------------------*/
@@ -42,6 +42,7 @@ int g_chs2large(tCHS CHS, tLARGE* LARGE)
 /*------------------------------------------------------------------------------*/
 int g_chs2lba(tCHS CHS, tLBA* LBA)
 {
+  LBA->lba = (CHS.countCylinder * 255 + CHS.countHead) * 63 + CHS.countSector - 1;
   return 0;
 }
 /*------------------------------------------------------------------------------*/
