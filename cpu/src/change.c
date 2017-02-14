@@ -5,12 +5,11 @@ extern int localRAM[];
 extern int instructionRegisterCount;
 extern sc_register;
 
-
 int changeAccumulator(int pos)
 {
-  int plusFllag, num;
+  int plusFlag, num;
   refreshGui(pos);
-  if (scanNum(&plus_flag, &num) != 0) {
+  if (scanNum(&plusFlag, &num) != 0) {
     printf("Not a number!");
     return -1;
   }

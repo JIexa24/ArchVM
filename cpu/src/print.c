@@ -78,7 +78,7 @@ void printLabels()
 /*------------------------------------------------------------------------------*/
 void printOperation(int position)
 {
-  if ((addres < sizeRAM) && (addres >= 0)) {
+  if ((position < sizeRAM) && (position >= 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
@@ -130,8 +130,11 @@ void printFlags(int x, int y)
 /*------------------------------------------------------------------------------*/
 int printMcell(int *bigchars, int pos)
 {
-
-  int command = (sc_memory[pos] >> 14) & 1;
+  if ((pos < sizeRAM) && (pos >= 0)) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return;
+  }
+  int command = (localRAM[pos] >> 14) & 1;
   int mem = localRAM[pos] & 0x3FFF;
   int i, opcode, operand;
   char str[10];
@@ -165,11 +168,15 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
+  if ((position < sizeRAM) && (position >= 0)) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return;
+  }
   for (i = 0; i < 10; i++) {
     mt_gotoXY(x, y + i);
     for (j = 0; j < 10; j++) {
-      mem = sc_memory[i*10+j] & 0x3FFF;
-      command = (sc_memory[i*10+j] >> 14) & 1;
+      mem = localRAM[i*10+j] & 0x3FFF;
+      command = (localRAM[i*10+j] >> 14) & 1;
       opcode = (mem >> 7) & 0x7F;
       operand = mem & 0x7F;
       if ((i * 10 + j) == position) {
@@ -192,7 +199,3 @@ void printMemory(int x, int y, int position)
     }
   }
 }
-/*------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------*/
-/*------------------------------------------------------------------------------*/
