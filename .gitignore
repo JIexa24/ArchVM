@@ -29,4 +29,7 @@
 
 /asm/*
 /basic/*
-/hardDrive/*
+
+/hardDrive/tst/*.o
+/hardDrive/obj/*.o
+/hardDrive/*.out
