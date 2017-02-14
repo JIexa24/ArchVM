@@ -40,17 +40,16 @@ int sc_regSet(int scRegister, int value)
   }	else {
     return ERR_WRONG_FLAG;
   }
-	return 0;
+  return 0;
 }
 /*------------------------------------------------------------------------------*/
 int sc_regGet(int scRegister, int* value)
 {
-  *value = 0;
   if ((scRegister >= 0) && (scRegister <=6)) {
     *value = BITCHECK(sc_register, scRegister);
+    return *value;
   } else { 
     return ERR_WRONG_FLAG;
   }
-
   return 0;
 }
