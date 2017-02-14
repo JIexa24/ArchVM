@@ -20,7 +20,7 @@ void refreshGui(int position)
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);
-  print_Mcell(big_chars, position);
+  printMcell(big_chars, position);
   printWriteValue();
   mt_gotoXY(1, 24);
 }
