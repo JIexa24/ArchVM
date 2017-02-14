@@ -27,7 +27,10 @@
 /cpu/obj/*.o
 /cpu/*.out
 
-/asm/*
+/asm/tst/*.o
+/asm/obj/*.o
+/asm/*.out
+
 /basic/*
 
 /hardDrive/tst/*.o
