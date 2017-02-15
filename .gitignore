@@ -31,7 +31,9 @@
 /asm/obj/*.o
 /asm/*.out
 
-/basic/*
+/basic/tst/*.o
+/basic/obj/*.o
+/basic/*.out
 
 /hardDrive/tst/*.o
 /hardDrive/obj/*.o
