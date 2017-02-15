@@ -7,7 +7,17 @@
 #include <string.h>
 #include <unistd.h>
 #include <termios.h>
+/*
 
+    tcflag_t c_iflag;      // режимы ввода 
+    tcflag_t c_oflag;      // режимы вывода 
+    tcflag_t c_cflag;      // режимы управления 
+    tcflag_t c_lflag;      // режимы локали 
+    cc_t c_cc[NCCS];       // управляющие символы
+
+c_iflag - флаги констант:
+
+*/
 enum keys {
   KEY_l,
   KEY_s,
