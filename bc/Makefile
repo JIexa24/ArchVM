@@ -8,6 +8,10 @@ all: ./obj/bc.o
 
 clean:
 	rm -f ./obj/*.o
+	rm -f a.out
+	rm -f bigchars
+	rm -f bigtest
+	rm -f ./tst/main.o
 
 tst: ./tst/main.o
 	$(CC) ./tst/main.o -lbigChars -lTerm -L../lib/

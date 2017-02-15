@@ -9,6 +9,9 @@ all: ./obj/readkey.o
 
 clean:
 	rm -f ./obj/*.o
+	rm -f a.out
+	rm -f ./tst/main.o
+	rm -f termsettings
 
 tst: ./tst/main.o
 	$(CC) ./tst/main.o -lreadKey -L../lib/

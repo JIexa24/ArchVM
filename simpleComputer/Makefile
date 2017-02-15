@@ -15,8 +15,12 @@ all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 
 ./obj/global.o: ./src/global.c
 	$(CC) -c ./src/global.c -o ./obj/global.o $(CFLAGS)
+
 clean:
 	rm -f ./obj/*.o
+	rm -f a.out
+	rm -f memory
+	rm -f ./tst/main.o
 
 tst: ./tst/main.o
 	$(CC) ./tst/main.o -lSimpleComputer -L../lib/

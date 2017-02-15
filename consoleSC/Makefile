@@ -9,6 +9,8 @@ all: ./obj/term.o
 
 clean:
 	rm -f ./obj/*.o
+	rm -f a.out
+	rm -f ./tst/main.o
 
 tst: ./tst/main.o
 	$(CC) ./tst/main.o -lTerm -L../lib/
