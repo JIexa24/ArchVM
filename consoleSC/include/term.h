@@ -1,9 +1,7 @@
 #ifndef CONSOLE_SC_H
 #define CONSOLE_SC_H
 
-#include <sys/ioctl.h>
 #include <stdio.h>
-#include <unistd.h>
 
 enum colors {
 	clr_black,
