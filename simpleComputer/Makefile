@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g
+CFLAGS = -g3
 
 all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 	ar rvs ../lib/libSimpleComputer.a ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
