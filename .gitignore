@@ -2,7 +2,7 @@
 /cmplt
 
 /simpleComputer/obj/*.o
-/simpleComputer/src/memory
+/simpleComputer/memory
 /simpleComputer/src/*.out
 /simpleComputer/tst/*.o
 /simpleComputer/*.out

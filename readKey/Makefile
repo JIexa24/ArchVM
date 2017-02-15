@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g
 
-all: ./obj/readkey.o 
+all: ./obj/readkey.o tst
 	ar rvs ./../lib/libReadKey.a ./obj/readkey.o
 
 ./obj/readkey.o: ./src/readkey.c

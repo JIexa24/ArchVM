@@ -1,6 +1,6 @@
 CC = gcc
 
-all: ./obj/bc.o
+all: ./obj/bc.o tst
 	ar rvs ../lib/libBigChars.a ./obj/bc.o
 
 ./obj/bc.o: ./src/bc.c

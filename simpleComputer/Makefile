@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g3
 
-all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
+all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o tst
 	ar rvs ../lib/libSimpleComputer.a ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 
 ./obj/sc_memory.o: ./src/sc_memory.c
