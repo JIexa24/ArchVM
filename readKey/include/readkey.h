@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <termios.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
 /*
 
     tcflag_t c_iflag;      // режимы ввода 

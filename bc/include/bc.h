@@ -2,6 +2,9 @@
 #define BC_H
 
 #include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
 #include "./../../consoleSC/include/term.h"
 
 #define BOXCHAR_REC 'a'
