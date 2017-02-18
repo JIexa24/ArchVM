@@ -9,9 +9,9 @@ enum colors {
 	clr_black,
 	clr_red,
 	clr_green,
-	clr_brown,
+	clr_yellow,
 	clr_blue,
-	clr_magenta,
+	clr_purple,
 	clr_cyan,
 	clr_light_blue,
 	clr_default

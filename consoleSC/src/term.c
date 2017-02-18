@@ -7,10 +7,9 @@ enum colors {
 	clr_black,
 	clr_red,
 	clr_green,
-	clr_brown,
+	clr_yellow,
 	clr_blue,
-	clr_magenta,
-	clr_cyan,
+	clr_purple,
 	clr_light_blue,
 	clr_white,
 	clr_default
@@ -49,7 +48,7 @@ int mt_getscreensize(int *rows, int *cols)
 /*------------------------------------------------------------------------------*/
 int mt_setfgcolor(enum colors color)
 {
-  if (color >= 0 && color <= 9) {
+  if (color >= 0 && color <= 8) {
     printf("\E[%dm", 30 + color);
     return 0;
   } else {
@@ -59,8 +58,8 @@ int mt_setfgcolor(enum colors color)
 /*------------------------------------------------------------------------------*/
 int mt_setbgcolor(enum colors color)
 {
-  if (color >= 0 && color <= 9) {
-    printf("\E[%dm", 40 + color);
+  if (color >= 0 && color <= 8) {
+    printf("\E[%dm", 40 + (color == 8) ? (color + 1) : color);
     return 0;
   } else {
     return -1;
