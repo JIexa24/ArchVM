@@ -59,7 +59,7 @@ int mt_setfgcolor(enum colors color)
 int mt_setbgcolor(enum colors color)
 {
   if (color >= 0 && color <= 8) {
-    printf("\E[%dm", 40 + (color == 8) ? (color + 1) : color);
+    printf("\E[%dm", 40 + (color == 8) ? 9 : color);
     return 0;
   } else {
     return -1;

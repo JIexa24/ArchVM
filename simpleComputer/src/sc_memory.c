@@ -19,9 +19,9 @@
 extern int localRAM[];
 extern short int sc_register;
 
-extern int correctCommands[];   
+extern int correctCommands[];
 
-int sc_memoryInit()
+int sc_memoryInit(void)
 {
   for (int i = 0; i < sizeRAM; i++) {
     localRAM[i] = 0;

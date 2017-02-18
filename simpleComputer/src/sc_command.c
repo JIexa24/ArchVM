@@ -34,6 +34,7 @@ int sc_commandEncode(int command, int operand, int* value)
     *value = (command << 7) | operand;
     return 0;
   } else {
+    sc_regSet(FLAG_COMMAND, 1);
     return ERR_UNCORRECT_COMMAND;
   }
 }

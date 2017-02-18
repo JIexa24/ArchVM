@@ -7,7 +7,7 @@
 #include "./sc.h"
 
 /*initialization RAM in 0*/
-int sc_memoryInit();
+int sc_memoryInit(void);
 
 /*initialization addres by value*/
 int sc_memorySet(int addres, int value);

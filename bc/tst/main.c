@@ -229,16 +229,23 @@ int main()
   int fd, outAsci;
 	
   mt_clrscr();
+
   arrToBig(big, bigchar_plus);
   arrToBig(one, bigchar_1);
+
   bc_box(2, 2, 78, 20);
+
   bc_printbigchar(big, 4, 4, clr_magenta, clr_default);
   bc_printbigchar(one, 4, 12, clr_cyan, clr_default);
+
   arrToBig(big, bigchar_E);
   bc_printbigchar(big, 12, 4, clr_default, clr_red);
+
   bc_getbigcharpos(big, 3, 3, &val1);
   bc_getbigcharpos(big, 6, 1, &val2);
+
   mt_gotoXY(0, 21);
+
   printf("bc_getbigcharpos (3,3) 0?%d (6, 1) 1?%d\n", val1, val2);
 
   if ((fd = open("bigtest", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR )) == -1) {
