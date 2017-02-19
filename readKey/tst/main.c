@@ -4,40 +4,40 @@ void print_key(enum keys key)
 {
   switch (key) {
     case KEY_l:
-      printf("l\n");
+      write(1, "l\n", 2);
     break;
     case KEY_s:
-      printf("s\n");
+      write(1, "s\n", 2);
     break;
     case KEY_r:
-      printf("r\n");
+      write(1, "r\n", 2);
     break;
     case KEY_t:
-      printf("t\n");
+      write(1, "t\n", 2);
     break;
     case KEY_i:
-      printf("i\n");
+      write(1, "i\n", 2);
     break;
     case KEY_q:
-      printf("q\n");
+      write(1, "q\n", 2);
     break;
     case KEY_up: 
-      printf("up\n");
+      write(1, "up\n", 3);
     break;
     case KEY_down:
-      printf("down\n");
+      write(1, "down\n", 5);
     break;
     case KEY_left:
-      printf("left\n");
+      write(1, "left\n", 5);
     break;
     case KEY_right:
-      printf("right\n");
+      write(1, "right\n", 6);
     break;
     case KEY_f5:
-      printf("F5\n");
+      write(1, "F5\n", 3);
     break;
     case KEY_f6: 
-      printf("F6\n");
+      write(1, "F6/n", 3);
     break;
 	}
 }
@@ -50,19 +50,19 @@ int main()
 	
   rk_mytermsave();
   rk_mytermregime(0, 0, 1, 0, 1);
-
-  printf("ECHO disabled\n");
+  write(1, "ECHO disabled\n", 14);
 
   read(STDIN_FILENO, &buf, 10);
   rk_mytermrestore();
 
-  printf("Terminal settings restored\n");
+  write(1, "Terminal settings restored\n", 27);
+
   read(STDIN_FILENO, &buf, 10);
 
   if (rk_mytermregime(0, 0, 0, 0, 2) == -1)
-    printf("rk_mytermregime returned -1\n");
+    write(1, "rk_mytermregime returned -1\n", 28);
   else
-    printf("Wrong rk_mytermregime return value\n");
+    write(1, "Wrong rk_mytermregime return value\n", 35);
 
   do {
     rk_readkey(&key);

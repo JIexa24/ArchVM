@@ -116,7 +116,7 @@ int rk_mytermrestore(void)
       if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &options) != 0) {
         fclose(data);
         return -1;
-      } else  {
+      } else {
         fclose(data);
         return -1;
       }

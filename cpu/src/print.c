@@ -16,7 +16,10 @@ void refreshGui(int position)
   /* print accumulator */
 
   mt_gotoXY(70, 2);
-  printf("%04X", accumulator);
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//  printf("%04X", accumulator);
+  writeInt(1, accumulator, 16, 4);
+
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);
@@ -39,41 +42,43 @@ void printBoxes()
 void printCounter()
 {
   mt_gotoXY(70, 5);
-  printf("%04X",  instructionRegisterCount);
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//  printf("%04X",  instructionRegisterCount);
+  writeInt(1, instructionRegisterCount, 16, 4);
 }
 /*------------------------------------------------------------------------------*/
 void printKeys(int x, int y)
 {
   mt_gotoXY(x, y);
-  printf("l  - load");
+  write(1, "l  - load", 9);
   mt_gotoXY(x, y + 1);
-  printf("s  - save");
+  write(1, "s  - save", 9);
   mt_gotoXY(x, y + 2);
-  printf("r  - run");
+  write(1, "r  - run", 8);
   mt_gotoXY(x, y + 3);
-  printf("t  - step");
+  write(1, "t  - step", 9);
   mt_gotoXY(x, y + 4);
-  printf("i  - reset");
+  write(1, "i  - reset", 10);
   mt_gotoXY(x, y + 5);
-  printf("F5 - accumulator");
+  write(1, "F5 - accumulator", 16);
   mt_gotoXY(x, y + 6);
-  printf("F6 - instructionCounter");
+  write(1, "F6 - instructionCounter", 23);
 }
 /*------------------------------------------------------------------------------*/
 void printLabels()
 {
   mt_gotoXY(30, 1);
-  printf(" Memory ");
+  write(1, " Memory ", 8);
   mt_gotoXY(66, 1);
-  printf(" accumulator ");
+  write(1, " accumulator ", 13);
   mt_gotoXY(63, 4);
-  printf(" instuctionCounter ");
+  write(1, " instuctionCounter ", 19);
   mt_gotoXY(68, 7);
-  printf(" Operation ");
+  write(1, " Operation ", 11);
   mt_gotoXY(68, 10);
-  printf(" Flags ");
+  write(1, " Flags ", 7);
   mt_gotoXY(48, 13);
-  printf(" Keys: ");
+  write(1, " Keys: ", 7);
 }
 /*------------------------------------------------------------------------------*/
 void printOperation(int position)
@@ -94,7 +99,13 @@ void printOperation(int position)
     } else {
       c = ' ';
     }
-    printf("%c%02X : %02X", c, command, operand);
+
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//  printf("%c%02X : %02X", c, command, operand);
+    write(1, &c, 1);
+    writeInt(1, command, 16, 2);
+    write(1, " : ", 3);
+    writeInt(1, operand, 16, 2);
   }
 }
 /*------------------------------------------------------------------------------*/
@@ -102,29 +113,29 @@ void printFlags(int x, int y)
 {
   mt_gotoXY(x, y);
   if (BIT_CHECK(sc_register, FLAG_OVERFLOW) == 1) {
-    printf("O");
+    write(1, "O", 1);
   } else {
-    printf(" ");
+    write(1, " ", 1);
   }
   if (BIT_CHECK(sc_register, FLAG_COMMAND) == 1) {
-    printf("E");
+    write(1, "E", 1);
   } else {
-    printf(" ");
+    write(1, " ", 1);
   }
   if (BIT_CHECK(sc_register, FLAG_INTERRUPT) == 1) {
-    printf("V");
+    write(1, "V", 1);
   } else {
-    printf(" ");
+    write(1, " ", 1);
   }
   if (BIT_CHECK(sc_register, FLAG_OUTMEM) == 1) {
-    printf("M");
+    write(1, "M", 1);
   } else {
-    printf(" ");
+    write(1, " ", 1);
   }
   if (BIT_CHECK(sc_register, FLAG_DIVISION) == 1) {
-    printf("Z");
+    write(1, "Z", 1);
   } else {
-    printf(" ");
+    write(1, " ", 1);
   }
 }
 /*------------------------------------------------------------------------------*/
@@ -184,9 +195,17 @@ void printMemory(int x, int y, int position)
         mt_setbgcolor(clr_red);
       }
       if (command == 0) {
-        printf("+%02X%02X", opcode, operand);
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//      printf("+%02X%02X", opcode, operand);
+        write(1, "+", 1);
+        writeInt(1, opcode, 16, 2);
+        writeInt(1, operand, 16, 2);
       } else {
-        printf(" %02X%02X", opcode, operand);
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//      printf(" %02X%02X", opcode, operand);
+        write(1, " ", 1);
+        writeInt(1, opcode, 16, 2);
+        writeInt(1, operand, 16, 2);
       }
       if ((i * 10 + j) == position) {
         mt_setfgcolor(clr_default);
@@ -194,7 +213,7 @@ void printMemory(int x, int y, int position)
       }
 
       if (j != 9) {
-        printf(" ");
+        write(1, " ", 1);
       }
     }
   }

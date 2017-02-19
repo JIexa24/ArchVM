@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include "./../../consoleSC/include/term.h"
+#include "./../../print/include/writeInt.h"
 
 #define BOXCHAR_REC 'a'
 #define BOXCHAR_BR "j"

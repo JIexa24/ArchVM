@@ -2,7 +2,9 @@
 
 int bc_printA(char *str)
 {
-  printf("\E(0%s\E(B", str);
+  write(1, "\E(0", 3);
+  write(1, str, strlen(str));
+  write(1, "\E(B", 3);
   return 0;
 }
 /*------------------------------------------------------------------------------*/

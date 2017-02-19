@@ -235,7 +235,7 @@ int main()
 
   bc_box(2, 2, 78, 20);
 
-  bc_printbigchar(big, 4, 4, clr_magenta, clr_default);
+  bc_printbigchar(big, 4, 4, clr_purple, clr_default);
   bc_printbigchar(one, 4, 12, clr_cyan, clr_default);
 
   arrToBig(big, bigchar_E);
@@ -245,28 +245,32 @@ int main()
   bc_getbigcharpos(big, 6, 1, &val2);
 
   mt_gotoXY(0, 21);
-
-  printf("bc_getbigcharpos (3,3) 0?%d (6, 1) 1?%d\n", val1, val2);
+  
+  write(1, "bc_getbigcharpos (3,3) 0=", 25);
+  writeInt(1, val1, 10, -1);
+  write(1, " (6, 1) 1=", 10);
+  writeInt(1, val1, 10, -1);
+  write(1, "\n", 1);
 
   if ((fd = open("bigtest", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR )) == -1) {
-    fprintf(stderr,"Open error\n");
+    write(2, "Open error\n", 11); 
     return -1;
   }
   if (bc_bigcharwrite(fd, big, 1) != 0) {
-    fprintf(stderr,"bc_bigcharwrite error!\n");
+    write(2, "bc_bigcharwrite error!\n", 23); 
     return -1;
   }
   lseek(fd, 0, SEEK_SET);
   if (bc_bigcharread(fd, big_read, 1, &readen) != 0) {
-    fprintf(stderr,"bc_bigcharwrite error!\n");
+    write(2, "bc_bigcharwrite error!\n", 23); 
     return -1;
   }
   if ((big[0] != big_read[0]) || (big[1] != big_read[1])) {
-    fprintf(stderr,"big != big_read\n");
+    write(2, "big != big_read\n", 16);
     return -1;
   }
   else
-    printf("big == big_read\n");
+    write(1, "big == big_read\n", 16);
 
   /* Init of bigchars array */
   memset(bigAsci, 0, sizeof(int) * 256);
@@ -289,27 +293,43 @@ int main()
   arrToBig(bigAsci + ('F' * 2), bigchar_F);
     if ((outAsci = open("bigchars", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR )) 
          == -1) {
-    fprintf(stderr,"Open error\n");
+    write(2, "Open error\n", 11); 
     return -1;
   }
   if (bc_bigcharwrite(outAsci, bigAsci, 128) != 0) {
-    fprintf(stderr,"bc_bigcharwrite error!\n");
+    write(2, "bc_bigcharwrite error!\n", 23); 
     return -1;
   }
  
   /* Incorrect arguments */
   ret1 = bc_box(-1, 1, 8, 8);
   ret2 = bc_box(1, 10000, 10, 10);
-  fprintf(stderr,"bc_box returned 1:%d 2:%d\n", ret1, ret2);
+  write(2, "bc_box returned 1:", 18);
+  writeInt(2, ret1, 10, -1);
+  write(2, " 2:", 3);
+  writeInt(2, ret2, 10, -1);
+  write(1, "\n", 1);
+
   ret1 = bc_printbigchar(big, 20000, 4, clr_red, clr_green);
   ret2 = bc_setbigcharpos(big, 10, 3, 1);
-  fprintf(stderr,"bc_printbigchar returned %d bc_setbigcharpos returned %d\n", ret1, ret2);
+  writeInt(2, ret1, 10, -1);
+  write(2, " bc_printbigchar returned ", 26);
+  writeInt(2, ret2, 10, -1);
+  write(1, "\n", 1);
+
   ret1 = bc_getbigcharpos(big, 3, 10, &val1);
-  fprintf(stderr,"bc_getbigcharpos returned %d\n", ret1);
+  write(2, "bc_getbigcharpos returned ", 26);
+  writeInt(2, ret1, 10, -1);
+  write(1, "\n", 1);
+
   ret1 = bc_bigcharread(fd, testBuf, 8, &val2);
   ret2 = bc_bigcharwrite(-1, big, 1);
-  fprintf(stderr,"bc_bigcharread returned %d bc_bigcharwrite returned %d\n", ret1, ret2);
-	
+  write(2, "bc_bigcharread returned ", 24);
+  writeInt(2, ret1, 10, -1);
+  write(1, " bc_bigcharwrite returned ", 26);
+  writeInt(2, ret2, 10, -1);
+  write(1, "\n", 1);
+
   close(fd);
   close(outAsci);
 

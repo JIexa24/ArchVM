@@ -1,7 +1,6 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "./../../simpleComputer/include/sc.h"
 #include "./../../simpleComputer/include/sc_register.h"
 #include "./../../simpleComputer/include/sc_command.h"
 #include "./../../simpleComputer/include/sc_memory.h"

@@ -10,13 +10,13 @@ int changeAccumulator(int pos)
   int plusFlag, num;
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    printf("Not a number!");
+    write(1, "Not a number!", 13);
     return -1;
   }
   if ((num >= 0) && (num < 0x8000)) {
     accumulator = num;
   } else {
-    printf("Accumutalor is 15 bit wide");
+    write(1, "Accumutalor is 15 bit wide", 26);
     return -1;
   }
   return 0;
@@ -24,21 +24,20 @@ int changeAccumulator(int pos)
 /*------------------------------------------------------------------------------*/
 int changeInstRegisterCount(int pos)
 {
-	int plusFlag, num;
+  int plusFlag, num;
 
-	refreshGui(pos);
-	if (scanNum(&plusFlag, &num) != 0) {
-		printf("Not a number!");
-		return -1;
-	}
-	if ((num >= 0) && (num < 0x100)) {
-		instructionRegisterCount = num;
-	}
-	else {
-		printf("Accumutalor range: from 0 to 99 (0x63)");
-		return -1;
-	}
-	return 0;
+  refreshGui(pos);
+  if (scanNum(&plusFlag, &num) != 0) {
+    write(1, "Not a number!", 13);
+    return -1;
+  }
+  if ((num >= 0) && (num < 0x100)) {
+    instructionRegisterCount = num;
+  } else {
+    write(1, "Accumutalor range: from 0 to 99 (0x63)", 38);
+    return -1;
+  }
+  return 0;
 }
 /*------------------------------------------------------------------------------*/
 int scanNum(int *plusFlag, int *n)

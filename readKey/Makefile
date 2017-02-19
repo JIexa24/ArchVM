@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -g
 
-all: ./obj/readkey.o tst
+all: ./obj/readkey.o 
 	ar rvs ./../lib/libReadKey.a ./obj/readkey.o
 
 ./obj/readkey.o: ./src/readkey.c
@@ -11,7 +11,7 @@ clean:
 	rm -f ./obj/*.o
 
 tst: ./tst/main.o
-	$(CC) ./tst/main.o -lReadKey -L../lib/
+	$(CC) ./tst/main.o -lReadKey -lWriteInt -L../lib/
 
 ./tst/main.o: ./tst/main.c
 	$(CC) -c ./tst/main.c -o ./tst/main.o $(CFLAGS)
