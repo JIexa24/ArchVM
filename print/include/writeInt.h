@@ -5,6 +5,6 @@
 
 #define SIZE_BUFFER 100
 
-int writeInt(int num);
-int writeIntHex(int num);
+/* int writeInt(int num); */
+int writeInt(int num, int radix);
 #endif

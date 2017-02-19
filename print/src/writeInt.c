@@ -1,7 +1,7 @@
 #include "./../include/writeInt.h"
 
 #define SIZE_BUFFER 100
-
+/*
 int writeInt(int num)
 {
   if (num == 0) {
@@ -27,19 +27,28 @@ int writeInt(int num)
   return counter;
 }
 /*------------------------------------------------------------------------------*/
-int writeIntHex(int num)
+int writeInt(int num, int radix)
 {
   if (num == 0) {
     write(1, "0", 1);
     return 1;
   }
+  
+  char sign = '-';
 
   char buffer[SIZE_BUFFER];
   int counter = SIZE_BUFFER;
-  
+
+  if (radix == 10) {
+    if (num < 0) {
+      write(1, &sign, 1);
+      num = -num;
+    }
+  }
+
   while (num) {
-    if (num % 16 > 9) {
-      switch(num % 16) {
+    if (num % radix > 9) {
+      switch(num % radix) {
         case 10:
           buffer[--counter] = 'A';
         break;
@@ -59,10 +68,10 @@ int writeIntHex(int num)
           buffer[--counter] = 'F';
         break;
       }
-      num /= 16;
+      num /= radix;
     } else {
-      buffer[--counter] = '0' + (num % 16);
-      num /= 16;
+      buffer[--counter] = '0' + (num % radix);
+      num /= radix;
     }
   }
   write(1, &buffer[counter], SIZE_BUFFER - counter);
