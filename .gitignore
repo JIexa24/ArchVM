@@ -38,3 +38,5 @@
 /hardDrive/tst/*.o
 /hardDrive/obj/*.o
 /hardDrive/*.out
+
+/print/obj/*.o
