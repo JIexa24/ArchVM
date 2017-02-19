@@ -5,6 +5,6 @@
 
 #define SIZE_BUFFER 100
 
-int writeInt(int std, int num, int radix);
+int writeInt(int std, int num, int radix, int znac);
 
 #endif

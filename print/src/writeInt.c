@@ -2,7 +2,7 @@
 
 #define SIZE_BUFFER 100
 
-int writeInt(int std, int num, int radix)
+int writeInt(int std, int num, int radix, int znac)
 {
   if (std < 0 && std > 1)
   if (num == 0) {
@@ -24,30 +24,20 @@ int writeInt(int std, int num, int radix)
 
   while (num) {
     if (num % radix > 9) {
-      switch(num % radix) {
-        case 10:
-          buffer[--counter] = 'A';
-        break;
-        case 11:
-          buffer[--counter] = 'B';
-        break;
-        case 12:
-          buffer[--counter] = 'C';
-        break;
-        case 13:
-          buffer[--counter] = 'D';
-        break;
-        case 14:
-          buffer[--counter] = 'E';
-        break;
-        case 15:
-          buffer[--counter] = 'F';
-        break;
-      }
+      buffer[--counter] = 'A' + num % radix - 10;
       num /= radix;
     } else {
       buffer[--counter] = '0' + (num % radix);
       num /= radix;
+    }
+  }
+  if (znac > -1) {
+    if (counter < znac) {
+      znac = znac - counter;
+      while (znac) {
+        write(std, "0", 1);
+        znac--;
+      }
     }
   }
   write(std, &buffer[counter], SIZE_BUFFER - counter);
