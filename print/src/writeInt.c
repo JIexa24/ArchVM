@@ -1,36 +1,12 @@
 #include "./../include/writeInt.h"
 
 #define SIZE_BUFFER 100
-/*
-int writeInt(int num)
+
+int writeInt(int std, int num, int radix)
 {
+  if (std < 0 && std > 1)
   if (num == 0) {
-    write(1, "0", 1);
-    return 1;
-  }
-  char buffer[SIZE_BUFFER];
-  char sign = '-';
-
-  if (num < 0) {
-    write(1, &sign, 1);
-    num = -num;
-  }
-
-  int counter = SIZE_BUFFER;
-
-  while (num) {
-    buffer[--counter] = '0' + (num % 10);
-    num /= 10;
-  }
-
-  write(1, &buffer[counter], SIZE_BUFFER - counter);
-  return counter;
-}
-/*------------------------------------------------------------------------------*/
-int writeInt(int num, int radix)
-{
-  if (num == 0) {
-    write(1, "0", 1);
+    write(std, "0", 1);
     return 1;
   }
   
@@ -41,7 +17,7 @@ int writeInt(int num, int radix)
 
   if (radix == 10) {
     if (num < 0) {
-      write(1, &sign, 1);
+      write(std, &sign, 1);
       num = -num;
     }
   }
@@ -74,6 +50,6 @@ int writeInt(int num, int radix)
       num /= radix;
     }
   }
-  write(1, &buffer[counter], SIZE_BUFFER - counter);
+  write(std, &buffer[counter], SIZE_BUFFER - counter);
   return counter;
 }
