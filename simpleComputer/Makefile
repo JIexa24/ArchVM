@@ -15,12 +15,18 @@ all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 
 ./obj/global.o: ./src/global.c
 	$(CC) -c ./src/global.c -o ./obj/global.o $(CFLAGS)
-clean:
-	rm -f ./obj/*.o
 
 tst: ./tst/main.o
 	$(CC) ./tst/main.o -lSimpleComputer -lWriteInt -L../lib/
 
 ./tst/main.o: ./tst/main.c
 	$(CC) -c ./tst/main.c -o ./tst/main.o $(CFLAGS)
+
+restruct:
+	make clean
+	make all
+
+clean:
+	rm -f obj/*.o
+	rm -f tst/*.o
 

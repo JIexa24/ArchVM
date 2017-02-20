@@ -10,3 +10,8 @@ all: ./obj/writeInt.o
 clean:
 	rm -f ./obj/*.o
 
+restruct:
+	make clean
+	make all
+
+
