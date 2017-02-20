@@ -32,8 +32,8 @@ int writeInt(int std, int num, int radix, int znac)
     }
   }
   if (znac > -1) {
-    if (counter < znac) {
-      znac = znac - counter;
+    if ((SIZE_BUFFER - counter) < znac) {
+      znac = znac - SIZE_BUFFER + counter;
       while (znac) {
         write(std, "0", 1);
         znac--;
