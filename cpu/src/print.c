@@ -155,9 +155,16 @@ int printMcell(int *bigchars, int pos)
   operand = mem & 0x7F;
 
   if (command == 0) {
-    sprintf(str, "+%02X%02X", opcode, operand);
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//    sprintf(str, "+%02X%02X", opcode, operand);
+    str[0] = '+';
+    swriteInt(str + 1, opcode, 16, 2);
+    swriteInt(str + 3, operand, 16, 2);
   } else {
-    sprintf(str, " %04X", mem);
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+//    sprintf(str, " %04X", mem);
+    str[0] = ' ';
+    swriteInt(str + 1, mem, 16, 4);
   }
 
   for (i = 0; i < 5; i++) {
