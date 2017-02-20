@@ -3,8 +3,9 @@
 
 #include <unistd.h>
 
-#define SIZE_BUFFER 100
+#define SIZE_BUFFER 256
 
 int writeInt(int std, int num, int radix, int znac);
+int swriteInt(char* buff, int num, int radix, int znac);
 
 #endif
