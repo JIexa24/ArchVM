@@ -20,3 +20,4 @@ restruct:
 clean:
 	rm -f obj/*.o
 	rm -f tst/*.o
+	rm -f a.out

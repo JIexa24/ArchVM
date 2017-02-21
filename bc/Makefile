@@ -20,3 +20,6 @@ restruct:
 clean:
 	rm -f obj/*.o
 	rm -f tst/*.o
+	rm -f a.out
+	rm -f bigtest
+	rm -f bigchars
