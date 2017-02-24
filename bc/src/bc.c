@@ -7,7 +7,7 @@ int bc_printA(char *str)
   write(1, "\E(B", 3);
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int bc_box(int x1, int y1, int x2, int y2)
 {
   int tmp;
@@ -55,7 +55,7 @@ int bc_box(int x1, int y1, int x2, int y2)
   bc_printA(BOXCHAR_BR);
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 {
   int maxx, maxy;
@@ -89,7 +89,7 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
   mt_setbgcolor(clr_default);
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int bc_setbigcharpos(int *big, int x, int y, int value)
 {
   int pos;
@@ -112,7 +112,7 @@ int bc_setbigcharpos(int *big, int x, int y, int value)
   }
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int bc_getbigcharpos(int *big, int x, int y, int *value)
 {
   int pos;
@@ -133,7 +133,7 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int bc_bigcharwrite(int fd, int *big, int count)
 {
   int err;
@@ -149,7 +149,7 @@ int bc_bigcharwrite(int fd, int *big, int count)
   }
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int bc_bigcharread(int fd, int *big, int need_count, int *count)
 {
   int n, cnt, err;

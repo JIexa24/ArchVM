@@ -12,7 +12,7 @@
   int localRAM[sizRAM];
   short int sc_register;
   const int correctCommands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 
-                               0x40, 0x41, 0x42, 0x43, 0x59};
+                               0x40, 0x41, 0x42, 0x43,0x52, 0x59};
   const int countCmd = 13;
 */
 
@@ -29,7 +29,7 @@ int sc_memoryInit(void)
 
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int sc_memorySet(int addres, int value)
 {
   if ((addres < sizeRAM) && (addres >= 0)) { 
@@ -40,7 +40,7 @@ int sc_memorySet(int addres, int value)
     return ERR_WRONG_ADDR;
   }
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int sc_memoryGet(int addres, int* value)
 {
   if ((addres < sizeRAM) && (addres >=0) && (value != NULL)) { 
@@ -51,7 +51,7 @@ int sc_memoryGet(int addres, int* value)
     return ERR_WRONG_ADDR;
   }
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int sc_memorySave(char* filename)
 {
   FILE *data;
@@ -70,7 +70,7 @@ int sc_memorySave(char* filename)
       return 0;
   }
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int sc_memoryLoad(char* filename)
 {
   FILE *data;

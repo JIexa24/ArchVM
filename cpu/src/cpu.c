@@ -3,12 +3,13 @@
 extern accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
+
 void CU()
 {
     int command, operand;
     int flag;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)
 {
   if ((operand < 0) || (operand >= 100)) {
@@ -45,6 +46,14 @@ int ALU(int command, int operand)
           return -1;
         }
       break;
+/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+      case 0x52: 
+        tmp = localRAM[operand];
+        if (tmp > 0x7FFF) {
+          tmp = tmp & 0x7FFF; 
+        }
+        accumulator = accumulator & tmp;
+      break;
     }
     if ((accumulator & 1) == 0) {
       sc_regSet(FLAG_ODD, 0);
@@ -61,4 +70,4 @@ int ALU(int command, int operand)
     return 0; 
   }
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/

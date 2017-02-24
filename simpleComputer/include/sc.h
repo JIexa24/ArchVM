@@ -6,7 +6,7 @@
 #include "./../../print/include/writeInt.h"
 
 #define sizeRAM 100 
-#define countCmd 13
+#define countCmd 14
 
 #define FLAG_OVERFLOW 0    // overflow flag
 #define FLAG_DIVISION 1    // ZERO

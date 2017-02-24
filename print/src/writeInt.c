@@ -40,7 +40,7 @@ int writeInt(int std, int num, int radix, int znac)
   write(std, &buffer[counter], SIZE_BUFFER - counter);
   return counter;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int swriteInt(char* buff, int num, int radix, int znac)
 {
   

@@ -11,7 +11,7 @@
   int localRAM[sizRAM];
   short int sc_register;
   const int correctCommands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 
-                               0x40, 0x41, 0x42, 0x43, 0x59};
+                               0x40, 0x41, 0x42, 0x43, 0x52, 0x59};
   const int countCmd = 13;
 */
 
@@ -26,7 +26,7 @@ int sc_regInit(void)
   sc_register = 0;
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int sc_regSet(int scRegister, int value)
 {
   if ((scRegister >= 0) && (scRegister <=4) && (value >= 0) && (value < 2)) {
@@ -42,7 +42,7 @@ int sc_regSet(int scRegister, int value)
   }
   return 0;
 }
-/*------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 int sc_regGet(int scRegister, int* value)
 {
   if ((scRegister >= 0) && (scRegister <=6)) {
