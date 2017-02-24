@@ -6,8 +6,65 @@ extern int instructionRegisterCount;
 
 void CU()
 {
-    int command, operand;
-    int flag;
+  int command, operand;
+  int flag;
+  if (instructionRegisterCount >= sizeRAM) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    sc_regSet(FLAG_INTERRUPT, 1);
+    return;
+  }
+  if (sc_commandDecode(sc_memory[instructionRegisterCount], &command, &operand) != 0) {
+    sc_regSet(FLAG_COMMAND, 1);
+    sc_regSet(FLAG_INTERRUPT, 1);
+    return;
+  }
+  if ((operand < 0) && (operand >= sizeRAM)) {
+    sc_regSet(FLAG_COMMAND, 1);
+    sc_regSet(FLAG_INTERRUPT, 1);
+    return;
+  }
+  if ((command >= 0x30) && (command <= 0x33) || command == 0x52) {
+    if (ALU(command, operand) != 0)
+      sc_regSet(FLAG_INTERRUPT, 1);
+  }	else {
+    switch (command) {
+      case 0x10: /* READ */
+
+      break;		
+      case 0x11: /* WRITE */
+
+      break;	
+      case 0x20: /* LOAD */
+        accumulator = sc_memory[operand];
+      break;
+      case 0x21: /* STORE */
+        sc_memory[operand] = accumulator;
+      break;
+      case 0x40: /* JUMP */
+        instructionRegisterCount = operand - 1;
+      break;
+      case 0x41: /* JNEG */
+        if (((accumulator >> 14) & 1) == 1) {
+          instructionRegisterCount = operand - 1;
+        }
+      break;
+      case 0x42: /* JZ */
+        if (accumulator == 0) {
+          instructionRegisterCount = operand - 1;
+        }
+      break;
+      case 0x43: /* HALT */
+        sc_regSet(FLAG_INTERRUPT, 1);
+      break;
+      case 0x59: /* JNP */
+        sc_regGet(FLAG_ODD, &flag);
+        if (flag == 1) {
+          instructionRegisterCount = operand - 1;
+        }
+      break;
+    }
+  }
+
 }
 /*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)
