@@ -1,4 +1,4 @@
-#include "./../include/harddrive.h"
+#include "./../include/hardDrive.h"
 
 int g_lba2chs(tLBA LBA, tCHS* CHS)
 {
