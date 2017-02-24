@@ -4,7 +4,7 @@ extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
-extern int bigChars[SIZE_BUFFER];
+extern int bigChars[];
 
 void refreshGui(int position)
 {
@@ -84,7 +84,7 @@ void printLabels()
 /*---------------------------------------------------------------------------*/
 void printOperation(int position)
 {
-  if ((position < sizeRAM) && (position >= 0)) {
+  if ((position >= sizeRAM) && (position <= 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
@@ -94,7 +94,7 @@ void printOperation(int position)
   char c;
 	
   mt_gotoXY(68, 8);
-  if ((position >= 0) && (position < 100)) {
+  if ((position >= 0) && (position < sizeRAM)) {
     if (isCommand == 0) {
       c = '+';
     } else {
@@ -142,7 +142,7 @@ void printFlags(int x, int y)
 /*---------------------------------------------------------------------------*/
 int printMcell(int *bigchars, int pos)
 {
-  if ((pos < sizeRAM) && (pos >= 0)) {
+  if ((pos >= sizeRAM) && (pos < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return 1;
   }
@@ -171,7 +171,8 @@ int printMcell(int *bigchars, int pos)
   for (i = 0; i < 5; i++) {
     mt_gotoXY(2 + 9 * i, 14);
     if (str[i] < 128) {
-      bc_printbigchar(bigchars + (str[i] * 2), 2 + i*9, 14, clr_default,
+
+      bc_printbigchar(bigchars + (str[i] * 2), 2 + i*9, 14, clr_green,
                       clr_default);
     } else {
       return -1;
@@ -187,7 +188,7 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
-  if ((position > sizeRAM) && (position <= 0)) {
+  if ((position >= sizeRAM) && (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
@@ -200,7 +201,7 @@ void printMemory(int x, int y, int position)
       operand = mem & 0x7F;
       if ((i * 10 + j) == position) {
         mt_setfgcolor(clr_black);
-        mt_setbgcolor(clr_red);
+        mt_setbgcolor(clr_green);
       }
       if (command == 0) {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
