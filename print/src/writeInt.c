@@ -2,9 +2,11 @@
 
 int writeInt(int std, int num, int radix, int znac)
 {
+  int i = 0;
   if (num == 0) {
-    write(std, "0", 1);
-    return 1;
+    for (i = 0; i < znac; i++)
+      write(std, "0", 1);
+    return i;
   }
   
   char sign = '-';
@@ -53,8 +55,9 @@ int swriteInt(char* buff, int num, int radix, int znac)
 
 
   if (num == 0) {
-    buff[0] = '0';
-    return 1;
+    for (i = 0; i < znac; i++)
+      buff[i] = '0';
+    return i;
   }
 
   if (radix == 10) {

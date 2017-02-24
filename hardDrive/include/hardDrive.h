@@ -41,7 +41,7 @@ int a_lba2idechs(tIDECHS geometry, tLBA LBA,tIDECHS* IDECHS);
 int a_chs2lba(tCHS geometry, tCHS CHS, tLBA* LBA);
 int a_large2lba(tLARGE geometry, tLARGE LARGE, tLBA* LBA);
 int a_idechs2lba(tIDECHS geometry, tIDECHS IDECHS, tLBA* LBA);
-int a_large2chs(tLARGE geometry1,tCHS TCHS geometry2,tLARGE LARGE, tCHS* CHS);
+int a_large2chs(tLARGE geometry1,tCHS geometry2,tLARGE LARGE, tCHS* CHS);
 int a_large2idechs(tLARGE geometry1, tIDECHS geometry2, tLARGE LARGE,tIDECHS* IDECHS);
 int a_chs2large(tCHS geometry1, tLARGE geometry2, tCHS CHS, tLARGE* LARGE);
 int a_idechs2large(tIDECHS geometry1, tLARGE geometry2, tIDECHS IDECHS, tLARGE* LARGE);

@@ -1,16 +1,16 @@
 #include "./../include/cpu.h"
 
-extern accumulator;
+extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
 
-void timerHand(int sig)
+int timerHand(int sig)
 {
-  refreshGui(instructionRegister);
+  refreshGui(instructionRegisterCount);
   CU();
   instructionRegisterCount++;
-  if (!BIT_CHECK(sc_register, FLAG_INTERRUPT)) {
+  if (!BITCHECK(sc_register, FLAG_INTERRUPT)) {
     alarm(1);
   }
 }

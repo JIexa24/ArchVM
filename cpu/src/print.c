@@ -1,9 +1,10 @@
 #include "./../include/cpu.h"
 
-extern accumulator;
+extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
-extern sc_register;
+extern short int sc_register;
+extern int bigChars[SIZE_BUFFER];
 
 void refreshGui(int position)
 {
@@ -23,8 +24,8 @@ void refreshGui(int position)
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);
-  printMcell(big_chars, position);
-  printWriteValue();
+  printMcell(bigChars, position);
+//  printWriteValue();
   mt_gotoXY(1, 24);
 }
 /*---------------------------------------------------------------------------*/
@@ -112,27 +113,27 @@ void printOperation(int position)
 void printFlags(int x, int y)
 {
   mt_gotoXY(x, y);
-  if (BIT_CHECK(sc_register, FLAG_OVERFLOW) == 1) {
+  if (BITCHECK(sc_register, FLAG_OVERFLOW) == 1) {
     write(1, "O", 1);
   } else {
     write(1, " ", 1);
   }
-  if (BIT_CHECK(sc_register, FLAG_COMMAND) == 1) {
+  if (BITCHECK(sc_register, FLAG_COMMAND) == 1) {
     write(1, "E", 1);
   } else {
     write(1, " ", 1);
   }
-  if (BIT_CHECK(sc_register, FLAG_INTERRUPT) == 1) {
+  if (BITCHECK(sc_register, FLAG_INTERRUPT) == 1) {
     write(1, "V", 1);
   } else {
     write(1, " ", 1);
   }
-  if (BIT_CHECK(sc_register, FLAG_OUTMEM) == 1) {
+  if (BITCHECK(sc_register, FLAG_OUTMEM) == 1) {
     write(1, "M", 1);
   } else {
     write(1, " ", 1);
   }
-  if (BIT_CHECK(sc_register, FLAG_DIVISION) == 1) {
+  if (BITCHECK(sc_register, FLAG_DIVISION) == 1) {
     write(1, "Z", 1);
   } else {
     write(1, " ", 1);
@@ -143,7 +144,7 @@ int printMcell(int *bigchars, int pos)
 {
   if ((pos < sizeRAM) && (pos >= 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
-    return;
+    return 1;
   }
   int command = (localRAM[pos] >> 14) & 1;
   int mem = localRAM[pos] & 0x3FFF;
@@ -186,7 +187,7 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
-  if ((position < sizeRAM) && (position >= 0)) {
+  if ((position > sizeRAM) && (position <= 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }

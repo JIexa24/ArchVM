@@ -30,11 +30,6 @@ int g_lba2idechs(tLBA LBA, tIDECHS* IDECHS)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int g_lba2idechs(tLBA LBA, tIDECHS* IDECHS)
-{
-  return 0;
-}
-/*---------------------------------------------------------------------------*/
 int g_chs2large(tCHS CHS, tLARGE* LARGE)
 {
   return 0;
@@ -111,7 +106,7 @@ int a_idechs2lba(tIDECHS geometry, tIDECHS IDECHS, tLBA* LBA)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int a_large2chs(tLARGE geometry1,tCHS TCHS geometry2,tLARGE LARGE, tCHS* CHS)
+int a_large2chs(tLARGE geometry1,tCHS geometry2,tLARGE LARGE, tCHS* CHS)
 {
   return 0;
 }

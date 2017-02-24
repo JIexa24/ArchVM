@@ -40,3 +40,6 @@
 /hardDrive/*.out
 
 /print/obj/*.o
+
+/main/obj/*.o
+/bin/*

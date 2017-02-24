@@ -1,8 +1,9 @@
 #include "./../include/cpu.h"
 
-extern accumulator;
+extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
+extern short int sc_register;
 
 void CU()
 {
@@ -13,7 +14,7 @@ void CU()
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
   }
-  if (sc_commandDecode(sc_memory[instructionRegisterCount], &command, &operand) != 0) {
+  if (sc_commandDecode(localRAM[instructionRegisterCount], &command, &operand) != 0) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
@@ -35,10 +36,10 @@ void CU()
 
       break;	
       case 0x20: /* LOAD */
-        accumulator = sc_memory[operand];
+        accumulator = localRAM[operand];
       break;
       case 0x21: /* STORE */
-        sc_memory[operand] = accumulator;
+        localRAM[operand] = accumulator;
       break;
       case 0x40: /* JUMP */
         instructionRegisterCount = operand - 1;

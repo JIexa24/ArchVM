@@ -1,4 +1,4 @@
-all: PRINT SIMPLECOMPUTER TERM READKEY BIGCHAR
+all: PRINT SIMPLECOMPUTER TERM READKEY BIGCHAR HARDDRIVE CPU MAIN
 
 PRINT:
 	make restruct -C print
@@ -14,6 +14,15 @@ READKEY:
 
 BIGCHAR:
 	make restruct -C bc
+
+HARDDRIVE:
+	make restruct -C hardDrive
+
+CPU:
+	make restruct -C cpu
+
+MAIN:
+	make restruct -C main
 
 restruct:
 	make clean
@@ -34,3 +43,6 @@ clean:
 	rm -f bc/tst/*.o
 	rm -f bc/a.out
 	rm -f print/obj/*.o
+	rm -f hardDrive/obj/*.o
+	rm -f cpu/obj/*.o
+	rm -f main/obj/*.o

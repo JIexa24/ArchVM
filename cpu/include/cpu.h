@@ -4,9 +4,12 @@
 #include "./../../simpleComputer/include/sc_register.h"
 #include "./../../simpleComputer/include/sc_command.h"
 #include "./../../simpleComputer/include/sc_memory.h"
+#include "./../../simpleComputer/include/sc.h"
 #include "./../../bc/include/bc.h"
 #include "./../../consoleSC/include/term.h"
 #include "./../../readKey/include/readkey.h"
+#include "./../../print/include/writeInt.h"
+#include "./../../hardDrive/include/hardDrive.h"
 
 /* CPU */
 
@@ -22,7 +25,8 @@ void printKeys(int x, int y);
 void printLabels();
 void printOperation(int position);
 void printFlags(int x, int y);
-int printMcell(int *bigchars, int pos)
+int printMcell(int *bigchars, int pos);
+void printMemory(int x, int y, int position);
 
 int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
