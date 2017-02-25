@@ -18,7 +18,7 @@ int changeCell(int pos)
 
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(1, "Not a number!", 13);
+    write(2, "Not a number!", 13);
     return -1;
   }
   if ((num >= 0) && (num < 0x8000)) {
@@ -32,7 +32,7 @@ int changeCell(int pos)
   if ((pos >= 0) && (pos < sizeRAM)) {
       sc_memorySet(pos, mem);
   } else {
-    write(1, "Memory cell is 15 bit wide", 25);
+    write(2, "Memory cell is 15 bit wide", 25);
     return -1;
   }
   return 0;
@@ -43,13 +43,13 @@ int changeAccumulator(int pos)
   int plusFlag, num;
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(1, "Not a number!", 13);
+    write(2, "Not a number!", 13);
     return -1;
   }
   if ((num >= 0) && (num < 0x8000)) {
     accumulator = num;
   } else {
-    write(1, "Accumutalor is 15 bit wide", 26);
+    write(2, "Accumutalor is 15 bit wide", 26);
     return -1;
   }
   return 0;
@@ -61,13 +61,13 @@ int changeInstRegisterCount(int pos)
 
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(1, "Not a number!", 13);
+    write(2, "Not a number!", 13);
     return -1;
   }
   if ((num >= 0) && (num < 0x100)) {
     instructionRegisterCount = num;
   } else {
-    write(1, "Accumutalor range: from 0 to 99 (0x63)", 38);
+    write(2, "Accumutalor range: from 0 to 99 (0x63)", 38);
     return -1;
   }
   return 0;

@@ -31,7 +31,7 @@ int main(int argc, char** argv)
   bc_bigcharread(fd, bigChars, 128, &cn);
   close(fd);
 
-  sc_commandEncode(0x10, 126, &tmp);
+  sc_commandEncode(0x10, 50, &tmp);
   sc_memorySet(0, tmp);
   sc_memorySet(1, 2);
   
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
         break;
 
         case KEY_f6:
-
+          changeInstRegisterCount(position);
         break;
 	
         case KEY_enter:
@@ -79,8 +79,8 @@ int main(int argc, char** argv)
         case KEY_t:
           timerHand(SIGALRM);
 		  position = instructionRegisterCount;
-          cursorX = instructionRegisterCount % 10;
-          cursorY = instructionRegisterCount / 10;
+          cursorX = instructionRegisterCount / 10;
+          cursorY = instructionRegisterCount % 10;
         break;
 
         case KEY_s:
@@ -95,6 +95,7 @@ int main(int argc, char** argv)
     if (key == KEY_q)
       exit = 1;
     else if (key == KEY_i) {
+      instructionRegisterCount = 0;
       position = 0;
       cursorX = 0;
       cursorY = 0;

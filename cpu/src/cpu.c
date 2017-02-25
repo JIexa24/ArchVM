@@ -30,7 +30,7 @@ void CU()
   }	else {
     switch (command) {
       case 0x10: /* READ */
-
+        while (readMcell(operand) != 0);
       break;		
       case 0x11: /* WRITE */
 
