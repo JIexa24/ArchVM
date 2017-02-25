@@ -24,7 +24,8 @@ int changeCell(int pos)
   if ((num >= 0) && (num < 0x8000)) {
       command = (num >> 8) & 0x7F;
       operand = num & 0x7F;
-      sc_commandEncode(command, operand, &mem);
+      mem = (command << 7) | operand;
+      //sc_commandEncode(command, operand, &mem);
   } else 
     mem = (1 << 14) | num;
 
