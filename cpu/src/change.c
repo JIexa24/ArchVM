@@ -4,7 +4,39 @@ extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
+/*
+void setSignals()
+{
+  signal(SIGALRM, timerHand);
+  signal(SIGUSR1, timerUrsignalHand);
+}
+/*---------------------------------------------------------------------------*/
+int changeCell(int pos)
+{
+  int plusFlag, num;
+  int command, operand, mem;
 
+  refreshGui(pos);
+  if (scanNum(&plusFlag, &num) != 0) {
+    write(1, "Not a number!", 13);
+    return -1;
+  }
+  if ((num >= 0) && (num < 0x8000)) {
+      command = (num >> 8) & 0x7F;
+      operand = num & 0x7F;
+      sc_commandEncode(command, operand, &mem);
+  } else 
+    mem = (1 << 14) | num;
+
+  if ((pos >= 0) && (pos < sizeRAM)) {
+      sc_memorySet(pos, mem);
+  } else {
+    write(1, "Memory cell is 15 bit wide", 25);
+    return -1;
+  }
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
 int changeAccumulator(int pos)
 {
   int plusFlag, num;

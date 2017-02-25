@@ -39,7 +39,7 @@ int bc_box(int x1, int y1, int x2, int y2)
     bc_printA(BOXCHAR_HOR);
   }
 
-    bc_printA(BOXCHAR_TR);
+  bc_printA(BOXCHAR_TR);
 
   for (i = y1 +1; i < y2; i++) {
     mt_gotoXY(x1, i);

@@ -14,3 +14,11 @@ int timerHand(int sig)
     alarm(1);
   }
 }
+
+int timerUrsignalHand(int sig)
+{
+  sc_regInit();
+  sc_regSet(FLAG_INTERRUPT, 1);
+  instructionRegisterCount = 0;
+  accumulator = 0;
+}

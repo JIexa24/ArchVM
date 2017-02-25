@@ -195,11 +195,15 @@ void printMemory(int x, int y, int position)
   for (i = 0; i < 10; i++) {
     mt_gotoXY(x, y + i);
     for (j = 0; j < 10; j++) {
+/*
       mem = localRAM[i*10+j] & 0x3FFF;
       command = (localRAM[i*10+j] >> 14) & 1;
+*/
+      mem = localRAM[i+j*10] & 0x3FFF;
+      command = (localRAM[i+j*10] >> 14) & 1;
       opcode = (mem >> 7) & 0x7F;
       operand = mem & 0x7F;
-      if ((i * 10 + j) == position) {
+      if ((i + j * 10 ) == position) {
         mt_setfgcolor(clr_black);
         mt_setbgcolor(clr_green);
       }
@@ -216,7 +220,7 @@ void printMemory(int x, int y, int position)
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
       }
-      if ((i * 10 + j) == position) {
+      if ((i + j * 10) == position) {
         mt_setfgcolor(clr_default);
         mt_setbgcolor(clr_default);
       }
