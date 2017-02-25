@@ -16,7 +16,7 @@ int main(int argc, char** argv)
   int position = 0;
   int fd = 0;
   int cn;
-  int tmp;
+  int tmp = 0;
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     write(2,"Cannot open ascibig\n", 20);
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
   bc_bigcharread(fd, bigChars, 128, &cn);
   close(fd);
 
-  sc_commandEncode(0x10, 23, &tmp);
+  sc_commandEncode(0x10, 126, &tmp);
   sc_memorySet(0, tmp);
 
   refreshGui(position);

@@ -136,5 +136,3 @@ int a_idechs2chs(tIDECHS geometry1, tCHS geometry2, tIDECHS IDECHS,tCHS* CHS)
   return 0;
 }
 
-
-

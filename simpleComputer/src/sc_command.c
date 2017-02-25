@@ -31,7 +31,11 @@ int sc_commandEncode(int command, int operand, int* value)
     if (command == correctCommands[i]) commandPtr = &(correctCommands[i]);
   }
   if (commandPtr != NULL) {
-    *value = (command << 7) | operand;
+    if (operand > 0x7F) {
+      operand &= 0x7F;
+      sc_regSet(FLAG_OVERFLOW,1);
+    }
+    *value = (command << 7) | operand;    
     return 0;
   } else {
     sc_regSet(FLAG_COMMAND, 1);
