@@ -18,21 +18,24 @@ int changeCell(int pos)
 
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(2, "Not a number!", 13);
+    writeChar(2, "Not a number!");
     return -1;
   }
   if ((num >= 0) && (num < 0x8000)) {
+    if (plusFlag) {
       command = (num >> 8) & 0x7F;
       operand = num & 0x7F;
       mem = (command << 7) | operand;
-      //sc_commandEncode(command, operand, &mem);
-  } else 
-    mem = (1 << 14) | num;
-
-  if ((pos >= 0) && (pos < sizeRAM)) {
+      writeInt(1, mem, 16, -1);
+      //mem &= 0x7FFF;
+    } else {
+      mem = ((1 << 14) | num);
+    }
+    if ((pos >= 0) && (pos < sizeRAM)) {
       sc_memorySet(pos, mem);
+    }
   } else {
-    write(2, "Memory cell is 15 bit wide", 25);
+    writeChar(2, "Memory cell is 15 bit wide");
     return -1;
   }
   return 0;
@@ -43,13 +46,13 @@ int changeAccumulator(int pos)
   int plusFlag, num;
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(2, "Not a number!", 13);
+    writeChar(2, "Not a number!");
     return -1;
   }
   if ((num >= 0) && (num < 0x8000)) {
     accumulator = num;
   } else {
-    write(2, "Accumutalor is 15 bit wide", 26);
+    writeChar(2, "Accumutalor is 15 bit wide");
     return -1;
   }
   return 0;
@@ -61,13 +64,13 @@ int changeInstRegisterCount(int pos)
 
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(2, "Not a number!", 13);
+    writeChar(2, "Not a number!");
     return -1;
   }
   if ((num >= 0) && (num < 0x100)) {
     instructionRegisterCount = num;
   } else {
-    write(2, "Accumutalor range: from 0 to 99 (0x63)", 38);
+    writeChar(2, "Accumutalor range: from 0 to 99 (0x63)");
     return -1;
   }
   return 0;
@@ -85,8 +88,49 @@ int scanNum(int *plusFlag, int *n)
   } else {
     *plusFlag = 0;
   }
-  if (sscanf(buffer + pos, "%x", n) != 1) {
+  if (sreadInt(buffer + pos, n, 16) != 1) {
     return -1;
   }
+//  if (sscanf(buffer + pos, "%x", n) != 1) {
+ //   return -1;
+ // }
   return 0;
+}
+/*---------------------------------------------------------------------------*/
+int memorySave(int position)
+{
+  char filename[256];
+  writeChar(1, "Enter save file name: ");
+
+  fgets(filename, 256, stdin);
+
+  filename[strlen(filename) - 1] = '\0';
+
+  if (sc_memorySave(filename) == 0) {
+    refreshGui(position);
+    writeChar(1,"File successfully saved");
+    return 0;
+  } else { 
+    writeChar(1,"Cannot save file: ");
+    writeChar(1, filename);
+    return -1;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int memoryLoad(int position)
+{
+	char filename[256];
+	
+	printf("Enter save file name: ");
+	fgets(filename, 256, stdin);
+	filename[strlen(filename) - 1] = '\0';
+	if (sc_memoryLoad(filename) == 0) {
+		refreshGui(position);
+		printf("File successfully loaded");
+		return 0;
+	}
+	else {
+		printf("Cannot load file: %s", filename);
+		return -1;
+	}
 }

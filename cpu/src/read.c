@@ -11,10 +11,10 @@ int readMcell(int pos)
   int command, operand, mem;
 
   refreshGui(instructionRegisterCount);
-  write(1,"READ: ", 6);
+  writeChar(1,"READ: ");
 //  writeInt(1,pos,10,-1);
   if (scanNum(&plusFlag, &num) != 0) {
-    write(2, "Not a number!", 13);
+    writeChar(2, "Not a number!");
     return -1;
   }
   if ((num >= 0) && (num < 0x8000)) {
@@ -31,7 +31,7 @@ int readMcell(int pos)
     if ((pos >= 0) && (pos < sizeRAM))  
       sc_memorySet(pos, mem);
   } else {
-    write(2, "Memory cell is 15 bit wide", 25);
+    writeChar(2, "Memory cell is 15 bit wide");
     return -1;
   }
   return 0;

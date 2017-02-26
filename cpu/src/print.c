@@ -51,35 +51,35 @@ void printCounter()
 void printKeys(int x, int y)
 {
   mt_gotoXY(x, y);
-  write(1, "l  - load", 9);
+  writeChar(1, "l  - load");
   mt_gotoXY(x, y + 1);
-  write(1, "s  - save", 9);
+  writeChar(1, "s  - save");
   mt_gotoXY(x, y + 2);
-  write(1, "r  - run", 8);
+  writeChar(1, "r  - run");
   mt_gotoXY(x, y + 3);
-  write(1, "t  - step", 9);
+  writeChar(1, "t  - step");
   mt_gotoXY(x, y + 4);
-  write(1, "i  - reset", 10);
+  writeChar(1, "i  - reset");
   mt_gotoXY(x, y + 5);
-  write(1, "F5 - accumulator", 16);
+  writeChar(1, "F5 - accumulator");
   mt_gotoXY(x, y + 6);
-  write(1, "F6 - instructionCounter", 23);
+  writeChar(1, "F6 - instructionCounter");
 }
 /*---------------------------------------------------------------------------*/
 void printLabels()
 {
   mt_gotoXY(30, 1);
-  write(1, " Memory ", 8);
+  writeChar(1, " Memory ");
   mt_gotoXY(66, 1);
-  write(1, " accumulator ", 13);
+  writeChar(1, " accumulator ");
   mt_gotoXY(63, 4);
-  write(1, " instuctionCounter ", 19);
+  writeChar(1, " instuctionCounter ");
   mt_gotoXY(68, 7);
-  write(1, " Operation ", 11);
+  writeChar(1, " Operation ");
   mt_gotoXY(68, 10);
-  write(1, " Flags ", 7);
+  writeChar(1, " Flags ");
   mt_gotoXY(48, 13);
-  write(1, " Keys: ", 7);
+  writeChar(1, " Keys: ");
 }
 /*---------------------------------------------------------------------------*/
 void printOperation(int position)
@@ -105,7 +105,7 @@ void printOperation(int position)
 //  printf("%c%02X : %02X", c, command, operand);
     write(1, &c, 1);
     writeInt(1, command, 16, 2);
-    write(1, " : ", 3);
+    writeChar(1, " : ");
     writeInt(1, operand, 16, 2);
   }
 }
@@ -114,29 +114,29 @@ void printFlags(int x, int y)
 {
   mt_gotoXY(x, y);
   if (BITCHECK(sc_register, FLAG_OVERFLOW) == 1) {
-    write(1, "O", 1);
+    writeChar(1, "O");
   } else {
-    write(1, " ", 1);
+    writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_COMMAND) == 1) {
-    write(1, "E", 1);
+    writeChar(1, "E");
   } else {
-    write(1, " ", 1);
+    writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_INTERRUPT) == 1) {
-    write(1, "V", 1);
+    writeChar(1, "V");
   } else {
-    write(1, " ", 1);
+    writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_OUTMEM) == 1) {
-    write(1, "M", 1);
+    writeChar(1, "M");
   } else {
-    write(1, " ", 1);
+    writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_DIVISION) == 1) {
-    write(1, "Z", 1);
+    writeChar(1, "Z");
   } else {
-    write(1, " ", 1);
+    writeChar(1, " ");
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -214,13 +214,13 @@ void printMemory(int x, int y, int position)
       if (command == 0) {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //      printf("+%02X%02X", opcode, operand);
-        write(1, "+", 1);
+        writeChar(1, "+");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
       } else {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //      printf(" %02X%02X", opcode, operand);
-        write(1, " ", 1);
+        writeChar(1, " ");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
       }
@@ -233,7 +233,7 @@ void printMemory(int x, int y, int position)
       }
 
       if (j != 9) {
-        write(1, " ", 1);
+        writeChar(1, " ");
       }
     }
   }

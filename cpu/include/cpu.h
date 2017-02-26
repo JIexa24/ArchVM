@@ -9,6 +9,7 @@
 #include "./../../consoleSC/include/term.h"
 #include "./../../readKey/include/readkey.h"
 #include "./../../print/include/writeInt.h"
+#include "./../../scan/include/readInt.h"
 #include "./../../hardDrive/include/hardDrive.h"
 #include <signal.h>
 #include <fcntl.h>
@@ -36,6 +37,9 @@ int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
 int changeCell(int pos);
 int scanNum(int *plusFlag, int *n);
+
+int memorySave(int position);
+int memoryLoad(int position);
 
 int readMcell(int pos);
 #endif

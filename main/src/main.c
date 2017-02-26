@@ -24,7 +24,7 @@ int main(int argc, char** argv)
   sc_regSet(FLAG_INTERRUPT, 1);
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
-    write(2,"Cannot open ascibig\n", 20);
+    writeChar(2,"Cannot open ascibig\n");
     return -1;
   }
   bc_bigcharread(fd, bigChars, 128, &cn);
@@ -90,10 +90,12 @@ int main(int argc, char** argv)
         break;
 
         case KEY_s:
+          memorySave(position);
           refreshFlg = 1;
         break;
 
         case KEY_l:
+          memoryLoad(position);
           refreshFlg = 1;
         break;
       }

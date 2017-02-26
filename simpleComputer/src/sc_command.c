@@ -64,7 +64,7 @@ int sc_commandDecode(int value, int* command, int* operand)
       sc_regSet(FLAG_COMMAND, 1);
       return ERR_UNCORRECT_COMMAND;
     }
-  return 0;
+    return 0;
   } else {
     return ERR_ATTRIBUTE_BIT;
   }

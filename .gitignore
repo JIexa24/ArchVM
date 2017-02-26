@@ -43,3 +43,5 @@
 
 /main/obj/*.o
 /bin/*
+
+/scan/obj/*.o

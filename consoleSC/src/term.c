@@ -17,7 +17,7 @@ enum colors {
 
 int mt_clrscr()
 {
-  write(1, "\E[H\E[2J", 7);
+  writeChar(1, "\E[H\E[2J");
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -27,11 +27,11 @@ int mt_gotoXY(int x, int y)
   
   mt_getscreensize(&rows, &cols);
   if (((y < rows) && (y >= 0)) && ((x < cols) && (x >= 0))) {
-    write(1, "\E[", 2);
+    writeChar(1, "\E[");
     writeInt(1, y, 10, -1);
-    write(1, ";", 1);
+    writeChar(1, ";");
     writeInt(1, x, 10, -1);
-    write(1, "H", 1);
+    writeChar(1, "H");
     return 0;
   } else {
     return -1;
@@ -53,9 +53,9 @@ int mt_getscreensize(int *rows, int *cols)
 int mt_setfgcolor(enum colors color)
 {
   if (color >= 0 && color <= 9) {
-    write(1, "\E[", 2);
+    writeChar(1, "\E[");
     writeInt(1, 30 + color, 10, -1);
-    write(1, "m", 1);
+    writeChar(1, "m");
     return 0;
   } else {
     return -1;
@@ -65,9 +65,9 @@ int mt_setfgcolor(enum colors color)
 int mt_setbgcolor(enum colors color)
 {
   if (color >= 0 && color <= 9) {
-    write(1, "\E[", 2);
+    writeChar(1, "\E[");
     writeInt(1, 40 + color, 10, -1);
-    write(1, "m", 1);
+    writeChar(1, "m");
     return 0;
   } else {
     return -1;

@@ -1,5 +1,10 @@
 #include "./../include/writeInt.h"
 
+int writeChar(int fd, char* str)
+{
+  write(fd, str, strlen(str));
+}
+/*---------------------------------------------------------------------------*/
 int writeInt(int std, int num, int radix, int znac)
 {
   int i = 0;

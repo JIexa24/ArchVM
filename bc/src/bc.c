@@ -2,9 +2,9 @@
 
 int bc_printA(char *str)
 {
-  write(1, "\E(0", 3);
+  writeChar(1, "\E(0");
   write(1, str, strlen(str));
-  write(1, "\E(B", 3);
+  writeChar(1, "\E(B");
   return 0;
 }
 /*---------------------------------------------------------------------------*/
