@@ -12,7 +12,7 @@ int readMcell(int pos)
 
   refreshGui(instructionRegisterCount);
   write(1,"READ: ", 6);
-  writeInt(1,pos,10,-1);
+//  writeInt(1,pos,10,-1);
   if (scanNum(&plusFlag, &num) != 0) {
     write(2, "Not a number!", 13);
     return -1;

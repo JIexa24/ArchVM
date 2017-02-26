@@ -18,7 +18,7 @@ int main(int argc, char** argv)
   int cn;
   int tmp = 0;
   int exit = 0;
-
+  int refreshFlg = 0;
   enum keys key;
   
   sc_regSet(FLAG_INTERRUPT, 1);
@@ -27,30 +27,34 @@ int main(int argc, char** argv)
     write(2,"Cannot open ascibig\n", 20);
     return -1;
   }
-  mt_clrscr();
   bc_bigcharread(fd, bigChars, 128, &cn);
   close(fd);
+  setSignals();
+  mt_clrscr();
 
   sc_commandEncode(0x10, 50, &tmp);
   sc_memorySet(0, tmp);
   sc_memorySet(1, 2);
   
   while (!exit) {
-    refreshGui(position);
+    if (!refreshFlg)
+      refreshGui(position);
+
     rk_readkey(&key);
 
-    if(BITCHECK(FLAG_INTERRUPT, 1)) {
-
+    if(BITCHECK(sc_register,FLAG_INTERRUPT)) {
       switch (key) {
         case KEY_up:
           if (cursorY != 0)
             cursorY--;
           else
             cursorY = 9;
+          refreshFlg = 0;
         break;
 
         case KEY_down:
           cursorY = (cursorY + 1) % 10;
+          refreshFlg = 0;
         break;
 
         case KEY_left:
@@ -58,22 +62,24 @@ int main(int argc, char** argv)
             cursorX--;
           else
             cursorX = 9;
+          refreshFlg = 0;
         break;
 
         case KEY_right:
           cursorX = (cursorX + 1) % 10;
+          refreshFlg = 0;
         break;
 
         case KEY_f5:
-          changeAccumulator(position);
+          refreshFlg = changeAccumulator(position);
         break;
 
         case KEY_f6:
-          changeInstRegisterCount(position);
+          refreshFlg = changeInstRegisterCount(position);
         break;
 	
         case KEY_enter:
-          changeCell(position);
+          refreshFlg = changeCell(position);
         break;
 					
         case KEY_t:
@@ -84,11 +90,11 @@ int main(int argc, char** argv)
         break;
 
         case KEY_s:
-
+          refreshFlg = 1;
         break;
 
         case KEY_l:
-
+          refreshFlg = 1;
         break;
       }
     }
@@ -99,6 +105,18 @@ int main(int argc, char** argv)
       position = 0;
       cursorX = 0;
       cursorY = 0;
+    } else if (key == KEY_r) {
+      if (BITCHECK(sc_register, FLAG_INTERRUPT)) {
+        sc_regSet(FLAG_INTERRUPT, 0);
+        timerHand(SIGALRM);
+      } else {
+        alarm(0);
+        sc_regSet(FLAG_INTERRUPT, 1);
+        position = instructionRegisterCount;
+        cursorX = instructionRegisterCount / 10;
+        cursorY = instructionRegisterCount % 10;
+        refreshGui(position);
+	  }
     }
     position = cursorY + cursorX * 10;
   }

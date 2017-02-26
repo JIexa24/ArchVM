@@ -5,7 +5,7 @@ extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
 
-int timerHand(int sig)
+void timerHand(int sig)
 {
   refreshGui(instructionRegisterCount);
   CU();
@@ -15,7 +15,7 @@ int timerHand(int sig)
   }
 }
 
-int timerUrsignalHand(int sig)
+void timerUrsignalHand(int sig)
 {
   sc_regInit();
   sc_regSet(FLAG_INTERRUPT, 1);

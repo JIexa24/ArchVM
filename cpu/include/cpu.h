@@ -18,8 +18,8 @@
 void CU();
 int ALU(int command, int operand);
 
-int timerHand(int sig);
-int timerUrsignalHand(int sig);
+void timerHand(int sig);
+void timerUrsignalHand(int sig);
 
 void refreshGui(int position);
 void printBoxes();
@@ -37,4 +37,5 @@ int changeInstRegisterCount(int pos);
 int changeCell(int pos);
 int scanNum(int *plusFlag, int *n);
 
+int readMcell(int pos);
 #endif

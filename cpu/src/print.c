@@ -207,6 +207,10 @@ void printMemory(int x, int y, int position)
         mt_setfgcolor(clr_black);
         mt_setbgcolor(clr_green);
       }
+      if ((i + j * 10 ) == instructionRegisterCount) {
+        mt_setfgcolor(clr_yellow);
+      }
+    
       if (command == 0) {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //      printf("+%02X%02X", opcode, operand);
@@ -223,6 +227,9 @@ void printMemory(int x, int y, int position)
       if ((i + j * 10) == position) {
         mt_setfgcolor(clr_default);
         mt_setbgcolor(clr_default);
+      }
+      if ((i + j * 10 ) == instructionRegisterCount) {
+        mt_setfgcolor(clr_default);
       }
 
       if (j != 9) {
