@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #ifndef ASM_H
 #define ASM_H
 

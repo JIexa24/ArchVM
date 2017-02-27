@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #ifndef WRITE_INT_H
 #define WRITE_INT_H
 

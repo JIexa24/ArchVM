@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #include "./../include/sc_memory.h"
 #include "./../include/sc_register.h"
 

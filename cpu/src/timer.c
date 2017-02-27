@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #include "./../include/cpu.h"
 
 extern int accumulator;
@@ -17,8 +20,8 @@ void timerHand(int sig)
     }
     if (!BITCHECK(sc_register, FLAG_INTERRUPT)) {
       /* raise для непрерывного выполнения. alarm - одна секунда */  
-      raise(SIGALRM);
-      //alarm(1);
+      //raise(SIGALRM);
+      alarm(1);
     }
   } else {
     sc_regSet(FLAG_INTERRUPT, 1);

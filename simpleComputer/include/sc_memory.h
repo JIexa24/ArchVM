@@ -1,4 +1,7 @@
 /*
+  Created by JIexa24 (Alexey R.)
+*/
+/*
  Operatioon with localMemory
 */
 #ifndef SC_MEMORY_H

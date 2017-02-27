@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #include "./../include/writeInt.h"
 
 int writeChar(int fd, char* str)

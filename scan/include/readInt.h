@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #ifndef READ_INT_H
 #define READ_INT_H
 

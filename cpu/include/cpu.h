@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #ifndef CPU_H
 #define CPU_H
 

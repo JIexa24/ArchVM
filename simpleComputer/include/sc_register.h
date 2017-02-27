@@ -1,6 +1,11 @@
 /*
+  Created by JIexa24 (Alexey R.)
+*/
+
+/*
 Operation with register
 */
+
 #ifndef SC_REGISTER_H
 #define SC_REGISTER_H
 

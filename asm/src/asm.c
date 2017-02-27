@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #include "./../include/asm.h"
 
 int asmCommand(char *str)

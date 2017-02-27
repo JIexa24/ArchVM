@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #include "./../include/readInt.h"
 
 int sreadInt(char* buffers, int* num, int radix)

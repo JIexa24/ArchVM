@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #ifndef CONSOLE_SC_H
 #define CONSOLE_SC_H
 

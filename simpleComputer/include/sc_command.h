@@ -1,4 +1,7 @@
 /*
+  Created by JIexa24 (Alexey R.)
+*/
+/*
   Operation with commandcode
 */
 
