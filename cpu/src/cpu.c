@@ -17,7 +17,8 @@ void CU()
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
   }
-  if (sc_commandDecode(localRAM[instructionRegisterCount], &command, &operand) != 0) {
+  if (sc_commandDecode(localRAM[instructionRegisterCount], &command, &operand)
+      != 0) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     return;

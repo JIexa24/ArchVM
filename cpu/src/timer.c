@@ -16,6 +16,7 @@ void timerHand(int sig)
       instructionRegisterCount++;
     }
     if (!BITCHECK(sc_register, FLAG_INTERRUPT)) {
+      /* raise для непрерывного выполнения. alarm - одна секунда */  
       raise(SIGALRM);
       //alarm(1);
     }
@@ -26,7 +27,7 @@ void timerHand(int sig)
     instructionRegisterCount = 0; 
   }
 }
-
+/*---------------------------------------------------------------------------*/
 void timerUrsignalHand(int sig)
 {
   sc_regInit();
