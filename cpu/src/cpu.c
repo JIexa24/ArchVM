@@ -22,7 +22,7 @@ void CU()
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
   }
-  if ((operand < 0) && (operand >= sizeRAM)) {
+  if ((operand < 0) || (operand >= sizeRAM)) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
