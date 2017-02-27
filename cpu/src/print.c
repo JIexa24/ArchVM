@@ -5,6 +5,29 @@ extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
 extern int bigChars[];
+extern int writeValue;
+extern int writeUse;
+
+static void printWriteValue()
+{
+  int command, opcode, operand;
+  mt_gotoXY(1, 23);
+  command = (writeValue >> 14) & 1;
+  opcode = (writeValue >> 7) & 0x7F;
+  operand = writeValue & 0x7F;
+  if (writeUse != 0) {
+    writeChar(1,"Last WRITE: ");
+    if (command == 0) {
+      writeChar(1,"+");
+      writeInt(1, opcode, 16, 2);
+      writeInt(1, operand, 16, 2);       
+    } else {
+      writeChar(1," ");
+      writeInt(1, opcode, 16, 2);
+      writeInt(1, operand, 16, 2);
+    }	
+  }
+}
 
 void refreshGui(int position)
 {
@@ -25,7 +48,7 @@ void refreshGui(int position)
   printMemory(2, 2, position);
   printFlags(68, 11);
   printMcell(bigChars, position);
-//  printWriteValue();
+  printWriteValue();
   mt_gotoXY(1, 24);
 }
 /*---------------------------------------------------------------------------*/
@@ -187,6 +210,10 @@ void printMemory(int x, int y, int position)
   int i, j;
   int mem, command;
   int opcode, operand;
+
+  mt_gotoXY(18,13);
+  writeChar(1,"Cell: ");
+  writeInt(1, position, 16, 2);
 
   if ((position >= sizeRAM) && (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);

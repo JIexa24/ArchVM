@@ -4,7 +4,10 @@ extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
+extern int writeUsed; 
+extern int writeValue;
 extern int bigChars[];
+extern int flagHalt;
 
 int main(int argc, char** argv)
 {
@@ -27,6 +30,7 @@ int main(int argc, char** argv)
     writeChar(2,"Cannot open ascibig\n");
     return -1;
   }
+  flagHalt = 0;
   bc_bigcharread(fd, bigChars, 128, &cn);
   close(fd);
   setSignals();
@@ -34,7 +38,15 @@ int main(int argc, char** argv)
 
   sc_commandEncode(0x10, 50, &tmp);
   sc_memorySet(0, tmp);
-  sc_memorySet(1, 2);
+  sc_commandEncode(0x10, 51, &tmp);
+  sc_memorySet(1, tmp);
+
+  sc_commandEncode(0x11, 50, &tmp);
+  sc_memorySet(3, tmp);
+  sc_commandEncode(0x11, 51, &tmp);
+  sc_memorySet(4, tmp);
+  sc_commandEncode(0x43, 0, &tmp);
+  sc_memorySet(5, tmp);
   
   while (!exit) {
     if (!refreshFlg)
@@ -49,6 +61,7 @@ int main(int argc, char** argv)
             cursorY--;
           else
             cursorY = 9;
+
           refreshFlg = 0;
         break;
 
@@ -62,6 +75,7 @@ int main(int argc, char** argv)
             cursorX--;
           else
             cursorX = 9;
+
           refreshFlg = 0;
         break;
 
@@ -103,13 +117,16 @@ int main(int argc, char** argv)
     if (key == KEY_q)
       exit = 1;
     else if (key == KEY_i) {
+      raise(SIGUSR1);
+      refreshFlg = 0;
+      flagHalt = 0;
       instructionRegisterCount = 0;
-      position = 0;
       cursorX = 0;
       cursorY = 0;
     } else if (key == KEY_r) {
       if (BITCHECK(sc_register, FLAG_INTERRUPT)) {
         sc_regSet(FLAG_INTERRUPT, 0);
+        position = instructionRegisterCount;
         timerHand(SIGALRM);
       } else {
         alarm(0);
@@ -117,9 +134,26 @@ int main(int argc, char** argv)
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10;
         cursorY = instructionRegisterCount % 10;
-        refreshGui(position);
 	  }
     }
+    if(flagHalt) {
+      position = instructionRegisterCount;
+      if (key == KEY_left){
+        cursorX = (instructionRegisterCount / 10 - 1) >= 0 ? (instructionRegisterCount / 10 - 1) : 9;
+      } else if(key == KEY_right){
+        cursorX = (instructionRegisterCount / 10 + 1) <= 9 ? (instructionRegisterCount / 10 + 1) : 0;
+      } else {
+        cursorX = instructionRegisterCount / 10;
+      }
+      if (key == KEY_up){
+        cursorY = (instructionRegisterCount % 10 - 1) >= 0 ? (instructionRegisterCount % 10 - 1) : 9;
+      } else if(key == KEY_down){
+        cursorY = (instructionRegisterCount % 10 + 1) <= 9 ? (instructionRegisterCount % 10 + 1) : 0;
+      } else {
+        cursorY = instructionRegisterCount % 10;
+      }
+      flagHalt = 0;
+    } 
     position = cursorY + cursorX * 10;
   }
 }

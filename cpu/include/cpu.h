@@ -41,5 +41,7 @@ int scanNum(int *plusFlag, int *n);
 int memorySave(int position);
 int memoryLoad(int position);
 
+static void printWriteValue();
+
 int readMcell(int pos);
 #endif

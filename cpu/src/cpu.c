@@ -4,6 +4,9 @@ extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
+extern int writeUse; 
+extern int writeValue;
+extern int flagHalt;
 
 void CU()
 {
@@ -33,7 +36,8 @@ void CU()
         while (readMcell(operand) != 0);
       break;		
       case 0x11: /* WRITE */
-
+        writeUse = 1;
+        writeValue = localRAM[operand];
       break;	
       case 0x20: /* LOAD */
         accumulator = localRAM[operand];
@@ -55,7 +59,9 @@ void CU()
         }
       break;
       case 0x43: /* HALT */
+        flagHalt = 1;
         sc_regSet(FLAG_INTERRUPT, 1);
+        refreshGui(instructionRegisterCount);
       break;
       case 0x59: /* JNP */
         sc_regGet(FLAG_ODD, &flag);
@@ -70,7 +76,7 @@ void CU()
 /*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)
 {
-  if ((operand < 0) || (operand >= 100)) {
+  if ((operand < 0) || (operand >= sizeRAM)) {
     sc_regSet(FLAG_OUTMEM,1);
     return ERR_WRONG_ADDR;
   } else {
@@ -124,7 +130,7 @@ int ALU(int command, int operand)
     } else {
       sc_regSet(FLAG_OVERFLOW, 0);
     }
-    //sc_regSet(FLAG_ODD, accumulator & 1);
+    sc_regSet(FLAG_ODD, accumulator & 1);
     return 0; 
   }
 }
