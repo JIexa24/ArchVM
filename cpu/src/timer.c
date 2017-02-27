@@ -16,7 +16,8 @@ void timerHand(int sig)
       instructionRegisterCount++;
     }
     if (!BITCHECK(sc_register, FLAG_INTERRUPT)) {
-      alarm(1);
+      raise(SIGALRM);
+      //alarm(1);
     }
   } else {
     sc_regSet(FLAG_INTERRUPT, 1);
