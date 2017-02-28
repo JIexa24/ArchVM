@@ -18,7 +18,6 @@ int changeCell(int pos)
 {
   int plusFlag, num;
   int command, operand, mem;
-
   refreshGui(pos);
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
@@ -26,14 +25,21 @@ int changeCell(int pos)
   }
   if ((num >= 0) && (num < 0x8000)) {
     if (plusFlag) {
+    //  0000 0001 0100 0010
       command = (num >> 8) & 0x7F;
+      if (num & 0x80) {
+        writeChar(2, "Operand is 7 bit wide ( <= 7F). ");
+        return -1;
+      }
       operand = num & 0x7F;
       mem = (command << 7) | operand;
       //writeInt(1, mem, 16, -1);
       //mem &= 0x7FFF;
     } else {
-      mem = ((1 << 14) | num);
+      mem = num | 0x4000;//((1 << 14) | num);
     }
+//100 0000 0000 0000
+               
     if ((pos >= 0) && (pos < sizeRAM)) {
       sc_memorySet(pos, mem);
     }

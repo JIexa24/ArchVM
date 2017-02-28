@@ -26,8 +26,7 @@ static void printWriteValue()
       writeInt(1, operand, 16, 2);       
     } else {
       writeChar(1," ");
-      writeInt(1, opcode, 16, 2);
-      writeInt(1, operand, 16, 2);
+      writeInt(1, writeValue & 0x3FFF, 16, 4);
     }	
   }
 }
@@ -45,7 +44,7 @@ void refreshGui(int position)
   mt_gotoXY(70, 2);
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //  printf("%04X", accumulator);
-  writeInt(1, accumulator, 16, 4);
+  writeInt(1, accumulator & 0x3FFF, 16, 4);
 
   printOperation(position);
   printMemory(2, 2, position);
@@ -122,17 +121,23 @@ void printOperation(int position)
   mt_gotoXY(68, 8);
   if ((position >= 0) && (position < sizeRAM)) {
     if (isCommand == 0) {
+      write(1, &c, 1);
+      writeInt(1, command, 16, 2);
+      writeChar(1, " : ");
+      writeInt(1, operand, 16, 2);
       c = '+';
     } else {
       c = ' ';
+      writeChar(1, "  ");  
+      writeInt(1, localRAM[position] & 0x3FFF, 16, 4);
     }
-
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //  printf("%c%02X : %02X", c, command, operand);
-    write(1, &c, 1);
+/*    write(1, &c, 1);
     writeInt(1, command, 16, 2);
     writeChar(1, " : ");
     writeInt(1, operand, 16, 2);
+*/
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -247,12 +252,12 @@ void printMemory(int x, int y, int position)
         writeChar(1, "+");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
-      } else {
+      } else if (command == 1) {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //      printf(" %02X%02X", opcode, operand);
         writeChar(1, " ");
-        writeInt(1, opcode, 16, 2);
-        writeInt(1, operand, 16, 2);
+        writeInt(1, mem, 16, 4);
+//        writeInt(1, operand, 16, 2);
       }
       if ((i + j * 10) == position) {
         mt_setfgcolor(clr_default);

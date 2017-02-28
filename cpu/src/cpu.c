@@ -44,7 +44,7 @@ void CU()
         writeValue = localRAM[operand];
       break;	
       case 0x20: /* LOAD */
-        accumulator = localRAM[operand];
+        accumulator = localRAM[operand] & 0x3FFF;
       break;
       case 0x21: /* STORE */
         localRAM[operand] = accumulator;
