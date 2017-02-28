@@ -25,7 +25,6 @@ int changeCell(int pos)
   }
   if ((num >= 0) && (num < 0x8000)) {
     if (plusFlag) {
-    //  0000 0001 0100 0010
       command = (num >> 8) & 0x7F;
       if (num & 0x80) {
         writeChar(2, "Operand is 7 bit wide ( <= 7F). ");
@@ -38,7 +37,6 @@ int changeCell(int pos)
     } else {
       mem = num | 0x4000;//((1 << 14) | num);
     }
-//100 0000 0000 0000
                
     if ((pos >= 0) && (pos < sizeRAM)) {
       sc_memorySet(pos, mem);
