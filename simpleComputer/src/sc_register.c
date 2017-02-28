@@ -32,7 +32,7 @@ int sc_regInit(void)
 /*---------------------------------------------------------------------------*/
 int sc_regSet(int scRegister, int value)
 {
-  if ((scRegister >= 0) && (scRegister <=4) && (value >= 0) && (value < 2)) {
+  if ((scRegister >= 0) && (scRegister <=5) && (value >= 0) && (value < 2)) {
     if (value == 1) {
       BITSET(sc_register, scRegister);
     } else if (value == 0) {
