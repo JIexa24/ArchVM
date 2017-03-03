@@ -38,12 +38,15 @@ int sc_commandEncode(int command, int operand, int* value)
       operand &= 0x7F;
       sc_regSet(FLAG_OVERFLOW,1);
     }
-    *value = (command << 7) | operand;    
-    return 0;
+    if (value != NULL) {
+      *value = (command << 7) | operand;   
+      return 0; 
+    }
   } else {
     sc_regSet(FLAG_COMMAND, 1);
     return ERR_UNCORRECT_COMMAND;
   }
+  return ERR_WRONG_ADDR;
 }
 /*---------------------------------------------------------------------------*/
 int sc_commandDecode(int value, int* command, int* operand)
@@ -51,25 +54,27 @@ int sc_commandDecode(int value, int* command, int* operand)
   void *correctCommand;
   int attribute = (value >> 14) & 1;
   int tmpCommand, tmpOperand, i;
-
-  if (attribute == 0) {
-    tmpCommand = (value >> 7) & 0x7F;
-    tmpOperand = value & 0x7F;
-    for (i = 0; i < countCmd; i ++) {
-      if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
-    }
+  
+  if (command != NULL && operand != NULL) {
+    if (attribute == 0) {
+      tmpCommand = (value >> 7) & 0x7F;
+      tmpOperand = value & 0x7F;
+      for (i = 0; i < countCmd; i ++) {
+        if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
+      }
     /*correctCommand = bsearch(&tmpCommand, correctCommands, countCmd,
 							 sizeof(int), intCompare);*/
-    if (correctCommand != NULL) {
-      *command = tmpCommand;
-      *operand = tmpOperand;
+      if (correctCommand != NULL) {
+        *command = tmpCommand;
+        *operand = tmpOperand;
+      } else {
+        sc_regSet(FLAG_COMMAND, 1);
+        return ERR_UNCORRECT_COMMAND;
+      }
+      return 0;
     } else {
-      sc_regSet(FLAG_COMMAND, 1);
-      return ERR_UNCORRECT_COMMAND;
+      return ERR_ATTRIBUTE_BIT;
     }
-    return 0;
-  } else {
-    return ERR_ATTRIBUTE_BIT;
   }
   return 0;
 }

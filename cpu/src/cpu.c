@@ -115,7 +115,7 @@ int ALU(int command, int operand)
         }
       break;
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-      case 0x52: 
+      case 0x52:  /* AND */
         tmp = localRAM[operand];
         if (tmp > 0x7FFF) {
           tmp = tmp & 0x7FFF; 

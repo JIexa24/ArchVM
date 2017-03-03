@@ -32,6 +32,8 @@ int asmCommand(char *str)
     ret = 0x43;
   } else if (strcmp(str, "JNP") == 0) {
     ret = 0x59;
+  } else if (strcmp(str, "ADD") == 0) {
+    ret = 0x52;
   } else {
     ret = -1;
   }

@@ -117,9 +117,10 @@ int main(int argc, char** argv)
         break;
       }
     }
-    if (key == KEY_q)
+    if (key == KEY_q) {
       exit = 1;
-    else if (key == KEY_i) {
+      break;
+    } else if (key == KEY_i) {
       raise(SIGUSR1);
       refreshFlg = 0;
       flagHalt = 0;
