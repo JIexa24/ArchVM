@@ -12,6 +12,9 @@ int writeInt(int std, int num, int radix, int znac)
 {
   int i = 0;
   if (num == 0) {
+    if (znac == -1)
+      write(std, "0", 1);
+
     for (i = 0; i < znac; i++)
       write(std, "0", 1);
     return i;
@@ -63,6 +66,8 @@ int swriteInt(char* buff, int num, int radix, int znac)
 
 
   if (num == 0) {
+    if (znac == -1)
+      buff[i] = '0';
     for (i = 0; i < znac; i++)
       buff[i] = '0';
     return i;
