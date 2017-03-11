@@ -45,11 +45,13 @@ int main(int argc, char** argv)
   sc_memorySet(1, tmp);
 
   sc_commandEncode(0x11, 50, &tmp);
-  sc_memorySet(3, tmp);
+  sc_memorySet(2, tmp);
   sc_commandEncode(0x11, 51, &tmp);
+  sc_memorySet(3, tmp);
+  sc_commandEncode(0x40, 10, &tmp);
   sc_memorySet(4, tmp);
   sc_commandEncode(0x43, 0, &tmp);
-  sc_memorySet(5, tmp);
+  sc_memorySet(10, tmp);
   
   while (!exit) {
     if (!refreshFlg)

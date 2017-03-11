@@ -7,7 +7,7 @@ extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
-extern int writeUse; 
+extern int writeUse;
 extern int writeValue;
 extern int flagHalt;
 
@@ -31,18 +31,18 @@ void CU()
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
   }
-  if ((command >= 0x30) && (command <= 0x33) || command == 0x52) {
+  if ((command >= 0x30) && (command <= 0x33) || (command >= 0x51) && (command <= 0x54)) {
     if (ALU(command, operand) != 0)
       sc_regSet(FLAG_INTERRUPT, 1);
   }	else {
     switch (command) {
       case 0x10: /* READ */
         while (readMcell(operand) != 0);
-      break;		
+      break;
       case 0x11: /* WRITE */
         writeUse = 1;
         writeValue = localRAM[operand];
-      break;	
+      break;
       case 0x20: /* LOAD */
         accumulator = localRAM[operand] & 0x3FFF;
       break;
@@ -89,7 +89,7 @@ int ALU(int command, int operand)
       case 0x30: /* ADD */
         accumulator += localRAM[operand];
       break;
- 	
+
       case 0x31: /* SUB */
         if (((localRAM[operand] >> 14) & 1) == 1) {
           tmp = localRAM[operand] | (~0x7FFF);
@@ -101,7 +101,7 @@ int ALU(int command, int operand)
           accumulator &= 0x7FFF;
         }
       break;
-	
+
       case 0x33: /* MUL */
         accumulator *= localRAM[operand];
       break;
@@ -115,12 +115,30 @@ int ALU(int command, int operand)
         }
       break;
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+      case 0x51:  /* NOT */
+        accumulator = ~accumulator;
+        localRAM[operand] = accumulator;
+      break;
       case 0x52:  /* AND */
         tmp = localRAM[operand];
         if (tmp > 0x7FFF) {
-          tmp = tmp & 0x7FFF; 
+          tmp = tmp & 0x7FFF;
         }
         accumulator = accumulator & tmp;
+      break;
+      case 0x53:  /* AND */
+        tmp = localRAM[operand];
+        if (tmp > 0x7FFF) {
+          tmp = tmp & 0x7FFF;
+        }
+        accumulator = accumulator | tmp;
+      break;
+      case 0x54:  /* AND */
+        tmp = localRAM[operand];
+        if (tmp > 0x7FFF) {
+          tmp = tmp & 0x7FFF;
+        }
+        accumulator = accumulator ^ tmp;
       break;
     }
     if ((accumulator & 1) == 0) {
@@ -135,7 +153,7 @@ int ALU(int command, int operand)
       sc_regSet(FLAG_OVERFLOW, 0);
     }
     sc_regSet(FLAG_ODD, accumulator & 1);
-    return 0; 
+    return 0;
   }
 }
 /*---------------------------------------------------------------------------*/

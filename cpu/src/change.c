@@ -19,6 +19,9 @@ int changeCell(int pos)
   int plusFlag, num;
   int command, operand, mem;
   refreshGui(pos);
+  mt_gotoXY(1, 23);
+  writeChar(1, "Enter num:");
+  mt_gotoXY(1, 24);
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
     return -1;
@@ -31,7 +34,8 @@ int changeCell(int pos)
         return -1;
       }
       operand = num & 0x7F;
-      mem = (command << 7) | operand;
+      sc_commandEncode(command, operand, &mem);
+      //mem = (command << 7) | operand;
       //writeInt(1, mem, 16, -1);
       //mem &= 0x7FFF;
     } else {
@@ -89,7 +93,7 @@ int scanNum(int *plusFlag, int *n)
   int pos = 0;
   int i = 0;
   while (buffer[i - 1] != '\n')  {
-    read(1,&buffer[i ++],1);
+    read(1,&buffer[i++],1);
   }
   buffer[i] = '\0';
   //fgets(buffer, 256, stdin);

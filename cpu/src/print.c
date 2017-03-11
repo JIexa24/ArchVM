@@ -16,11 +16,10 @@ static void printWriteValue()
   int command, opcode, operand;
   mt_gotoXY(1, 23);
   command = (writeValue >> 14) & 1;
-  opcode = (writeValue >> 7) & 0x7F;
-  operand = writeValue & 0x7F;
   if (writeUse != 0) {
     writeChar(1,"Last WRITE: ");
     if (command == 0) {
+      sc_commandDecode(writeValue, &opcode, &operand);
       writeChar(1,"+");
       writeInt(1, opcode, 16, 2);
       writeInt(1, operand, 16, 2);       
@@ -89,6 +88,8 @@ void printKeys(int x, int y)
   writeChar(1, "F5 - accumulator");
   mt_gotoXY(x, y + 6);
   writeChar(1, "F6 - instructionCounter");
+  mt_gotoXY(x, y + 7);
+  writeChar(1, "q  - quit");
 }
 /*---------------------------------------------------------------------------*/
 void printLabels()
@@ -113,14 +114,18 @@ void printOperation(int position)
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
-  int command = (localRAM[position] >> 7) & 0x7F;
-  int operand = localRAM[position] & 0x7F;
-  int isCommand = (localRAM[position] >> 14) & 1;
+  int mem;  
+  sc_memoryGet(position, &mem);
+
+  int command;
+  int operand;
+  int isCommand = (mem >> 14) & 1;
   char c;
-	
+
   mt_gotoXY(68, 8);
   if ((position >= 0) && (position < sizeRAM)) {
     if (isCommand == 0) {
+      sc_commandDecode(mem, &command, &operand);
       write(1, &c, 1);
       writeInt(1, command, 16, 2);
       writeChar(1, " : ");
@@ -177,18 +182,24 @@ int printMcell(int *bigchars, int pos)
     sc_regSet(FLAG_OUTMEM, 1);
     return 1;
   }
-  int command = (localRAM[pos] >> 14) & 1;
-  int mem = localRAM[pos] & 0x3FFF;
+  int command;// = (localRAM[pos] >> 14) & 1;
+  int mem;// = localRAM[pos] & 0x3FFF;
+
+  sc_memoryGet(pos, &mem);
+  command = (mem >> 14) & 1;
+  mem &= 0x3FFF;   
+ 
   int i, opcode, operand;
   char str[10];
   char c;
 
-  opcode = (mem >> 7) & 0x7F;
-  operand = mem & 0x7F;
+//  opcode = (mem >> 7) & 0x7F;
+//  operand = mem & 0x7F;
 
   if (command == 0) {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //    sprintf(str, "+%02X%02X", opcode, operand);
+    sc_commandDecode(mem, &opcode, &operand);
     str[0] = '+';
     swriteInt(str + 1, opcode, 16, 2);
     swriteInt(str + 3, operand, 16, 2);
@@ -234,10 +245,13 @@ void printMemory(int x, int y, int position)
       mem = localRAM[i*10+j] & 0x3FFF;
       command = (localRAM[i*10+j] >> 14) & 1;
 */
-      mem = localRAM[i+j*10] & 0x3FFF;
-      command = (localRAM[i+j*10] >> 14) & 1;
-      opcode = (mem >> 7) & 0x7F;
-      operand = mem & 0x7F;
+//      mem = localRAM[i+j*10] & 0x3FFF;
+      sc_memoryGet(i+j*10, &mem);
+      command = (mem >> 14) & 1;
+      mem &= 0x3FFF;
+//      command = (localRAM[i+j*10] >> 14) & 1;
+//      opcode = (mem >> 7) & 0x7F;
+//      operand = mem & 0x7F;
       if ((i + j * 10 ) == position) {
         mt_setfgcolor(clr_black);
         mt_setbgcolor(clr_green);
@@ -249,6 +263,7 @@ void printMemory(int x, int y, int position)
       if (command == 0) {
 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 //      printf("+%02X%02X", opcode, operand);
+        sc_commandDecode(mem, &opcode, &operand);
         writeChar(1, "+");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
