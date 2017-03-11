@@ -32,11 +32,32 @@ int asmCommand(char *str)
     ret = 0x43;
   } else if (strcmp(str, "JNP") == 0) {
     ret = 0x59;
+  } else if (strcmp(str, "NOT") == 0) {
+    ret = 0x51;
   } else if (strcmp(str, "ADD") == 0) {
     ret = 0x52;
+  } else if (strcmp(str, "OR") == 0) {
+    ret = 0x53;
+  } else if (strcmp(str, "XOR") == 0) {
+    ret = 0x54;
   } else {
     ret = -1;
   }
   return ret;
 }
 /*---------------------------------------------------------------------------*/
+int parsingLine(char *str)
+{  
+  char *ptr;
+  ptr = strchr(str, ';');
+  if (ptr != NULL)
+    *ptr = '\0';
+  ptr = strchr(str, '\n');
+  if (ptr != NULL)
+    *ptr = '\0';
+  ptr = strtok(str, " \t");
+  if (ptr == NULL)
+    return -1;
+
+  return 0;
+}
