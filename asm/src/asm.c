@@ -46,18 +46,43 @@ int asmCommand(char *str)
   return ret;
 }
 /*---------------------------------------------------------------------------*/
-int parsingLine(char *str)
+int parsingLine(char* str, int* addres)
 {  
   char *ptr;
+  int command, operand;
+  int flagCommand = 0;
   ptr = strchr(str, ';');
-  if (ptr != NULL)
+  if (ptr != NULL) {
     *ptr = '\0';
+  }
   ptr = strchr(str, '\n');
-  if (ptr != NULL)
+  if (ptr != NULL) {
     *ptr = '\0';
+  }
   ptr = strtok(str, " \t");
-  if (ptr == NULL)
+  if (ptr == NULL) {
     return -1;
+  }
+
+  /* number of cell */
+  if (sreadInt(ptr, addres, 10) != 1) {
+    return -1;
+  }
+  if ((*addres < 0) || (*addres >= sizeRAM))
+    return -1;
+
+  /* Get command */
+  ptr = strtok(NULL, " \t");
+  if (ptr == NULL) {
+    return -1;
+  } else if (strcmp(ptr, "=") == 0) {
+    flagCommand = 1;
+  } else {
+    command = asmCommand(ptr);
+    if (command == -1)
+      return -1;
+  }
+
 
   return 0;
 }
