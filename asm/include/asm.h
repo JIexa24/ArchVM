@@ -10,8 +10,10 @@
 #include "./../../simpleComputer/include/sc_register.h"
 #include "./../../simpleComputer/include/sc_command.h"
 #include "./../../simpleComputer/include/sc_memory.h"
+#include "./../../scan/include/readInt.h"
 
 int asmCommand(char *str);
 int parsingLine(char* str, int* addres, int* value);
 int strToCommand(char* ptr,int* value);
+int testArgv(char* argv[]);
 #endif

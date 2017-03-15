@@ -1,4 +1,4 @@
-all: PRINT SIMPLECOMPUTER READ TERM READKEY BIGCHAR HARDDRIVE CPU MAIN
+all: PRINT SIMPLECOMPUTER READ TERM READKEY BIGCHAR HARDDRIVE CPU MAIN ASM
 
 PRINT:
 	make restruct -C print
@@ -26,6 +26,9 @@ CPU:
 
 MAIN:
 	make restruct -C main
+
+ASM:
+	make restruct -C asm
 
 restruct:
 	make clean

@@ -3,6 +3,18 @@
 */
 #include "./../include/asm.h"
 
+int testArgv(char *argv[])
+{
+	char *ptr1, *ptr2;
+	
+	ptr1 = strrchr(argv[1], '.');
+	ptr2 = strrchr(argv[2], '.');
+	if ((strcmp(ptr1, ".o") != 0) || (strcmp(ptr2, ".sa") != 0))
+		return -1;
+	else
+		return 0;
+}
+
 int asmCommand(char *str)
 {
   int ret;
@@ -57,7 +69,7 @@ int strToCommand(char* ptr,int* value)
     position++;
     plusFlag = 1;
   }
-  if (sreadInt(str + pos, &tmp, 16) != 1) {
+  if (sreadInt(ptr + position, &tmp, 16) != 1) {
     return -1;
   }
 
@@ -65,7 +77,7 @@ int strToCommand(char* ptr,int* value)
   command = (tmp >> 8) & 0x7F;
   sc_commandEncode(command, operand, value);
   if (!plusFlag) {
-    value |= 1 << 14;
+    *value |= 1 << 14;
   }
 
   return 0;
@@ -121,7 +133,7 @@ int parsingLine(char* str, int* addres, int* value)
     if ((operand < 0) || (operand >= sizeRAM))
       return -1;
   } else {
-    if (strtToCommand(ptr, value) == -1) {
+    if (strToCommand(ptr, value) == -1) {
       return -1;
     }
   }
