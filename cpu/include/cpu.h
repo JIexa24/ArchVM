@@ -46,5 +46,7 @@ int memoryLoad(int position);
 
 static void printWriteValue();
 
+int commandHandler(int command, int operand);
+
 int readMcell(int pos);
 #endif

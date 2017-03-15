@@ -14,7 +14,6 @@ extern int flagHalt;
 void CU()
 {
   int command, operand;
-  int flag;
   if (instructionRegisterCount >= sizeRAM) {
     sc_regSet(FLAG_OUTMEM, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
@@ -31,49 +30,14 @@ void CU()
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
   }
-  if ((command >= 0x30) && (command <= 0x33) || (command >= 0x51) && (command <= 0x54)) {
+  if ((command >= 0x30) && (command <= 0x33) ||
+      (command >= 0x51) && (command <= 0x54) ||
+      (command >= 0x60) && (command <= 0x70) ||
+      (command >= 0x75) && (command <= 0x76)) {
     if (ALU(command, operand) != 0)
       sc_regSet(FLAG_INTERRUPT, 1);
   }	else {
-    switch (command) {
-      case 0x10: /* READ */
-        while (readMcell(operand) != 0);
-      break;
-      case 0x11: /* WRITE */
-        writeUse = 1;
-        writeValue = localRAM[operand];
-      break;
-      case 0x20: /* LOAD */
-        accumulator = localRAM[operand] & 0x3FFF;
-      break;
-      case 0x21: /* STORE */
-        localRAM[operand] = accumulator;
-      break;
-      case 0x40: /* JUMP */
-        instructionRegisterCount = operand - 1;
-      break;
-      case 0x41: /* JNEG */
-        if (((accumulator >> 14) & 1) == 1) {
-          instructionRegisterCount = operand - 1;
-        }
-      break;
-      case 0x42: /* JZ */
-        if (accumulator == 0) {
-          instructionRegisterCount = operand - 1;
-        }
-      break;
-      case 0x43: /* HALT */
-        flagHalt = 1;
-        sc_regSet(FLAG_INTERRUPT, 1);
-        refreshGui(instructionRegisterCount);
-      break;
-      case 0x59: /* JNP */
-        sc_regGet(FLAG_ODD, &flag);
-        if (flag == 1) {
-          instructionRegisterCount = operand - 1;
-        }
-      break;
-    }
+    commandHandler(command, operand);
   }
 
 }
@@ -84,63 +48,11 @@ int ALU(int command, int operand)
     sc_regSet(FLAG_OUTMEM,1);
     return ERR_WRONG_ADDR;
   } else {
-    int tmp;
-    switch (command) {
-      case 0x30: /* ADD */
-        accumulator += localRAM[operand];
-      break;
 
-      case 0x31: /* SUB */
-        if (((localRAM[operand] >> 14) & 1) == 1) {
-          tmp = localRAM[operand] | (~0x7FFF);
-        } else {
-          tmp = localRAM[operand];
-        }
-        accumulator -= tmp;
-        if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
-          accumulator &= 0x7FFF;
-        }
-      break;
-
-      case 0x33: /* MUL */
-        accumulator *= localRAM[operand];
-      break;
-
-      case 0x32: /* DIV */
-        if (localRAM[operand] != 0) {
-          accumulator /= localRAM[operand];
-        } else {
-          sc_regSet(FLAG_DIVISION, 1);
-          return -1;
-        }
-      break;
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-      case 0x51:  /* NOT */
-        accumulator = ~accumulator;
-        localRAM[operand] = accumulator;
-      break;
-      case 0x52:  /* AND */
-        tmp = localRAM[operand];
-        if (tmp > 0x7FFF) {
-          tmp = tmp & 0x7FFF;
-        }
-        accumulator = accumulator & tmp;
-      break;
-      case 0x53:  /* AND */
-        tmp = localRAM[operand];
-        if (tmp > 0x7FFF) {
-          tmp = tmp & 0x7FFF;
-        }
-        accumulator = accumulator | tmp;
-      break;
-      case 0x54:  /* AND */
-        tmp = localRAM[operand];
-        if (tmp > 0x7FFF) {
-          tmp = tmp & 0x7FFF;
-        }
-        accumulator = accumulator ^ tmp;
-      break;
+    if (commandHandler(command, operand) != 0) {
+      return -1;
     }
+
     if ((accumulator & 1) == 0) {
       sc_regSet(FLAG_ODD, 0);
     } else {
