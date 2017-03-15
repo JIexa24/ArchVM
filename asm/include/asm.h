@@ -12,6 +12,6 @@
 #include "./../../simpleComputer/include/sc_memory.h"
 
 int asmCommand(char *str);
-int parsingLine(char *str);
-
+int parsingLine(char* str, int* addres, int* value);
+int strToCommand(char* ptr,int* value);
 #endif

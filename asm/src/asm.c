@@ -46,7 +46,32 @@ int asmCommand(char *str)
   return ret;
 }
 /*---------------------------------------------------------------------------*/
-int parsingLine(char* str, int* addres)
+int strToCommand(char* ptr,int* value)
+{
+  int command, operand;
+  int plusFlag = 0;
+  int position = 0;
+  int tmp;
+
+  if (*ptr == '+') { 
+    position++;
+    plusFlag = 1;
+  }
+  if (sreadInt(str + pos, &tmp, 16) != 1) {
+    return -1;
+  }
+
+  operand = tmp & 0x7F;
+  command = (tmp >> 8) & 0x7F;
+  sc_commandEncode(command, operand, value);
+  if (!plusFlag) {
+    value |= 1 << 14;
+  }
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int parsingLine(char* str, int* addres, int* value)
 {  
   char *ptr;
   int command, operand;
@@ -83,6 +108,31 @@ int parsingLine(char* str, int* addres)
       return -1;
   }
 
+
+  ptr = strtok(NULL, " \t");
+  if (ptr == NULL) {
+    return -1;
+  }
+
+  if (!flagCommand) {
+    if (sreadInt(ptr, &operand, 10) != 1) {
+      return -1;
+    }
+    if ((operand < 0) || (operand >= sizeRAM))
+      return -1;
+  } else {
+    if (strtToCommand(ptr, value) == -1) {
+      return -1;
+    }
+  }
+
+
+  ptr = strtok(NULL, " \t");
+  if (ptr != NULL)
+    return -1;
+  if (!flagCommand) {
+    sc_commandEncode(command, operand, value);
+  }
 
   return 0;
 }
