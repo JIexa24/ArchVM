@@ -109,7 +109,7 @@ int parsingLine(char* str, int* addres, int* value)
     return -1;
 
   /* Get command */
-  ptr = strtok(NULL, " \t");
+  ptr = strtok(ptr, " \t");
   if (ptr == NULL) {
     return -1;
   } else if (strcmp(ptr, "=") == 0) {
@@ -120,8 +120,7 @@ int parsingLine(char* str, int* addres, int* value)
       return -1;
   }
 
-
-  ptr = strtok(NULL, " \t");
+  ptr = strtok(ptr, " \t");
   if (ptr == NULL) {
     return -1;
   }
@@ -130,18 +129,19 @@ int parsingLine(char* str, int* addres, int* value)
     if (sreadInt(ptr, &operand, 10) != 1) {
       return -1;
     }
-    if ((operand < 0) || (operand >= sizeRAM))
-      return -1;
   } else {
     if (strToCommand(ptr, value) == -1) {
       return -1;
     }
   }
+  if ((operand < 0) || (operand >= sizeRAM))
+    return -1;
 
 
-  ptr = strtok(NULL, " \t");
+  ptr = strtok(ptr, " \t");
   if (ptr != NULL)
     return -1;
+
   if (!flagCommand) {
     sc_commandEncode(command, operand, value);
   }

@@ -3,12 +3,10 @@
 */
 #include "./../include/asm.h"
 
-extern int localRAM[];
-
 int main(int argc, char *argv[])
 {
 	char buf[256], line[256];
-	char addMem[sizeRAM];
+	int addMem[sizeRAM];
 	FILE *input, *output;
 	int value, addr, lineCnt = 1;
 	int err;
@@ -26,18 +24,12 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	
-	memset(addMem, 0, sizeRAM);
-	sc_memoryInit();
+	memset(addMem, 0, sizeRAM * sizeof(int));
 	while (fgets(line, 256, input)) {
 		strcpy(buf, line);
 		err = parsingLine(buf, &addr, &value);
 		if (err == 0) {
-			if (addMem[addr] == 0) {
-				sc_memorySet(addr, value);
-			}
-			else {
-				err = 1;	
-			}
+              addMem[addr] = value;
 		}
 		else if (err < 0) {
 			err = 1;
@@ -45,7 +37,7 @@ int main(int argc, char *argv[])
 		lineCnt++;
 	}
 	if (err == 0) {
-		fwrite(localRAM, 1, sizeRAM * sizeof(int), output);
+		fwrite(addMem,  sizeof(int) * sizeRAM, 1, output);
 	}
 	fclose(input);
 	fclose(output);
