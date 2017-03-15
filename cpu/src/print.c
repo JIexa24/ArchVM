@@ -230,9 +230,12 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
-  mt_gotoXY(18,13);
+  mt_gotoXY(15,13);
   writeChar(1,"Cell: ");
   writeInt(1, position, 16, 2);
+  writeChar(1,"( ");
+  writeInt(1, position, 10, 3);
+  writeChar(1," )");
 
   if ((position >= sizeRAM) && (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);

@@ -50,9 +50,15 @@ int main(int argc, char** argv)
   sc_memorySet(3, tmp);
   sc_commandEncode(0x40, 10, &tmp);
   sc_memorySet(4, tmp);
-  sc_commandEncode(0x43, 0, &tmp);
+  sc_commandEncode(0x73, 16, &tmp);
   sc_memorySet(10, tmp);
-  
+  sc_commandEncode(0x43, 0, &tmp);
+  sc_memorySet(11, tmp);
+
+  sc_memorySet(16, 222 | (1 << 14));
+  sc_memorySet(22, 23 | (1 << 14));
+
+  accumulator = 22;
   while (!exit) {
     if (!refreshFlg)
       refreshGui(position);

@@ -25,21 +25,27 @@ int commandHandler(int command, int operand)
 /*--------------------------------------------------------------------------2*/
     case 0x11: /* WRITE */
       writeUse = 1;
-      sc_memoryGet(operand, &writeValue);
+      if (sc_memoryGet(operand, &writeValue) != 0) {
+        return -1;
+      }
     break;
 /*--------------------------------------------------------------------------3*/
     case 0x20: /* LOAD */
-      sc_memoryGet(operand, &accumulator);
+      if (sc_memoryGet(operand, &accumulator) != 0) {
+        return -1;
+      }
       accumulator &= 0x3FFF;
     break;
 /*--------------------------------------------------------------------------4*/
     case 0x21: /* STORE */
-      sc_memorySet(operand, accumulator);
+      if (sc_memorySet(operand, accumulator) != 0) {
+        return -1;
+      }
     break;
 /*--------------------------------------------------------------------------5*/
     case 0x30: /* ADD */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       if (accumulator + tmpMem > 0x7FFF) {
@@ -53,7 +59,7 @@ int commandHandler(int command, int operand)
 /*--------------------------------------------------------------------------6*/
     case 0x31: /* SUB */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       if (((tmpMem >> 14) & 1) == 1) {
@@ -69,7 +75,7 @@ int commandHandler(int command, int operand)
 /*--------------------------------------------------------------------------7*/
     case 0x32: /* DIV */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       if (tmpMem != 0) {
@@ -82,7 +88,7 @@ int commandHandler(int command, int operand)
 /*--------------------------------------------------------------------------8*/
     case 0x33: /* MUL */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
       accumulator *= tmpMem;
     break;
@@ -112,13 +118,13 @@ int commandHandler(int command, int operand)
     case 0x51:  /* NOT */
       accumulator = ~accumulator;
       if (sc_memorySet(operand, accumulator) != 0) {
-        break;
+        return -1;
       }
     break;
 /*-------------------------------------------------------------------------14*/
     case 0x52:  /* AND */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       tmp = tmpMem;
@@ -130,7 +136,7 @@ int commandHandler(int command, int operand)
 /*-------------------------------------------------------------------------15*/
     case 0x53:  /* OR */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       tmp = tmpMem;
@@ -142,7 +148,7 @@ int commandHandler(int command, int operand)
 /*-------------------------------------------------------------------------16*/
     case 0x54:  /* XOR */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       tmp = tmpMem;
@@ -186,51 +192,77 @@ int commandHandler(int command, int operand)
     break;
 /*-------------------------------------------------------------------------22*/
     case 0x60:  /* CHL */
-      if (accumulator) {
-        accumulator = accumulator << 1;
-        accumulator &= 0x7FFF;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      } 
+      if (tmpMem) {
+        tmpMem = tmpMem << 1;
+        tmpMem &= 0x7FFF;
       }
+      accumulator = tmpMem;
     break;
 /*-------------------------------------------------------------------------23*/
     case 0x61:  /* SHR */
-      if (accumulator) {
-        accumulator = accumulator >> 1;
-        accumulator &= 0x7FFF;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
       }
+      tmp = 0;
+      if (tmpMem) {
+        tmp = (tmpMem >> 14) & 1;
+        tmpMem &= 0x3FFF;
+        tmpMem = tmpMem >> 1;
+      }
+      accumulator = tmpMem | (tmp << 14);
     break;
 /*-------------------------------------------------------------------------24*/
     case 0x62:  /* RCL */
-      if (accumulator) { 
-        tmp = accumulator >> 14 & 1; 
-        accumulator = accumulator << 1; 
-        accumulator = accumulator & tmp;
-        accumulator &= 0x7FFF;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      } 
+      if (tmpMem) { 
+        tmp = (tmpMem >> 14) & 1; 
+        tmpMem = tmpMem << 1 | ((tmpMem >> 13) & 1); 
+        tmpMem = tmpMem | (tmp << 14);
+        tmpMem &= 0x7FFF;
       }
+      accumulator = tmpMem;
     break;
 /*-------------------------------------------------------------------------25*/
     case 0x63:  /* RCR */
-      if (accumulator) { 
-        tmp = accumulator & 1; 
-        accumulator = accumulator >> 1; 
-        accumulator = accumulator & (tmp << 14);
-        accumulator &= 0x7FFF;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      } 
+      if (tmpMem) { 
+        tmp = tmpMem & 1; 
+        tmpMem = tmpMem >> 1 | ((tmpMem & 1) << 13); 
+        tmpMem = tmpMem | (tmp << 14);
+        tmpMem &= 0x7FFF;
       }
+      accumulator = tmpMem;
     break;
 /*-------------------------------------------------------------------------26*/
     case 0x64:  /* NEG */
-      if (accumulator) { 
-        accumulator = (~accumulator + 1);
-        accumulator &= 0x7FFF;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      } 
+      if (tmpMem) { 
+        tmpMem = (~tmpMem + 1);
+        tmpMem &= 0x7FFF;
       }
+      accumulator = tmpMem;
     break;
 /*-------------------------------------------------------------------------27*/
     case 0x65:  /* ADDC */
-      if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-        break;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
       }
 
       tmp = tmpMem;
-      sc_memoryGet(accumulator, &tmpMem);
+
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+
       if (tmp + tmpMem > 0x7FFF) {
         sc_regSet(FLAG_OVERFLOW, 1);
       } else {
@@ -239,14 +271,14 @@ int commandHandler(int command, int operand)
     break;
 /*-------------------------------------------------------------------------28*/
     case 0x66:  /* SUBC */
-      if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-        break;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
       }
 
       tmp = tmpMem;
 
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       if (((tmpMem >> 14) & 1) == 1) {
@@ -261,30 +293,41 @@ int commandHandler(int command, int operand)
     break;
 /*-------------------------------------------------------------------------29*/
     case 0x67:  /* LOGLC */
-      if (accumulator) {
-        sc_memoryGet(instructionRegisterCount, &tmpMem);
-        sc_memoryGet(accumulator, &tmp);
-        accumulator = tmpMem << tmp;
-        accumulator &= 0x7FFF;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (tmpMem) {
+        tmp = (accumulator >> 14) & 1;
+        tmpMem &= 0x3FFF;
+        accumulator = (tmpMem << accumulator) | (tmp << 14);
+      } else {
+        accumulator = tmpMem;
       }
     break;
 /*-------------------------------------------------------------------------30*/
     case 0x68:  /* LOGRC */
-      if (accumulator) {
-        sc_memoryGet(instructionRegisterCount, &tmpMem);
-        sc_memoryGet(accumulator, &tmp);
-        accumulator = tmpMem >> tmp;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (tmpMem) {
+        tmp = (accumulator >> 14) & 1;
+        tmpMem &= 0x3FFF;
+        accumulator = tmpMem >> accumulator | (tmp << 14);
+      } else {
+        accumulator = tmpMem;
       }
     break;
 /*-------------------------------------------------------------------------31*/
     case 0x69:  /* RCCL */
-      if (accumulator) { 
-        if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-          break;
-        }
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) { 
 
         if (sc_memoryGet(accumulator, &tmp) != 0) {
-          break;
+          return -1;
         }
 
         int i = 0;
@@ -293,17 +336,19 @@ int commandHandler(int command, int operand)
         }
         accumulator = tmpMem;
         accumulator &= 0x7FFF;
+      } else {
+        accumulator = tmpMem;
+        accumulator &= 0x7FFF;
       }
     break;
 /*-------------------------------------------------------------------------32*/
     case 0x70:  /* RCCR */
-      if (accumulator) { 
-        if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-          break;
-        }
-
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) { 
         if (sc_memoryGet(accumulator, &tmp) != 0) {
-          break;
+        return -1;
         }
 
         int i = 0;
@@ -312,76 +357,95 @@ int commandHandler(int command, int operand)
         }
 
         accumulator = tmpMem;
-        accumulator &= 0x7FFF;
+        accumulator &= 0x3FFF;
+      } else {
+        accumulator = tmpMem;
+        accumulator &= 0x3FFF;
       }
     break;
 /*-------------------------------------------------------------------------33*/
     case 0x71:  /* MOVA */ 
-      if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-        break;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
       }
-      if (accumulator == instructionRegisterCount) {
-        break;
+      if (accumulator == operand) {
+        return -1;
       }
 
-      sc_memorySet(accumulator, tmpMem);
-      sc_memorySet(instructionRegisterCount, 0);
+      if (sc_memorySet(accumulator, tmpMem) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(operand, 0) != 0) {
+        return -1;
+      }
     break;
 /*-------------------------------------------------------------------------34*/
     case 0x72:  /* MOVR */ 
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
-        break;
+        return -1;
       }
-      if (accumulator == instructionRegisterCount) {
-        break;
+      if (accumulator == operand) {
+        return -1;
       }
-      sc_memorySet(instructionRegisterCount, tmpMem);
-      sc_memorySet(accumulator, 0);
+      if (sc_memorySet(operand, tmpMem) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(accumulator, 0) != 0) {
+        return -1;
+      }
     break;
 /*-------------------------------------------------------------------------35*/
     case 0x73:  /* MOVCA */ 
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
-        break;
+        return -1;
       }
-      if (sc_memoryGet(tmpMem, &tmpMem) != 0) {
-        break;
+      tmpMem &= 0x3FFF;
+      if (tmpMem == operand) {
+        return -1;
       }
-      if (tmpMem == instructionRegisterCount) {
-        break;
-      }
-      if (sc_memoryGet(instructionRegisterCount, &tmp) != 0) {
-        break;
+      if (sc_memoryGet(operand, &tmp) != 0) {
+        return -1;
       }
 
-      sc_memorySet(tmp, tmpMem);
-      sc_memorySet(instructionRegisterCount, 0);
+      if (sc_memorySet(tmpMem, tmp) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(operand, 0) != 0) {
+        return -1;
+      }
     break;
 /*-------------------------------------------------------------------------36*/
     case 0x74:  /* MOVCR */ 
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
-        break;
+        return -1;
       }
-      if (sc_memoryGet(tmpMem, &tmpMem) != 0) {
-        break;
-      }
-      if (tmpMem == instructionRegisterCount) {
-        break;
+      tmpMem &= 0x3FFF;
+      if (tmpMem == operand) {
+        return -1;
       }
 
-      sc_memorySet(instructionRegisterCount, tmpMem);
-      sc_memorySet(tmpMem, 0);
+      if (sc_memoryGet(tmpMem, &tmp) != 0) {
+        return -1;
+      }
+
+      if (sc_memorySet(operand, tmp) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(tmpMem, 0) != 0) {
+        return -1;
+      }
     break;
 /*-------------------------------------------------------------------------37*/
     case 0x75:  /* ADDC */ 
-      if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-        break;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
       }
-      if (sc_memoryGet(tmpMem, &tmpMem) != 0) {
-        break;
-      }
+      tmpMem &= 0x3FFF;
 
       tmp = tmpMem;
-      sc_memoryGet(accumulator, &tmpMem);
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
       if (tmp + tmpMem > 0x7FFF) {
         sc_regSet(FLAG_OVERFLOW, 1);
       } else {
@@ -390,17 +454,15 @@ int commandHandler(int command, int operand)
     break;
 /*-------------------------------------------------------------------------38*/
     case 0x76:  /* SUBC */ 
-      if (sc_memoryGet(instructionRegisterCount, &tmpMem) != 0) {
-        break;
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
       }
-      if (sc_memoryGet(tmpMem, &tmpMem) != 0) {
-        break;
-      }
+      tmpMem &= 0x3FFF;
 
       tmp = tmpMem;
 
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
-        break;
+        return -1;
       }
 
       if (((tmpMem >> 14) & 1) == 1) {
@@ -414,4 +476,5 @@ int commandHandler(int command, int operand)
       }
     break;
   }
+  return 0;
 }
