@@ -45,3 +45,6 @@
 /bin/*
 
 /scan/obj/*.o
+
+/*.o
+/*.sa
