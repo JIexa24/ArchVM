@@ -28,7 +28,7 @@ MAIN:
 	make restruct -C main
 
 ASM:
-	make restruct -C asm
+
 
 restruct:
 	make clean

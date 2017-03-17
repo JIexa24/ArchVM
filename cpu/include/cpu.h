@@ -19,6 +19,16 @@
 
 /* CPU */
 
+#define BIGCHARSCOLORFG clr_green
+#define BIGCHARSCOLORBG clr_default
+
+#define TEXTCOLORFG clr_black
+#define TEXTCOLORBG clr_green
+
+#define INSTREGCOLORG clr_yellow
+
+#define REGCOLOR clr_blue
+
 void CU();
 int ALU(int command, int operand);
 

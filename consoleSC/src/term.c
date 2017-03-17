@@ -3,21 +3,6 @@
 */
 #include "./../include/term.h"
 
-/*
-infocmp
-
-enum colors {
-	clr_black,
-	clr_red,
-	clr_green,
-	clr_yellow,
-	clr_blue,
-	clr_purple,
-	clr_light_blue,
-	clr_white,
-	clr_default
-};*/
-
 int mt_clrscr()
 {
   writeChar(1, "\E[H\E[2J");

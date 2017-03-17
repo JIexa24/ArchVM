@@ -35,11 +35,8 @@ int changeCell(int pos)
       }
       operand = num & 0x7F;
       sc_commandEncode(command, operand, &mem);
-      //mem = (command << 7) | operand;
-      //writeInt(1, mem, 16, -1);
-      //mem &= 0x7FFF;
     } else {
-      mem = num | 0x4000;//((1 << 14) | num);
+      mem = num | 0x4000;
     }
                
     if ((pos >= 0) && (pos < sizeRAM)) {
@@ -92,11 +89,13 @@ int scanNum(int *plusFlag, int *n)
   char buffer[256];
   int pos = 0;
   int i = 0;
-  while (buffer[i - 1] != '\n')  {
+
+  do {
     read(1,&buffer[i++],1);
-  }
-  buffer[i] = '\0';
-  //fgets(buffer, 256, stdin);
+  } while (buffer[i - 1] != '\n');
+
+  buffer[i - 1] = '\0';
+
   if (buffer[0] == '+') {
     pos = 1;
     *plusFlag = 1;
@@ -106,20 +105,22 @@ int scanNum(int *plusFlag, int *n)
   if (sreadInt(buffer + pos, n, 16) != 1) {
     return -1;
   }
-//  if (sscanf(buffer + pos, "%x", n) != 1) {
- //   return -1;
- // }
+
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int memorySave(int position)
 {
   char filename[256];
+  int i = 0;
+
   writeChar(1, "Enter save file name: ");
 
-  fgets(filename, 256, stdin);
+  do {
+    read(1,&filename[i++],1);
+  } while (filename[i - 1] != '\n');
 
-  filename[strlen(filename) - 1] = '\0';
+  filename[i - 1] = '\0';
 
   if (sc_memorySave(filename) == 0) {
     refreshGui(position);
@@ -135,10 +136,16 @@ int memorySave(int position)
 int memoryLoad(int position)
 {
   char filename[256];
-	
-  writeChar(1, "Enter save file name: ");
-  fgets(filename, 256, stdin);
-  filename[strlen(filename) - 1] = '\0';
+  int i = 0;
+
+  writeChar(1, "Enter load file name: ");
+
+  do {
+    read(1,&filename[i++],1);
+  } while (filename[i - 1] != '\n');
+
+  filename[i - 1] = '\0';
+
   if (sc_memoryLoad(filename) == 0) {
     refreshGui(position);
     writeChar(1,"File successfully loaded");

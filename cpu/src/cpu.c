@@ -36,7 +36,7 @@ void CU()
       (command >= 0x75) && (command <= 0x76)) {
     if (ALU(command, operand) != 0)
       sc_regSet(FLAG_INTERRUPT, 1);
-  }	else {
+  } else {
     commandHandler(command, operand);
   }
 

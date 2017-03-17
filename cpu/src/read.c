@@ -24,7 +24,7 @@ int readMcell(int pos)
   mt_gotoXY(1, 23);
   writeChar(1,"READ: ");
   mt_gotoXY(1, 24);
-//  writeInt(1,pos,10,-1);
+
   if (scanNum(&plusFlag, &num) != 0) {
     if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
       return -1;
@@ -44,7 +44,7 @@ int readMcell(int pos)
       command = (num >> 8) & 0x7F;
       operand = num & 0x7F;
       sc_commandEncode(command, operand, &mem);
-//      mem = (command << 7) | operand;
+
     } else 
       mem = (1 << 14) | num;
     if ((pos >= 0) && (pos < sizeRAM))  

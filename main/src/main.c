@@ -25,6 +25,7 @@ int main(int argc, char** argv)
   int tmp = 0;
   int exit = 0;
   int refreshFlg = 0;
+
   enum keys key;
   
   sc_regSet(FLAG_INTERRUPT, 1);
@@ -33,12 +34,14 @@ int main(int argc, char** argv)
     writeChar(2,"Cannot open ascibig\n");
     return -1;
   }
+
   flagHalt = 0;
   bc_bigcharread(fd, bigChars, 128, &cn);
   close(fd);
   setSignals();
   mt_clrscr();
 
+  /* test memory set */
   sc_commandEncode(0x10, 50, &tmp);
   sc_memorySet(0, tmp);
   sc_commandEncode(0x10, 51, &tmp);
@@ -59,6 +62,7 @@ int main(int argc, char** argv)
   sc_memorySet(22, 23 | (1 << 14));
 
   accumulator = 22;
+
   while (!exit) {
     if (!refreshFlg)
       refreshGui(position);

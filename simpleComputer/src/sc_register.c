@@ -3,21 +3,6 @@
 */
 #include "./../include/sc_register.h"
 
-/*
-  ERR_WRONG_ADDR -1
-  ERR_OPEN_FILE -2
-  ERR_FILE -3
-  ERR_UNCORRECT_COMMAND -4
-  ERR_ATTRIBUTE_BIT -5
-  ERR_WRONG_FLAG -6
-
-  int localRAM[sizRAM];
-  short int sc_register;
-  const int correctCommands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 
-                               0x40, 0x41, 0x42, 0x43, 0x52, 0x59};
-  const int countCmd = 13;
-*/
-
 extern int localRAM[];
 extern short int sc_register;
 

@@ -4,14 +4,13 @@
 #include "./../include/readkey.h"
 /*
 
-    tcflag_t c_iflag;      // режимы ввода 
-    tcflag_t c_oflag;      // режимы вывода 
-    tcflag_t c_cflag;      // режимы управления 
-    tcflag_t c_lflag;      // режимы локали 
-    cc_t c_cc[NCCS];       // управляющие символы
+  tcflag_t c_iflag;      // режимы ввода 
+  tcflag_t c_oflag;      // режимы вывода 
+  tcflag_t c_cflag;      // режимы управления 
+  tcflag_t c_lflag;      // режимы локали 
+  cc_t c_cc[NCCS];       // управляющие символы
 
-c_iflag - флаги констант:
-
+  c_iflag - флаги констант:
 */
 int rk_readkey(enum keys *key)
 {

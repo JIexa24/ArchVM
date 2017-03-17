@@ -4,21 +4,6 @@
 #include "./../include/sc_command.h"
 #include "./../include/sc_register.h"
 
-/*
-  ERR_WRONG_ADDR -1
-  ERR_OPEN_FILE -2
-  ERR_FILE -3
-  ERR_UNCORRECT_COMMAND -4
-  ERR_ATTRIBUTE_BIT -5
-  ERR_WRONG_FLAG -6
-
-  int localRAM[sizRAM];
-  short int sc_register;
-  const int correctCommands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 
-                               0x40, 0x41, 0x42, 0x43,0x52, 0x59};
-  const int countCmd = 13;
-*/
-
 extern int localRAM[];
 extern short int sc_register;
 
@@ -27,12 +12,13 @@ extern int correctCommands[];
 
 int sc_commandEncode(int command, int operand, int* value)
 {
-  int *commandPtr = NULL;/*bsearch(&command, correctCommands, countCmd,
-                             sizeof(int), intCompare);*/
+  int *commandPtr = NULL;
   int i; 
+
   for (i = 0; i < countCmd; i++) {
     if (command == correctCommands[i]) commandPtr = &(correctCommands[i]);
   }
+
   if (commandPtr != NULL) {
     if (operand > 0x7F) {
       operand &= 0x7F;
@@ -62,8 +48,7 @@ int sc_commandDecode(int value, int* command, int* operand)
       for (i = 0; i < countCmd; i ++) {
         if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
       }
-    /*correctCommand = bsearch(&tmpCommand, correctCommands, countCmd,
-							 sizeof(int), intCompare);*/
+
       if (correctCommand != NULL) {
         *command = tmpCommand;
         *operand = tmpOperand;

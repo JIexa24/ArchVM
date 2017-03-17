@@ -38,11 +38,7 @@ void refreshGui(int position)
   printKeys(48, 14);
   printCounter();
 
-  /* print accumulator */
-
   mt_gotoXY(70, 2);
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//  printf("%04X", accumulator);
   writeInt(1, accumulator & 0x3FFF, 16, 4);
 
   printOperation(position);
@@ -67,9 +63,9 @@ void printBoxes()
 void printCounter()
 {
   mt_gotoXY(70, 5);
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//  printf("%04X",  instructionRegisterCount);
+  mt_setfgcolor(INSTREGCOLORG);
   writeInt(1, instructionRegisterCount, 16, 4);
+  mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
 void printKeys(int x, int y)
@@ -136,13 +132,6 @@ void printOperation(int position)
       writeChar(1, "  ");  
       writeInt(1, localRAM[position] & 0x3FFF, 16, 4);
     }
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//  printf("%c%02X : %02X", c, command, operand);
-/*    write(1, &c, 1);
-    writeInt(1, command, 16, 2);
-    writeChar(1, " : ");
-    writeInt(1, operand, 16, 2);
-*/
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -150,27 +139,37 @@ void printFlags(int x, int y)
 {
   mt_gotoXY(x, y);
   if (BITCHECK(sc_register, FLAG_OVERFLOW) == 1) {
+    mt_setfgcolor(REGCOLOR);
     writeChar(1, "O");
+    mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_COMMAND) == 1) {
+    mt_setfgcolor(REGCOLOR);
     writeChar(1, "E");
+    mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_INTERRUPT) == 1) {
+    mt_setfgcolor(REGCOLOR);
     writeChar(1, "V");
+    mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_OUTMEM) == 1) {
+    mt_setfgcolor(REGCOLOR);
     writeChar(1, "M");
+    mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
   if (BITCHECK(sc_register, FLAG_DIVISION) == 1) {
+    mt_setfgcolor(REGCOLOR);
     writeChar(1, "Z");
+    mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
@@ -182,8 +181,8 @@ int printMcell(int *bigchars, int pos)
     sc_regSet(FLAG_OUTMEM, 1);
     return 1;
   }
-  int command;// = (localRAM[pos] >> 14) & 1;
-  int mem;// = localRAM[pos] & 0x3FFF;
+  int command;
+  int mem;
 
   sc_memoryGet(pos, &mem);
   command = (mem >> 14) & 1;
@@ -193,19 +192,12 @@ int printMcell(int *bigchars, int pos)
   char str[10];
   char c;
 
-//  opcode = (mem >> 7) & 0x7F;
-//  operand = mem & 0x7F;
-
   if (command == 0) {
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//    sprintf(str, "+%02X%02X", opcode, operand);
     sc_commandDecode(mem, &opcode, &operand);
     str[0] = '+';
     swriteInt(str + 1, opcode, 16, 2);
     swriteInt(str + 3, operand, 16, 2);
   } else {
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//    sprintf(str, " %04X", mem);
     str[0] = ' ';
     swriteInt(str + 1, mem, 16, 4);
   }
@@ -214,8 +206,8 @@ int printMcell(int *bigchars, int pos)
     mt_gotoXY(2 + 9 * i, 14);
     if (str[i] < 128) {
 
-      bc_printbigchar(bigchars + (str[i] * 2), 2 + i*9, 14, clr_green,
-                      clr_default);
+      bc_printbigchar(bigchars + (str[i] * 2), 2 + i*9, 14, BIGCHARSCOLORFG,
+                      BIGCHARSCOLORBG);
     } else {
       return -1;
     }
@@ -244,38 +236,27 @@ void printMemory(int x, int y, int position)
   for (i = 0; i < 10; i++) {
     mt_gotoXY(x, y + i);
     for (j = 0; j < 10; j++) {
-/*
-      mem = localRAM[i*10+j] & 0x3FFF;
-      command = (localRAM[i*10+j] >> 14) & 1;
-*/
-//      mem = localRAM[i+j*10] & 0x3FFF;
+
       sc_memoryGet(i+j*10, &mem);
       command = (mem >> 14) & 1;
       mem &= 0x3FFF;
-//      command = (localRAM[i+j*10] >> 14) & 1;
-//      opcode = (mem >> 7) & 0x7F;
-//      operand = mem & 0x7F;
+
       if ((i + j * 10 ) == position) {
-        mt_setfgcolor(clr_black);
-        mt_setbgcolor(clr_green);
+        mt_setfgcolor(TEXTCOLORFG);
+        mt_setbgcolor(TEXTCOLORBG);
       }
       if ((i + j * 10 ) == instructionRegisterCount) {
-        mt_setfgcolor(clr_yellow);
+        mt_setfgcolor(INSTREGCOLORG);
       }
     
       if (command == 0) {
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//      printf("+%02X%02X", opcode, operand);
         sc_commandDecode(mem, &opcode, &operand);
         writeChar(1, "+");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
       } else if (command == 1) {
-/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-//      printf(" %02X%02X", opcode, operand);
         writeChar(1, " ");
         writeInt(1, mem, 16, 4);
-//        writeInt(1, operand, 16, 2);
       }
       if ((i + j * 10) == position) {
         mt_setfgcolor(clr_default);
