@@ -88,63 +88,6 @@ int parsingLine(char* str, int* addres, int* value)
   char *ptr;
   int command, operand;
   int flagCommand = 0;
-  ptr = strchr(str, ';');
-  if (ptr != NULL) {
-    *ptr = '\0';
-  }
-  ptr = strchr(str, '\n');
-  if (ptr != NULL) {
-    *ptr = '\0';
-  }
-  ptr = strtok(str, " \t");
-  if (ptr == NULL) {
-    return -1;
-  }
-
-  /* number of cell */
-  if (sreadInt(ptr, addres, 10) != 1) {
-    return -1;
-  }
-  if ((*addres < 0) || (*addres >= sizeRAM))
-    return -1;
-
-  /* Get command */
-  ptr = strtok(ptr, " \t");
-  if (ptr == NULL) {
-    return -1;
-  } else if (strcmp(ptr, "=") == 0) {
-    flagCommand = 1;
-  } else {
-    command = asmCommand(ptr);
-    if (command == -1)
-      return -1;
-  }
-
-  ptr = strtok(ptr, " \t");
-  if (ptr == NULL) {
-    return -1;
-  }
-
-  if (!flagCommand) {
-    if (sreadInt(ptr, &operand, 10) != 1) {
-      return -1;
-    }
-  } else {
-    if (strToCommand(ptr, value) == -1) {
-      return -1;
-    }
-  }
-  if ((operand < 0) || (operand >= sizeRAM))
-    return -1;
-
-
-  ptr = strtok(ptr, " \t");
-  if (ptr != NULL)
-    return -1;
-
-  if (!flagCommand) {
-    sc_commandEncode(command, operand, value);
-  }
 
   return 0;
 }
