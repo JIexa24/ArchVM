@@ -1,7 +1,9 @@
 CC = gcc
 CFLAGS = -g
 
-all: ./obj/writeInt.o 
+all: ./../lib/libWriteInt.a
+
+./../lib/libWriteInt.a: ./obj/writeInt.o 
 	ar rvs ./../lib/libWriteInt.a ./obj/writeInt.o
 
 ./obj/writeInt.o: ./src/writeInt.c

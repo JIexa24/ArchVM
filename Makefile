@@ -1,38 +1,47 @@
 all: PRINT SIMPLECOMPUTER READ TERM READKEY BIGCHAR HARDDRIVE CPU ASM MAIN 
 
 PRINT:
-	make restruct -C print
+	make -C print
 
 READ:
-	make restruct -C scan
+	make -C scan
 
 SIMPLECOMPUTER:
-	make restruct -C simpleComputer
+	make -C simpleComputer
 
 TERM:
-	make restruct -C consoleSC
+	make -C consoleSC
 
 READKEY:
-	make restruct -C readKey
+	make -C readKey
 
 BIGCHAR:
-	make restruct -C bc
+	make -C bc
 
 HARDDRIVE:
-	make restruct -C hardDrive
+	make -C hardDrive
 
 CPU:
-	make restruct -C cpu
+	make -C cpu
 
 ASM:
-	make restruct -C asm
+	make -C asm
 
 MAIN:
-	make restruct -C main
+	make -C main
 
 restruct:
 	make clean
-	make all
+	make restruct -C print
+	make restruct -C scan
+	make restruct -C simpleComputer
+	make restruct -C consoleSC
+	make restruct -C readKey
+	make restruct -C bc
+	make restruct -C hardDrive
+	make restruct -C cpu
+	make restruct -C asm
+	make restruct -C main
 
 clean:
 	rm -f lib/*
@@ -52,3 +61,4 @@ clean:
 	rm -f hardDrive/obj/*.o
 	rm -f cpu/obj/*.o
 	rm -f main/obj/*.o
+	rm -f asm/obj/*.o

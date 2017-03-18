@@ -1,8 +1,10 @@
 CC = gcc
 CFLAGS = -g
 
-all: ./obj/bc.o
-	ar rvs ../lib/libBigChars.a ./obj/bc.o
+all: ./../lib/libBigChars.a
+
+./../lib/libBigChars.a: ./obj/bc.o
+	ar rvs ./../lib/libBigChars.a ./obj/bc.o
 
 ./obj/bc.o: ./src/bc.c
 	gcc -c ./src/bc.c -o ./obj/bc.o $(CFLAGS)

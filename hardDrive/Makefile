@@ -1,7 +1,9 @@
 CC = gcc
 CFLAGS = -g
 
-all: ./obj/hardDrive.o 
+all: ./../lib/libHardDrive.a
+
+./../lib/libHardDrive.a: ./obj/hardDrive.o 
 	ar rvs ./../lib/libHardDrive.a ./obj/hardDrive.o
 
 ./obj/hardDrive.o: ./src/hardDrive.c

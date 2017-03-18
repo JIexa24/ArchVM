@@ -1,7 +1,9 @@
 CC = gcc
 CFLAGS = -g
 
-all: ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/timer.o ./obj/global.o ./obj/read.o ./obj/command.o
+all: ./../lib/libCPU.a
+
+./../lib/libCPU.a: ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/timer.o ./obj/global.o ./obj/read.o ./obj/command.o
 	ar rvs ./../lib/libCPU.a ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/timer.o ./obj/global.o ./obj/read.o ./obj/command.o
 
 ./obj/cpu.o: ./src/cpu.c
