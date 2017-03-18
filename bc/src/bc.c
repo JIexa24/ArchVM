@@ -2,7 +2,13 @@
   Created by JIexa24 (Alexey R.)
 */
 #include "./../include/bc.h"
-
+void swap(int* a, int* b)
+{
+  int tmp;
+  tmp = *a;
+  *a = *b;
+  *b = tmp;
+}
 int bc_printA(char *str)
 {
   writeChar(1, "\E(0");
@@ -13,19 +19,14 @@ int bc_printA(char *str)
 /*---------------------------------------------------------------------------*/
 int bc_box(int x1, int y1, int x2, int y2)
 {
-  int tmp;
   int maxx, maxy;
   int i, j;
 	
   if (x1 > x2) {
-    tmp = x1;
-    x1 = x2;
-    x2 = tmp;
+    swap(&x1, &x2);
   }
   if (y1 > y2) {
-    tmp = y1;
-    y1 = y2;
-    y2 = tmp;
+    swap(&y1, &y2);
   }
 
   mt_getscreensize(&maxy, &maxx);
