@@ -63,6 +63,8 @@ void refreshGui(int position)
   printCounter();
 
   mt_gotoXY(70, 2);
+  writeChar(1, "     ");
+  mt_gotoXY(70, 2);
   if (SCANPRINTRADIX == 16) {
     writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
   } else if (SCANPRINTRADIX == 10) {
@@ -130,12 +132,6 @@ void printLabels()
   writeChar(1, " Flags ");
   mt_gotoXY(48, 13);
   writeChar(1, " Keys: ");
-  mt_gotoXY(68, 13);
-  if (SCANPRINTRADIX == 16) {
-    writeChar(1, " HEX ");
-  } else if (SCANPRINTRADIX == 10) {
-    writeChar(1, " DEC ");
-  }
 }
 /*---------------------------------------------------------------------------*/
 void printOperation(int position)
@@ -256,6 +252,12 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
+  mt_gotoXY(68, 13);
+  if (SCANPRINTRADIX == 16) {
+    writeChar(1, " HEX ");
+  } else if (SCANPRINTRADIX == 10) {
+    writeChar(1, " DEC ");
+  }
   mt_gotoXY(14,13);
   writeChar(1," Cell: ");
   writeInt(1, position, 16, 2);
