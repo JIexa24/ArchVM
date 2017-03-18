@@ -20,7 +20,7 @@
 
 /* CPU */
 
-#define BIGCHARSCOLORFG clr_green
+#define BIGCHARSCOLORFG clr_cyan
 #define BIGCHARSCOLORBG clr_default
 
 #define TEXTCOLORFG clr_black
