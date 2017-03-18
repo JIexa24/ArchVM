@@ -252,8 +252,22 @@ int parsingLine(char* str, int* addres, int* value)
       }
       i++;
     }
+    tmpPtr = ptr + 1;
+
     if (*tmpPtr == '+') {
-      sreadInt(tmpPtr + 1, value, 16);
+      char tmp = tmpPtr[3];
+
+      tmpPtr[3] = '\0';
+      sreadInt(tmpPtr + 1, &command, 16);
+      tmpPtr[3] = tmp;
+
+      tmpPtr = &tmpPtr[3];
+      tmp = tmpPtr[2];
+      tmpPtr[2] = '\0';
+      sreadInt(tmpPtr, &operand, 16);
+      tmpPtr[2] = tmp;
+
+      sc_commandEncode(command, operand, value);
       *value &= 0x7FFF;
     } else {
       sreadInt(tmpPtr, value, 16);
@@ -278,7 +292,9 @@ int parsingLine(char* str, int* addres, int* value)
     i = 0;
     tmpPtr = ptr + 1;
 
-    sreadInt(tmpPtr, &operand, 10);
+    if (sreadInt(tmpPtr, &operand, 10) == -1) {
+      return -1;
+    }
     sc_commandEncode(command, operand, value);
   }
   return 0;
