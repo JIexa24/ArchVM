@@ -41,7 +41,7 @@ int asmTrans(int argc, char** argv)
         continue;
       }
     }
-    if (buffer[i] == EOF) {
+    if (buffer[i] == EOF && flagign == 0) {
       if (counterTokens == 2) {
         buffer[i] = '\0';
         ret = parsingLine(buffer, &addres, &value);
@@ -58,7 +58,7 @@ int asmTrans(int argc, char** argv)
       continue;
     }
     if (flagign == 0) {
-      if (buffer[i] == TOKENSYMB) {
+      if (buffer[i] == TOKENSYMB && counterTokens < 2) {
         counterTokens++;
         if (counterTokens == 2) {
           i++;
