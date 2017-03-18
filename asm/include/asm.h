@@ -11,8 +11,10 @@
 
 #define TOKENSYMB ' '
 
+int asmTrans(int argc, char** argv);
 int asmCommand(char *str);
 int parsingLine(char* str, int* addres, int* value);
 int strToCommand(char* ptr,int* value);
 int testArgv(char* argv[]);
+
 #endif

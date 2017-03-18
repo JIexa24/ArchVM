@@ -7,13 +7,14 @@
 #include "./../../simpleComputer/include/sc_register.h"
 #include "./../../simpleComputer/include/sc_command.h"
 #include "./../../simpleComputer/include/sc_memory.h"
-#include "./../../simpleComputer/include/sc.h"
 #include "./../../bc/include/bc.h"
 #include "./../../consoleSC/include/term.h"
 #include "./../../readKey/include/readkey.h"
 #include "./../../print/include/writeInt.h"
 #include "./../../scan/include/readInt.h"
 #include "./../../hardDrive/include/hardDrive.h"
+#include "./../../asm/include/asm.h"
+
 #include <signal.h>
 #include <fcntl.h>
 

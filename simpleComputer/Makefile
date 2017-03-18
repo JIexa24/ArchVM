@@ -17,7 +17,7 @@ all: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 	$(CC) -c ./src/global.c -o ./obj/global.o $(CFLAGS)
 
 tst: ./tst/main.o
-	$(CC) ./tst/main.o -lSimpleComputer -lWriteInt -L../lib/
+	$(CC) ./tst/main.o  -lAsm -lSimpleComputer -lWriteInt -L../lib/
 
 ./tst/main.o: ./tst/main.c
 	$(CC) -c ./tst/main.c -o ./tst/main.o $(CFLAGS)

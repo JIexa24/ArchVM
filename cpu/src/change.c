@@ -146,6 +146,28 @@ int memoryLoad(int position)
 
   filename[i - 1] = '\0';
 
+  char* ptr1;
+
+  ptr1 = strrchr(filename, '.');
+
+  if (ptr1 != NULL) {
+    if (strcmp(ptr1, ".sa") == 0) {
+      char* ptr = NULL;
+      int size = strlen(filename);
+      ptr = malloc(sizeof(char) * size);
+      for (i = 0; i < size; i++) {
+        ptr[i] = filename[i];
+      }
+      ptr1[1] = 'o';
+      ptr1[2] = '\0';
+      char* args[3];
+      args[0] = NULL;
+      args[1] = filename;
+      args[2] = ptr;
+      asmTrans(3, args);
+    } 
+  }
+
   if (sc_memoryLoad(filename) == 0) {
     refreshGui(position);
     writeChar(1,"File successfully loaded");

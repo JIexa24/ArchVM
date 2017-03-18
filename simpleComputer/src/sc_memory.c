@@ -69,7 +69,9 @@ int sc_memoryLoad(char* filename)
   if (data == NULL) {
     return ERR_OPEN_FILE;
   }
+
   read = fread(localRAM, sizeof(*localRAM) * sizeRAM, 1, data);
+
   for (i = 0; i < 100; i++) {
     localRAM[i] &= 0x7FFF;
   }

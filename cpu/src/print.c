@@ -226,7 +226,7 @@ void printMemory(int x, int y, int position)
   writeChar(1,"Cell: ");
   writeInt(1, position, 16, 2);
   writeChar(1,"( ");
-  writeInt(1, position, 10, 3);
+  writeInt(1, position, 10, 2);
   writeChar(1," )");
 
   if ((position >= sizeRAM) && (position < 0)) {
