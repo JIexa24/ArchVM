@@ -16,6 +16,11 @@ static void printWriteValue()
 {
   int command, opcode, operand;
   mt_gotoXY(1, 23);
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+
+  mt_gotoXY(1, 23);
   command = (writeValue >> 14) & 1;
   if (writeUse != 0) {
     writeChar(1,"Last WRITE: ");
@@ -30,8 +35,8 @@ static void printWriteValue()
     }	
   }
 }
-
-void refreshGui(int position)
+/*---------------------------------------------------------------------------*/
+void refreshGuiSt(int position)
 {
   mt_clrscr();
   printBoxes();
@@ -45,6 +50,25 @@ void refreshGui(int position)
   } else if (SCANPRINTRADIX == 10) {
     writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
   }
+  printOperation(position);
+  printMemory(2, 2, position);
+  printFlags(68, 11);
+  printMcell(bigChars, position);
+  printWriteValue();
+  mt_gotoXY(1, 24);
+}
+/*---------------------------------------------------------------------------*/
+void refreshGui(int position)
+{
+  printCounter();
+
+  mt_gotoXY(70, 2);
+  if (SCANPRINTRADIX == 16) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
+  } else if (SCANPRINTRADIX == 10) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
+  }
+
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);

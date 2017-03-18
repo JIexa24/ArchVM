@@ -148,23 +148,23 @@ int asmCommand(char *str)
     ret = 0x58;
   } else if (strcmp(str, "JNP") == 0) {
     ret = 0x59;
-  }  else if (strcmp(str, "CHL") == 0) {
+  } else if (strcmp(str, "CHL") == 0) {
     ret = 0x60;
-  }  else if (strcmp(str, "SHR") == 0) {
+  } else if (strcmp(str, "SHR") == 0) {
     ret = 0x61;
-  }  else if (strcmp(str, "RCL") == 0) {
+  } else if (strcmp(str, "RCL") == 0) {
     ret = 0x62;
-  }  else if (strcmp(str, "RCR") == 0) {
+  } else if (strcmp(str, "RCR") == 0) {
     ret = 0x63;
-  }  else if (strcmp(str, "NEG") == 0) {
+  } else if (strcmp(str, "NEG") == 0) {
     ret = 0x64;
-  }  else if (strcmp(str, "ADDC") == 0) {
+  } else if (strcmp(str, "ADDC") == 0) {
     ret = 0x65;
-  }  else if (strcmp(str, "SUBC") == 0) {
+  } else if (strcmp(str, "SUBC") == 0) {
     ret = 0x66;
-  }  else if (strcmp(str, "LOGLC") == 0) {
+  } else if (strcmp(str, "LOGLC") == 0) {
     ret = 0x67;
-  }  else if (strcmp(str, "LOGRC") == 0) {
+  } else if (strcmp(str, "LOGRC") == 0) {
     ret = 0x68;
   } else if (strcmp(str, "RCCL") == 0) {
     ret = 0x69;
@@ -172,17 +172,17 @@ int asmCommand(char *str)
     ret = 0x70;
   } else if (strcmp(str, "MOVA") == 0) {
     ret = 0x71;
-  }  else if (strcmp(str, "MOVR") == 0) {
+  } else if (strcmp(str, "MOVR") == 0) {
     ret = 0x72;
-  }  else if (strcmp(str, "MOVCA") == 0) {
+  } else if (strcmp(str, "MOVCA") == 0) {
     ret = 0x73;
-  }  else if (strcmp(str, "MOVCR") == 0) {
+  } else if (strcmp(str, "MOVCR") == 0) {
     ret = 0x74;
-  }  else if (strcmp(str, "ADDCT") == 0) { /* !!! */
+  } else if (strcmp(str, "ADDCT") == 0) { /* !!! */
     ret = 0x75;
-  }  else if (strcmp(str, "SUBCT") == 0) { /* !!! */
+  } else if (strcmp(str, "SUBCT") == 0) { /* !!! */
     ret = 0x76;
-  }  else {
+  } else {
     ret = -1;
   }
   return ret;

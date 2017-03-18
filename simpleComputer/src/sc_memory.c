@@ -64,21 +64,24 @@ int sc_memoryLoad(char* filename)
   FILE *data;
   int read;
   int i;
-
+  int ram[sizeRAM];
   data = fopen(filename, "rb");
   if (data == NULL) {
     return ERR_OPEN_FILE;
   }
 
-  read = fread(localRAM, sizeof(*localRAM) * sizeRAM, 1, data);
+  read = fread(ram, sizeof(*ram) * sizeRAM, 1, data);
 
-  for (i = 0; i < 100; i++) {
-    localRAM[i] &= 0x7FFF;
+  for (i = 0; i < sizeRAM; i++) {
+    ram[i] &= 0x7FFF;
   }
   fclose(data);
   if (read != 1) {
     return ERR_FILE;
   } else {
+    for (i = 0; i < sizeRAM; i++) {
+      localRAM[i] = ram[i];
+    }
     return 0;
   }
 }

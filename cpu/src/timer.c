@@ -8,19 +8,18 @@ extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
 extern int writeUse; 
-extern int flagHalt;
 
 void timerHand(int sig)
 {
+  int reg;
   if (instructionRegisterCount < sizeRAM) {
-    refreshGui(instructionRegisterCount);
     CU();
-    if (!flagHalt) {
-      instructionRegisterCount++;
-    }
-    if (!BITCHECK(sc_register, FLAG_INTERRUPT)) {
+    refreshGui(instructionRegisterCount);
+
+    sc_regGet(FLAG_INTERRUPT, &reg);
+    if (!reg) {
       /* raise для непрерывного выполнения. alarm - одна секунда */  
-      //raise(SIGALRM);
+      // raise(SIGALRM);
       alarm(1);
     }
   } else {

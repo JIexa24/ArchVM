@@ -21,6 +21,12 @@ int changeCell(int pos)
   int command, operand, mem;
   refreshGui(pos);
   mt_gotoXY(1, 23);
+
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+
+  mt_gotoXY(1, 23);
   writeChar(1, "Enter num:");
   mt_gotoXY(1, 24);
   if (scanNum(&plusFlag, &num) != 0) {
@@ -59,6 +65,11 @@ int changeAccumulator(int pos)
   refreshGui(pos);
 
   mt_gotoXY(1, 23);
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+
+  mt_gotoXY(1, 23);
   writeChar(1, "Change Accum (");
   writeInt(1, SCANPRINTRADIX, 10, -1);
   writeChar(1, ")");
@@ -82,6 +93,11 @@ int changeInstRegisterCount(int pos)
 {
   int plusFlag, num;
   refreshGui(pos);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
 
   mt_gotoXY(1, 23);
   writeChar(1, "Change Register (");
@@ -133,6 +149,13 @@ int memorySave(int position)
   int i = 0;
 
   refreshGui(position);
+  mt_gotoXY(1, 23);
+
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+
+  mt_gotoXY(1, 23);
   writeChar(1, "Enter save file name: ");
 
   do {
@@ -158,6 +181,13 @@ int memoryLoad(int position)
   int i = 0;
 
   refreshGui(position);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+  writeChar(1, "                                                                                \n");
+
+  mt_gotoXY(1, 23);
   writeChar(1, "Enter load file name: ");
 
   do {

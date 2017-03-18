@@ -10,7 +10,6 @@ extern short int sc_register;
 extern int writeUsed; 
 extern int writeValue;
 extern int bigChars[];
-extern int flagHalt;
 extern int SCANPRINTRADIX;
 
 int main(int argc, char** argv)
@@ -26,6 +25,7 @@ int main(int argc, char** argv)
   int tmp = 0;
   int exit = 0;
   int refreshFlg = 0;
+  int regis = 0;
 
   enum keys key;
   
@@ -36,7 +36,6 @@ int main(int argc, char** argv)
     return -1;
   }
 
-  flagHalt = 0;
   bc_bigcharread(fd, bigChars, 128, &cn);
   close(fd);
   setSignals();
@@ -64,13 +63,15 @@ int main(int argc, char** argv)
 
   accumulator = 22;
 
+  refreshGuiSt(position);
   while (!exit) {
     if (!refreshFlg)
       refreshGui(position);
 
     rk_readkey(&key);
+      sc_regGet(FLAG_INTERRUPT, &regis);
 
-    if(BITCHECK(sc_register,FLAG_INTERRUPT)) {
+    if(regis) {
       switch (key) {
         case KEY_up:
           if (cursorY != 0)
@@ -153,41 +154,27 @@ int main(int argc, char** argv)
     } else if (key == KEY_i) {
       raise(SIGUSR1);
       refreshFlg = 0;
-      flagHalt = 0;
       instructionRegisterCount = 0;
       cursorX = 0;
       cursorY = 0;
     } else if (key == KEY_r) {
-      if (BITCHECK(sc_register, FLAG_INTERRUPT)) {
+      sc_regGet(FLAG_INTERRUPT, &regis);
+      if (regis) {
         sc_regSet(FLAG_INTERRUPT, 0);
         position = instructionRegisterCount;
         timerHand(SIGALRM);
+        cursorX = instructionRegisterCount / 10;
+        cursorY = instructionRegisterCount % 10;
+        refreshFlg = 0;
       } else {
         alarm(0);
         sc_regSet(FLAG_INTERRUPT, 1);
         position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10;
+        cursorX = instructionRegisterCount / 10 - 1;
         cursorY = instructionRegisterCount % 10;
+        refreshFlg = 0;
 	  }
     }
-    if(flagHalt) {
-      position = instructionRegisterCount;
-      if (key == KEY_left){
-        cursorX = (instructionRegisterCount / 10 - 1) >= 0 ? (instructionRegisterCount / 10 - 1) : 9;
-      } else if(key == KEY_right){
-        cursorX = (instructionRegisterCount / 10 + 1) <= 9 ? (instructionRegisterCount / 10 + 1) : 0;
-      } else {
-        cursorX = instructionRegisterCount / 10;
-      }
-      if (key == KEY_up){
-        cursorY = (instructionRegisterCount % 10 - 1) >= 0 ? (instructionRegisterCount % 10 - 1) : 9;
-      } else if(key == KEY_down){
-        cursorY = (instructionRegisterCount % 10 + 1) <= 9 ? (instructionRegisterCount % 10 + 1) : 0;
-      } else {
-        cursorY = instructionRegisterCount % 10;
-      }
-      flagHalt = 0;
-    } 
     position = cursorY + cursorX * 10;
   }
 }

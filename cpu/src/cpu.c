@@ -9,7 +9,6 @@ extern int instructionRegisterCount;
 extern short int sc_register;
 extern int writeUse;
 extern int writeValue;
-extern int flagHalt;
 
 void CU()
 {
@@ -39,7 +38,7 @@ void CU()
   } else {
     commandHandler(command, operand);
   }
-
+  instructionRegisterCount++;
 }
 /*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)

@@ -9,7 +9,6 @@ extern int instructionRegisterCount;
 extern short int sc_register;
 extern int writeUse;
 extern int writeValue;
-extern int flagHalt;
 
 int commandHandler(int command, int operand)
 {
@@ -110,8 +109,9 @@ int commandHandler(int command, int operand)
     break;
 /*-------------------------------------------------------------------------12*/
     case 0x43: /* HALT */
-      flagHalt = 1;
+      //flagHalt = 1;
       sc_regSet(FLAG_INTERRUPT, 1);
+      instructionRegisterCount--;
       refreshGui(instructionRegisterCount);
     break;
 /*-------------------------------------------------------------------------13*/
