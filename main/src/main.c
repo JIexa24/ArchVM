@@ -11,6 +11,7 @@ extern int writeUsed;
 extern int writeValue;
 extern int bigChars[];
 extern int flagHalt;
+extern int SCANPRINTRADIX;
 
 int main(int argc, char** argv)
 {
@@ -106,9 +107,26 @@ int main(int argc, char** argv)
         case KEY_f6:
           refreshFlg = changeInstRegisterCount(position);
         break;
-	
+
+	    case KEY_x:
+          SCANPRINTRADIX = 16;
+          refreshFlg = 0;
+        break; 
+
+        case KEY_d:
+          SCANPRINTRADIX = 10;
+          refreshFlg = 0;
+        break;
+
         case KEY_enter:
-          refreshFlg = changeCell(position);
+          if (SCANPRINTRADIX == 10) {
+            tmp = SCANPRINTRADIX;
+            SCANPRINTRADIX = 16;
+            refreshFlg = changeCell(position);
+            SCANPRINTRADIX = tmp;
+          } else if (SCANPRINTRADIX == 16) {
+            refreshFlg = changeCell(position);
+          }
         break;
 					
         case KEY_t:

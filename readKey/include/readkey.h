@@ -30,6 +30,8 @@ enum keys {
   KEY_r,
   KEY_t,
   KEY_i,
+  KEY_x,
+  KEY_d,
   KEY_q,
   KEY_f5,
   KEY_f6,

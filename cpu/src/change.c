@@ -7,6 +7,7 @@ extern int accumulator;
 extern int localRAM[];
 extern int instructionRegisterCount;
 extern short int sc_register;
+extern int SCANPRINTRADIX;
 
 void setSignals()
 {
@@ -38,9 +39,8 @@ int changeCell(int pos)
     } else {
       mem = num | 0x4000;
     }
-               
-    if ((pos >= 0) && (pos < sizeRAM)) {
-      sc_memorySet(pos, mem);
+    if(sc_memorySet(pos, mem) != 0) {
+      return -1;
     }
   } else {
     writeChar(2, "Memory cell is 15 bit wide");
@@ -69,13 +69,19 @@ int changeAccumulator(int pos)
 int changeInstRegisterCount(int pos)
 {
   int plusFlag, num;
-
   refreshGui(pos);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "Change Register (");
+  writeInt(1, SCANPRINTRADIX, 10, -1);
+  writeChar(1, ")");
+  mt_gotoXY(1, 24);
+
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
     return -1;
   }
-  if ((num >= 0) && (num < 0x100)) {
+  if ((num >= 0) && (num < sizeRAM)) {
     instructionRegisterCount = num;
   } else {
     writeChar(2, "Accumutalor range: from 0 to 99 (0x63)");
@@ -102,7 +108,7 @@ int scanNum(int *plusFlag, int *n)
   } else {
     *plusFlag = 0;
   }
-  if (sreadInt(buffer + pos, n, 16) != 1) {
+  if (sreadInt(buffer + pos, n, SCANPRINTRADIX) != 1) {
     return -1;
   }
 

@@ -10,6 +10,7 @@ extern short int sc_register;
 extern int bigChars[];
 extern int writeValue;
 extern int writeUse;
+extern int SCANPRINTRADIX;
 
 static void printWriteValue()
 {
@@ -25,7 +26,7 @@ static void printWriteValue()
       writeInt(1, operand, 16, 2);       
     } else {
       writeChar(1," ");
-      writeInt(1, writeValue & 0x3FFF, 16, 4);
+      writeInt(1, writeValue & 0x3FFF, SCANPRINTRADIX, 4);
     }	
   }
 }
@@ -64,7 +65,7 @@ void printCounter()
 {
   mt_gotoXY(70, 5);
   mt_setfgcolor(INSTREGCOLORG);
-  writeInt(1, instructionRegisterCount, 16, 4);
+  writeInt(1, instructionRegisterCount, SCANPRINTRADIX, 4);
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
@@ -102,6 +103,12 @@ void printLabels()
   writeChar(1, " Flags ");
   mt_gotoXY(48, 13);
   writeChar(1, " Keys: ");
+  mt_gotoXY(68, 13);
+  if (SCANPRINTRADIX == 16) {
+    writeChar(1, " HEX ");
+  } else if (SCANPRINTRADIX == 10) {
+    writeChar(1, " DEC ");
+  }
 }
 /*---------------------------------------------------------------------------*/
 void printOperation(int position)
@@ -222,12 +229,12 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
-  mt_gotoXY(15,13);
-  writeChar(1,"Cell: ");
+  mt_gotoXY(14,13);
+  writeChar(1," Cell: ");
   writeInt(1, position, 16, 2);
   writeChar(1,"( ");
   writeInt(1, position, 10, 2);
-  writeChar(1," )");
+  writeChar(1," ) ");
 
   if ((position >= sizeRAM) && (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);

@@ -1,34 +1,35 @@
-all: PRINT SIMPLECOMPUTER READ TERM READKEY BIGCHAR HARDDRIVE CPU ASM MAIN 
+all: MAIN 
 
-PRINT:
+MAIN: PRINT SIMPLECOMPUTER READ TERM READKEY BIGCHAR HARDDRIVE CPU ASM 
+	make -C main
+
+PRINT: ./lib/libWriteInt.a
 	make -C print
 
-READ:
+READ: ./lib/libReadInt.a
 	make -C scan
 
-SIMPLECOMPUTER:
+SIMPLECOMPUTER: ./lib/libSimpleComputer.a
 	make -C simpleComputer
 
-TERM:
+TERM: ./lib/libTerm.a
 	make -C consoleSC
 
-READKEY:
+READKEY: ./lib/libReadKey.a
 	make -C readKey
 
-BIGCHAR:
+BIGCHAR: ./lib/libBigChars.a
 	make -C bc
 
-HARDDRIVE:
+HARDDRIVE: ./lib/libHardDrive.a
 	make -C hardDrive
 
-CPU:
+CPU: ./lib/libCPU.a
 	make -C cpu
 
-ASM:
+ASM: ./lib/libAsm.a
 	make -C asm
 
-MAIN:
-	make -C main
 
 restruct:
 	make clean
