@@ -41,7 +41,7 @@ int asmTrans(int argc, char** argv)
         continue;
       }
     }
-    if (buffer[i] == '$') {
+    if (buffer[i] == EOF) {
       if (counterTokens == 2) {
         buffer[i] = '\0';
         ret = parsingLine(buffer, &addres, &value);
