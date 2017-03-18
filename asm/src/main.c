@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
   i = 0;
   do {
     fread(&buffer[i], sizeof(char), 1, input);
-    printf("kek %c %d\n", buffer[i], i);
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
         continue;
@@ -43,11 +42,10 @@ int main(int argc, char *argv[])
         continue;
       }
     }
-    if (buffer[i] == EOF) {
+    if (buffer[i] == '$') {
       if (counterTokens == 2) {
         buffer[i] = '\0';
         ret = parsingLine(buffer, &addres, &value);
-        printf("!!!!!!!!!!!!!!!!!!! %d !!!!!!!!!!!!!\n", ret);
         if (!ret) {
           ram[addres] = value;
         }
@@ -60,7 +58,6 @@ int main(int argc, char *argv[])
       counterTokens = 0;
       continue;
     }
-    printf("kek --%d\n", flagign);
     if (flagign == 0) {
       if (buffer[i] == TOKENSYMB) {
         counterTokens++;
@@ -68,7 +65,6 @@ int main(int argc, char *argv[])
           i++;
         }
       }
-    printf("lol --%d\n", counterTokens);
       if (counterTokens == 2 && (buffer[i] == ';' || buffer[i] == '\n' || buffer[i] == ' ' || buffer[i] == TOKENSYMB)) {
         if (buffer[i] == ';' || buffer[i] == ' ' || buffer[i] == TOKENSYMB) {
           flagign = 1;
@@ -78,7 +74,8 @@ int main(int argc, char *argv[])
         if (!ret) {
           ram[addres] = value;
         }
-        printf("\n!kek %d %d\n", addres, value);
+        counterTokens = 0;
+        i = 0;
       }
 
       i++;

@@ -143,9 +143,8 @@ int parsingLine(char* str, int* addres, int* value)
     i++;
   }
 
-  printf("LOLOLOLOLOLOLOLO %s  ", tmpPtr);
   sreadInt(tmpPtr, addres, 10);
-  printf("LOLOLOLOLOLOLOLO %d", *addres);
+
   if (*addres < 0 || *addres > sizeRAM) {
     return -1;
   }
@@ -183,17 +182,15 @@ int parsingLine(char* str, int* addres, int* value)
       }
       i++;
     }
-
     command = asmCommand(tmpPtr);
+
     if (command == -1) {
       return -1;
     }
     i = 0;
-    tmpPtr = ptr;
-  printf("LOLO %s  ", tmpPtr);
+    tmpPtr = ptr + 1;
 
     sreadInt(tmpPtr, &operand, 10);
-
     sc_commandEncode(command, operand, value);
   }
   return 0;
