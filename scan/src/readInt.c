@@ -8,8 +8,6 @@ int sreadInt(char* buffers, int* num, int radix)
 
   int size = strlen(buffers) - 1;
   int i, k = 0;
-  if (size == 0)
-    return 1;
 
   *num = 0;
   for (i = size; i >= 0; i--) {
