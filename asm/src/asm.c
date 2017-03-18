@@ -127,9 +127,74 @@ int strToCommand(char* ptr,int* value)
 /*---------------------------------------------------------------------------*/
 int parsingLine(char* str, int* addres, int* value)
 {  
-  char *ptr;
+  char* ptr = str;
   int command, operand;
   int flagCommand = 0;
+  int i = 0;
+  
+  char* tmpPtr = ptr; 
 
+  while (1) {
+    if (tmpPtr[i] == TOKENSYMB) {
+      ptr = tmpPtr + i + 1;
+      tmpPtr[i] = '\0';
+      break;
+    }
+    i++;
+  }
+
+  printf("LOLOLOLOLOLOLOLO %s  ", tmpPtr);
+  sreadInt(tmpPtr, addres, 10);
+  printf("LOLOLOLOLOLOLOLO %d", *addres);
+  if (*addres < 0 || *addres > sizeRAM) {
+    return -1;
+  }
+
+  i = 0;
+  tmpPtr = ptr;
+  if (*ptr == '=') {
+    flagCommand = 1;
+  }
+ 
+  if (flagCommand) {
+    while (1) {
+      if (tmpPtr[i] == TOKENSYMB) {
+        ptr = tmpPtr + i + 1;
+        tmpPtr[i] = '\0';
+        break;
+      }
+      i++;
+    }
+    if (*tmpPtr == '+') {
+      sreadInt(tmpPtr + 1, value, 16);
+      *value &= 0x7FFF;
+    } else {
+      sreadInt(tmpPtr, value, 16);
+      *value |= (1 << 14);
+      *value &= 0x7FFF;
+    }
+ 
+  } else {
+    while (1) {
+      if (tmpPtr[i] == TOKENSYMB) {
+        ptr = tmpPtr + i + 1;
+        tmpPtr[i] = '\0';
+        break;
+      }
+      i++;
+    }
+
+    command = asmCommand(tmpPtr);
+    if (command == -1) {
+      return -1;
+    }
+    i = 0;
+    tmpPtr = ptr;
+  printf("LOLO %s  ", tmpPtr);
+
+    sreadInt(tmpPtr, &operand, 10);
+
+    sc_commandEncode(command, operand, value);
+  }
   return 0;
 }

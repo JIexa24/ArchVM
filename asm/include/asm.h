@@ -7,10 +7,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "./../../simpleComputer/include/sc_register.h"
-#include "./../../simpleComputer/include/sc_command.h"
-#include "./../../simpleComputer/include/sc_memory.h"
-#include "./../../scan/include/readInt.h"
+#include "./../../cpu/include/cpu.h"
+
+#define TOKENSYMB ' '
 
 int asmCommand(char *str);
 int parsingLine(char* str, int* addres, int* value);
