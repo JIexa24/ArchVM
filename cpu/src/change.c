@@ -132,6 +132,7 @@ int memorySave(int position)
   char filename[256];
   int i = 0;
 
+  refreshGui(position);
   writeChar(1, "Enter save file name: ");
 
   do {
@@ -156,6 +157,7 @@ int memoryLoad(int position)
   char filename[256];
   int i = 0;
 
+  refreshGui(position);
   writeChar(1, "Enter load file name: ");
 
   do {
