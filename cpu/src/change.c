@@ -35,7 +35,10 @@ int changeCell(int pos)
         return -1;
       }
       operand = num & 0x7F;
-      sc_commandEncode(command, operand, &mem);
+      if (sc_commandEncode(command, operand, &mem) != 0) {
+        writeChar(2, "Wrong command. Aborted. ");
+        return -1;
+      }
     } else {
       mem = num | 0x4000;
     }
@@ -52,7 +55,15 @@ int changeCell(int pos)
 int changeAccumulator(int pos)
 {
   int plusFlag, num;
+
   refreshGui(pos);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "Change Accum (");
+  writeInt(1, SCANPRINTRADIX, 10, -1);
+  writeChar(1, ")");
+  mt_gotoXY(1, 24);
+
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
     return -1;
@@ -63,6 +74,7 @@ int changeAccumulator(int pos)
     writeChar(2, "Accumutalor is 15 bit wide");
     return -1;
   }
+
   return 0;
 }
 /*---------------------------------------------------------------------------*/

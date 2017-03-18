@@ -2,6 +2,7 @@
   Created by JIexa24 (Alexey R.)
 */
 #include "./../include/bc.h"
+
 void swap(int* a, int* b)
 {
   int tmp;
@@ -9,6 +10,7 @@ void swap(int* a, int* b)
   *a = *b;
   *b = tmp;
 }
+/*---------------------------------------------------------------------------*/
 int bc_printA(char *str)
 {
   writeChar(1, "\E(0");

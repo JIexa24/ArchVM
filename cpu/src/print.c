@@ -40,8 +40,11 @@ void refreshGui(int position)
   printCounter();
 
   mt_gotoXY(70, 2);
-  writeInt(1, accumulator & 0x3FFF, 16, 4);
-
+  if (SCANPRINTRADIX == 16) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
+  } else if (SCANPRINTRADIX == 10) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
+  }
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);
