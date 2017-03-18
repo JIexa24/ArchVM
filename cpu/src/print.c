@@ -152,12 +152,16 @@ void printOperation(int position)
   if ((position >= 0) && (position < sizeRAM)) {
     if (isCommand == 0) {
       sc_commandDecode(mem, &command, &operand);
+      writeChar(1, "        ");
+      mt_gotoXY(68, 8);
       write(1, &c, 1);
       writeInt(1, command, 16, 2);
       writeChar(1, " : ");
       writeInt(1, operand, 16, 2);
       c = '+';
     } else {
+      writeChar(1, "        ");
+      mt_gotoXY(68, 8);
       c = ' ';
       writeChar(1, "  ");  
       writeInt(1, localRAM[position] & 0x3FFF, 16, 4);
