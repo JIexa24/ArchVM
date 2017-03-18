@@ -95,7 +95,7 @@ int scanNum(int *plusFlag, int *n)
   while (buffer[i - 1] != '\n')  {
     read(1,&buffer[i++],1);
   }
-  buffer[i] = '\0';
+  buffer[i - 1] = '\0';
   //fgets(buffer, 256, stdin);
   if (buffer[0] == '+') {
     pos = 1;
