@@ -18,7 +18,6 @@
 #define FLAG_COMMAND 4     // wrong command
 #define FLAG_ODD 5         // 
 
-
 #define ERR_WRONG_ADDR -1
 #define ERR_OPEN_FILE -2
 #define ERR_FILE -3

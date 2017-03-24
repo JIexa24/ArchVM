@@ -6,7 +6,6 @@
 
 extern int localRAM[];
 extern short int sc_register;
-
 extern int correctCommands[];
 
 int sc_memoryInit(void)
