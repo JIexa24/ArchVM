@@ -12,13 +12,18 @@ extern int writeValue;
 
 void CU()
 {
-  int command, operand;
+  int command, operand, mem;
   if (instructionRegisterCount >= sizeRAM) {
     sc_regSet(FLAG_OUTMEM, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
+    refreshGui(instructionRegisterCount);
+    instructionRegisterCount = 0; 
     return;
   }
-  if (sc_commandDecode(localRAM[instructionRegisterCount], &command, &operand)
+  
+  sc_memoryGet(instructionRegisterCount, &mem);
+
+  if (sc_commandDecode(mem, &command, &operand)
       != 0) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);

@@ -10,7 +10,7 @@ extern short int sc_register;
 
 int readMcell(int pos)
 {
-  int plusFlag, num;
+  int plusFlag, num, ret = 0;
   int command, operand, mem;
 
   struct termios orig_options;
@@ -25,41 +25,11 @@ int readMcell(int pos)
   writeChar(1,"READ: ");
   mt_gotoXY(1, 24);
 
-  if (scanNum(&plusFlag, &num) != 0) {
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
-      return -1;
-    }
-    writeChar(2, "Not a number!");
-    return -1;
-  }
-  if ((num >= 0) && (num < 0x8000)) {
-    if (plusFlag) {
-      if (((num >> 7) & 1) == 1) {
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
-          return -1;
-        } 
-        writeChar(2, "Wrong instruction allign");
-        return -1;
-      }
-      command = (num >> 8) & 0x7F;
-      operand = num & 0x7F;
-      sc_commandEncode(command, operand, &mem);
-
-    } else 
-      mem = (1 << 14) | num;
-    if ((pos >= 0) && (pos < sizeRAM))  
-      sc_memorySet(pos, mem);
-  } else {    
-    if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
-      return -1;
-    }
-    writeChar(2, "Memory cell is 15 bit wide");
-    return -1;
-  }
+  ret = changeCell(pos);
 
   if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
     return -1;
   }
 
-  return 0;
+  return ret;
 }

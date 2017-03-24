@@ -12,21 +12,13 @@ extern int writeUse;
 void timerHand(int sig)
 {
   int reg;
-  if (instructionRegisterCount < sizeRAM) {
-    CU();
-    refreshGui(instructionRegisterCount);
-
-    sc_regGet(FLAG_INTERRUPT, &reg);
-    if (!reg) {
-      /* raise для непрерывного выполнения. alarm - одна секунда */  
-      // raise(SIGALRM);
-      alarm(1);
-    }
-  } else {
-    sc_regSet(FLAG_INTERRUPT, 1);
-    sc_regSet(FLAG_OUTMEM, 1); 
-    refreshGui(instructionRegisterCount);
-    instructionRegisterCount = 0; 
+  CU();
+  refreshGui(instructionRegisterCount);
+  sc_regGet(FLAG_INTERRUPT, &reg);
+  if (!reg) {
+    /* raise для непрерывного выполнения. alarm - одна секунда */  
+    // raise(SIGALRM);
+    alarm(1);
   }
 }
 /*---------------------------------------------------------------------------*/

@@ -218,6 +218,13 @@ int printMcell(int *bigchars, int pos)
   char c;
   int indexBigChar = 0;
 
+  mt_gotoXY(14,13);
+  writeChar(1," Cell: ");
+  writeInt(1, pos, 16, 2);
+  writeChar(1,"( ");
+  writeInt(1, pos, 10, 2);
+  writeChar(1," ) ");
+
   if ((pos >= sizeRAM) && (pos < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return 1;
@@ -263,12 +270,6 @@ void printMemory(int x, int y, int position)
   } else if (SCANPRINTRADIX == 10) {
     writeChar(1, " DEC ");
   }
-  mt_gotoXY(14,13);
-  writeChar(1," Cell: ");
-  writeInt(1, position, 16, 2);
-  writeChar(1,"( ");
-  writeInt(1, position, 10, 2);
-  writeChar(1," ) ");
 
   if ((position >= sizeRAM) && (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);

@@ -33,7 +33,7 @@ int changeCell(int pos)
     writeChar(2, "Not a number!");
     return -1;
   }
-  if ((num >= 0) && (num < 0x8000)) {
+  if ((num >= 0) && (num < 0x4000)) {
     if (plusFlag) {
       command = (num >> 8) & 0x7F;
       if (num & 0x80) {

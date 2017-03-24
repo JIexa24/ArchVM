@@ -37,7 +37,8 @@ int commandHandler(int command, int operand)
     break;
 /*--------------------------------------------------------------------------4*/
     case 0x21: /* STORE */
-      if (sc_memorySet(operand, accumulator) != 0) {
+      tmp = accumulator | (1 << 14);
+      if (sc_memorySet(operand, tmp) != 0) {
         return -1;
       }
     break;

@@ -25,7 +25,7 @@ int main(int argc, char** argv)
   int tmp = 0;
   int exit = 0;
   int refreshFlg = 0;
-  int regis = 0;
+  int regis = 0, regisProg = 0;
 
   enum keys key;
   
@@ -69,9 +69,9 @@ int main(int argc, char** argv)
       refreshGui(position);
 
     rk_readkey(&key);
-      sc_regGet(FLAG_INTERRUPT, &regis);
+      sc_regGet(FLAG_INTERRUPT, &regisProg);
 
-    if(regis) {
+    if(regisProg) {
       switch (key) {
         case KEY_up:
           if (cursorY != 0)
@@ -120,15 +120,14 @@ int main(int argc, char** argv)
         break;
 
         case KEY_enter:
+          if (SCANPRINTRADIX == 10) {
+            tmp = SCANPRINTRADIX;
+            SCANPRINTRADIX = 16;
             refreshFlg = changeCell(position);
-       //   if (SCANPRINTRADIX == 10) {
-       //     tmp = SCANPRINTRADIX;
-      //      SCANPRINTRADIX = 16;
-      //      refreshFlg = changeCell(position);
-       //     SCANPRINTRADIX = tmp;
-      //    } else if (SCANPRINTRADIX == 16) {
-       //     refreshFlg = changeCell(position);
-        //  }
+            SCANPRINTRADIX = tmp;
+          } else if (SCANPRINTRADIX == 16) {
+            refreshFlg = changeCell(position);
+          }
         break;
 					
         case KEY_t:
@@ -162,18 +161,20 @@ int main(int argc, char** argv)
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
         sc_regSet(FLAG_INTERRUPT, 0);
-        position = instructionRegisterCount;
         timerHand(SIGALRM);
-        cursorX = instructionRegisterCount / 10;
-        cursorY = instructionRegisterCount % 10;
-        refreshFlg = 0;
-      } else {
-        alarm(0);
-        sc_regSet(FLAG_INTERRUPT, 1);
         position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10 - 1;
+        cursorX = instructionRegisterCount / 10 + 1;
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
+        continue;
+      } else {
+        sc_regSet(FLAG_INTERRUPT, 1);
+        alarm(0);
+        position = instructionRegisterCount;
+        cursorX = instructionRegisterCount / 10 ;
+        cursorY = instructionRegisterCount % 10;
+        refreshFlg = 0;
+        continue;
 	  }
     }
     position = cursorY + cursorX * 10;
