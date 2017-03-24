@@ -211,20 +211,21 @@ void printFlags(int x, int y)
 /*---------------------------------------------------------------------------*/
 int printMcell(int *bigchars, int pos)
 {
+  int command;
+  int mem;
+  int i, opcode, operand;
+  char str[10];
+  char c;
+  int indexBigChar = 0;
+
   if ((pos >= sizeRAM) && (pos < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return 1;
   }
-  int command;
-  int mem;
 
   sc_memoryGet(pos, &mem);
   command = (mem >> 14) & 1;
   mem &= 0x3FFF;   
- 
-  int i, opcode, operand;
-  char str[10];
-  char c;
 
   if (command == 0) {
     sc_commandDecode(mem, &opcode, &operand);
@@ -238,13 +239,13 @@ int printMcell(int *bigchars, int pos)
 
   for (i = 0; i < 5; i++) {
     mt_gotoXY(2 + 9 * i, 14);
-    if (str[i] < 128) {
-
-      bc_printbigchar(bigchars + (str[i] * 2), 2 + i*9, 14, BIGCHARSCOLORFG,
+    indexBigChar = (str[i] == '+') ? 0 : (((str[i] >= '0') && (str[i] <= '9'))
+                                          ? (str[i] - '0' + 1)
+                                          : ((str[i] >= 'A') && 
+                                             (str[i] <= 'F'))
+                                             ? (str[i] - 'A' + 11) : -1);
+    bc_printbigchar(bigchars + (indexBigChar * 2), 2 + i*9, 14, BIGCHARSCOLORFG,
                       BIGCHARSCOLORBG);
-    } else {
-      return -1;
-    }
   }
 
   return 0;

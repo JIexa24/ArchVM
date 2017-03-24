@@ -30,6 +30,4 @@
 #define BITCLEAR(A, B) (A = ((A) & ~(1 << (B))))
 #define BITCHECK(A, B) (((A) >> B) & 1)
 
-int intCompare(const int *a, const int *b);
-
 #endif

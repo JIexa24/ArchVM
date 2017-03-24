@@ -5,7 +5,7 @@
 
 int accumulator;
 int instructionRegisterCount;
-int bigChars[SIZE_BUFFER];
+int bigChars[34];
 int writeUse; 
 int writeValue;
 int SCANPRINTRADIX = 16;

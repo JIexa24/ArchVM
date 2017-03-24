@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     return -1;
   }
 
-  bc_bigcharread(fd, bigChars, 128, &cn);
+  bc_bigcharread(fd, bigChars, 17, &cn);
   close(fd);
   setSignals();
   mt_clrscr();
@@ -120,14 +120,15 @@ int main(int argc, char** argv)
         break;
 
         case KEY_enter:
-          if (SCANPRINTRADIX == 10) {
-            tmp = SCANPRINTRADIX;
-            SCANPRINTRADIX = 16;
             refreshFlg = changeCell(position);
-            SCANPRINTRADIX = tmp;
-          } else if (SCANPRINTRADIX == 16) {
-            refreshFlg = changeCell(position);
-          }
+       //   if (SCANPRINTRADIX == 10) {
+       //     tmp = SCANPRINTRADIX;
+      //      SCANPRINTRADIX = 16;
+      //      refreshFlg = changeCell(position);
+       //     SCANPRINTRADIX = tmp;
+      //    } else if (SCANPRINTRADIX == 16) {
+       //     refreshFlg = changeCell(position);
+        //  }
         break;
 					
         case KEY_t:

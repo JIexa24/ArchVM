@@ -222,7 +222,7 @@ int main()
 {
   int big[2], one[2], big_read[2];
   int testBuf[100];
-  int bigAsci[256];
+  int bigAsci[34];
   int val1, val2;
   int ret1, ret2;
   int readen;  
@@ -273,30 +273,30 @@ int main()
     write(1, "big == big_read\n", 16);
 
   /* Init of bigchars array */
-  memset(bigAsci, 0, sizeof(int) * 256);
-  arrToBig(bigAsci + ('+' * 2), bigchar_plus);
-  arrToBig(bigAsci + ('0' * 2), bigchar_0);
-  arrToBig(bigAsci + ('1' * 2), bigchar_1);
-  arrToBig(bigAsci + ('2' * 2), bigchar_2);
-  arrToBig(bigAsci + ('3' * 2), bigchar_3);
-  arrToBig(bigAsci + ('4' * 2), bigchar_4);
-  arrToBig(bigAsci + ('5' * 2), bigchar_5);
-  arrToBig(bigAsci + ('6' * 2), bigchar_6);
-  arrToBig(bigAsci + ('7' * 2), bigchar_7);
-  arrToBig(bigAsci + ('8' * 2), bigchar_8);
-  arrToBig(bigAsci + ('9' * 2), bigchar_9);
-  arrToBig(bigAsci + ('A' * 2), bigchar_A);
-  arrToBig(bigAsci + ('B' * 2), bigchar_B);
-  arrToBig(bigAsci + ('C' * 2), bigchar_C);
-  arrToBig(bigAsci + ('D' * 2), bigchar_D);
-  arrToBig(bigAsci + ('E' * 2), bigchar_E);
-  arrToBig(bigAsci + ('F' * 2), bigchar_F);
-    if ((outAsci = open("bigchars", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR )) 
+  memset(bigAsci, 0, sizeof(int) * 34);
+  arrToBig(bigAsci + (0 * 2), bigchar_plus);
+  arrToBig(bigAsci + (('0' - '0' + 1) * 2), bigchar_0);
+  arrToBig(bigAsci + (('1' - '0' + 1) * 2), bigchar_1);
+  arrToBig(bigAsci + (('2' - '0' + 1) * 2), bigchar_2);
+  arrToBig(bigAsci + (('3' - '0' + 1) * 2), bigchar_3);
+  arrToBig(bigAsci + (('4' - '0' + 1) * 2), bigchar_4);
+  arrToBig(bigAsci + (('5' - '0' + 1) * 2), bigchar_5);
+  arrToBig(bigAsci + (('6' - '0' + 1) * 2), bigchar_6);
+  arrToBig(bigAsci + (('7' - '0' + 1) * 2), bigchar_7);
+  arrToBig(bigAsci + (('8' - '0' + 1) * 2), bigchar_8);
+  arrToBig(bigAsci + (('9' - '0' + 1) * 2), bigchar_9);
+  arrToBig(bigAsci + (('A' - 'A' + 11) * 2), bigchar_A);
+  arrToBig(bigAsci + (('B' - 'A' + 11) * 2), bigchar_B);
+  arrToBig(bigAsci + (('C' - 'A' + 11) * 2), bigchar_C);
+  arrToBig(bigAsci + (('D' - 'A' + 11) * 2), bigchar_D);
+  arrToBig(bigAsci + (('E' - 'A' + 11) * 2), bigchar_E);
+  arrToBig(bigAsci + (('F' - 'A' + 11) * 2), bigchar_F);
+    if ((outAsci = open("ascibig", O_CREAT | O_RDWR, S_IRUSR | S_IWUSR )) 
          == -1) {
     write(2, "Open error\n", 11); 
     return -1;
   }
-  if (bc_bigcharwrite(outAsci, bigAsci, 128) != 0) {
+  if (bc_bigcharwrite(outAsci, bigAsci, 17) != 0) {
     write(2, "bc_bigcharwrite error!\n", 23); 
     return -1;
   }

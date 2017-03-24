@@ -149,7 +149,7 @@ int bc_bigcharwrite(int fd, int *big, int count)
     return -1;
   }
 
-  err = write(fd, big, count * (sizeof(int)) * 2);
+  err = write(fd, big, count * sizeof(int) * 2);
   if (err == -1) {
     return -1;
   }

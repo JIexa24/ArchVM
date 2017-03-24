@@ -30,6 +30,7 @@
 
 #define REGCOLOR clr_blue
 
+
 void CU();
 int ALU(int command, int operand);
 
@@ -61,4 +62,5 @@ static void printWriteValue();
 int commandHandler(int command, int operand);
 
 int readMcell(int pos);
+
 #endif
