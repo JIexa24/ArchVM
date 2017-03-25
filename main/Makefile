@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g3 -std=c11
+CFLAGS = -g3 -std=c99
 LIB = -lCPU -lTerm -lSimpleComputer -lAsm -lWriteInt -lReadInt -lBigChars -lReadKey  -lm -L../lib
 
 all: ./obj/main.o 

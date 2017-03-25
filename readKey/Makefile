@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g3 -std=c11
+CFLAGS = -g3 -std=c99
 
 all: ./../lib/libReadKey.a
 
