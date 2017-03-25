@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g3
+CFLAGS = -g3 -std=c11
 
 all: ./../lib/libSimpleComputer.a
 

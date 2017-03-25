@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -g
-LIB = -lCPU -lTerm -lSimpleComputer -lAsm -lWriteInt -lReadInt -lBigChars -lHardDrive -lReadKey  -lm -L../lib
+CFLAGS = -g3 -std=c11
+LIB = -lCPU -lTerm -lSimpleComputer -lAsm -lWriteInt -lReadInt -lBigChars -lReadKey  -lm -L../lib
 
 all: ./obj/main.o 
 	$(CC) ./obj/main.o -o ./../bin/simpleComputer $(CFLAGS) $(LIB)
