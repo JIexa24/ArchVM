@@ -11,7 +11,6 @@ MAIN:
 	make -C cpu
 	make -C asm
 	make -C main
-	make -C main
 
 
 
