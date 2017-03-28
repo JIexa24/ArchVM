@@ -3,6 +3,14 @@
 */
 #include "./../include/readInt.h"
 
+int myPow(int a, int b)
+{
+  int i = 0;
+  for (i = 0; i < b; i++)
+    a *= a;
+  return a;
+}
+
 int sreadInt(char* buffers, int* num, int radix)
 {
   int size = strlen(buffers) - 1;
@@ -11,9 +19,9 @@ int sreadInt(char* buffers, int* num, int radix)
   *num = 0;
   for (i = size; i >= 0; i--) {
     if ((buffers[i] >= '0') && (buffers[i] <= '9')) {
-      *num += pow(radix, k++) * (buffers[i] - '0');
+      *num += myPow(radix, k++) * (buffers[i] - '0');
     } else if ((buffers[i] >= 'A') && (buffers[i] <= 'F')) { 
-      *num += pow(radix, k++) * (buffers[i] - 'A' + 10);
+      *num += myPow(radix, k++) * (buffers[i] - 'A' + 10);
     } else {
       return -1;
     }
