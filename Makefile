@@ -1,6 +1,7 @@
-all: MAIN 
+all: 
+	make -C build
 
-MAIN:
+HANDMADE:
 	make -C print
 	make -C scan
 	make -C simpleComputer
