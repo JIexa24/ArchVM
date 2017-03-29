@@ -1,4 +1,4 @@
-all: MAIN 
+all: MAIN
 
 MAIN:
 	make -C print
@@ -11,8 +11,6 @@ MAIN:
 	make -C cpu
 	make -C asm
 	make -C main
-
-
 
 restruct:
 	make clean
