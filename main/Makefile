@@ -3,7 +3,7 @@ CFLAGS = -g3 -std=c99
 LIB = -lCPU -lTerm -lSimpleComputer -lAsm -lWriteInt -lReadInt -lBigChars -lReadKey  -L../lib
 
 all: ./obj/main.o 
-	$(CC) ./obj/main.o -o ./../bin/simpleComputer $(CFLAGS) $(LIB)
+	$(CC) ./obj/main.o -o ./../bin/simplecomputer $(CFLAGS) $(LIB)
 
 
 ./obj/main.o: ./src/main.c
