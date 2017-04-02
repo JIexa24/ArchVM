@@ -1,0 +1,6 @@
+/tst/*.o
+/obj/*.o
+/*.out
+/bigchars
+/bigtest
+
