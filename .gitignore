@@ -1,6 +1,7 @@
 /cmplt
 
 /bin/*
+/build
 
 /*.o
 /*.sh
