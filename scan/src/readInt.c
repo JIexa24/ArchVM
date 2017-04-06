@@ -5,10 +5,17 @@
 
 int myPow(int a, int b)
 {
-  int i = 0;
-  for (i = 0; i < b; i++)
-    a *= a;
-  return a;
+  if (b == 0) {
+    return 1;
+  } else if (b == 1) {
+    return a;
+  } else {
+    int i = 0;
+
+    for (i = 1; i < b; i++)
+      a *= a;
+    return a;
+  }
 }
 
 int sreadInt(char* buffers, int* num, int radix)

@@ -134,6 +134,7 @@ int scanNum(int *plusFlag, int *n)
     pos = 1;
     *plusFlag = 1;
   } else {
+     pos = 0;
     *plusFlag = 0;
   }
   if (sreadInt(buffer + pos, n, SCANPRINTRADIX) != 1) {
