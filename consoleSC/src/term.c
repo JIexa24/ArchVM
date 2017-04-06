@@ -12,7 +12,6 @@ int mt_clrscr()
 int mt_gotoXY(int x, int y)
 {
   int rows, cols;
-  
   mt_getscreensize(&rows, &cols);
   if (((y < rows) && (y >= 0)) && ((x < cols) && (x >= 0))) {
     writeChar(1, "\E[");

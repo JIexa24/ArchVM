@@ -26,7 +26,6 @@ int main(int argc, char** argv)
   int exit = 0;
   int refreshFlg = 0;
   int regis = 0, regisProg = 0;
-
   enum keys key;
   
   sc_regSet(FLAG_INTERRUPT, 1);
@@ -65,8 +64,9 @@ int main(int argc, char** argv)
 
   refreshGuiSt(position);
   while (!exit) {
-    if (!refreshFlg)
+    if (!refreshFlg) {
       refreshGui(position);
+    }
 
     rk_readkey(&key);
       sc_regGet(FLAG_INTERRUPT, &regisProg);

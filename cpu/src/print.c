@@ -18,7 +18,6 @@ static void printWriteValue()
   mt_gotoXY(1, 23);
   writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
 
   mt_gotoXY(1, 23);
   command = (writeValue >> 14) & 1;
@@ -55,7 +54,7 @@ void refreshGuiSt(int position)
   printFlags(68, 11);
   printMcell(bigChars, position);
   printWriteValue();
-  mt_gotoXY(1, 24);
+  mt_gotoXY(1, 23);
 }
 /*---------------------------------------------------------------------------*/
 void refreshGui(int position)
@@ -76,18 +75,18 @@ void refreshGui(int position)
   printFlags(68, 11);
   printMcell(bigChars, position);
   printWriteValue();
-  mt_gotoXY(1, 24);
+  mt_gotoXY(1, 23);
 }
 /*---------------------------------------------------------------------------*/
 void printBoxes()
 {
   bc_box(1, 1, 61, 12);
-  bc_box(62, 1, 82, 3);
-  bc_box(62, 4, 82, 6);
-  bc_box(62, 7, 82, 9);
-  bc_box(62, 10, 82, 12);
+  bc_box(62, 1, 79, 3);
+  bc_box(62, 4, 79, 6);
+  bc_box(62, 7, 79, 9);
+  bc_box(62, 10, 79, 12);
   bc_box(1, 13, 46, 22);
-  bc_box(47, 13, 82, 22);
+  bc_box(47, 13, 79, 22);
 }
 /*---------------------------------------------------------------------------*/
 void printCounter()
@@ -122,13 +121,13 @@ void printLabels()
 {
   mt_gotoXY(30, 1);
   writeChar(1, " Memory ");
-  mt_gotoXY(66, 1);
+  mt_gotoXY(64, 1);
   writeChar(1, " accumulator ");
-  mt_gotoXY(63, 4);
-  writeChar(1, " instuctionCounter ");
-  mt_gotoXY(68, 7);
+  mt_gotoXY(65, 4);
+  writeChar(1, " instCounter ");
+  mt_gotoXY(65, 7);
   writeChar(1, " Operation ");
-  mt_gotoXY(68, 10);
+  mt_gotoXY(67, 10);
   writeChar(1, " Flags ");
   mt_gotoXY(48, 13);
   writeChar(1, " Keys: ");

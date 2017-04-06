@@ -12,7 +12,8 @@ extern int SCANPRINTRADIX;
 void setSignals()
 {
   signal(SIGALRM, timerHand);
-  signal(SIGUSR1, timerUrsignalHand);
+  signal(SIGUSR1, ursignalHand);
+  signal(SIGWINCH, windHand);
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
@@ -24,11 +25,9 @@ int changeCell(int pos)
 
   writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
 
   mt_gotoXY(1, 23);
-  writeChar(1, "Enter num:");
-  mt_gotoXY(1, 24);
+  writeChar(1, "Enter num: ");
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
     return -1;
@@ -67,13 +66,11 @@ int changeAccumulator(int pos)
   mt_gotoXY(1, 23);
   writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
 
   mt_gotoXY(1, 23);
   writeChar(1, "Change Accum (");
   writeInt(1, SCANPRINTRADIX, 10, -1);
-  writeChar(1, ")");
-  mt_gotoXY(1, 24);
+  writeChar(1, "): ");
 
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
@@ -97,13 +94,11 @@ int changeInstRegisterCount(int pos)
   mt_gotoXY(1, 23);
   writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
 
   mt_gotoXY(1, 23);
   writeChar(1, "Change Register (");
   writeInt(1, SCANPRINTRADIX, 10, -1);
-  writeChar(1, ")");
-  mt_gotoXY(1, 24);
+  writeChar(1, "): ");
 
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
@@ -154,7 +149,6 @@ int memorySave(int position)
 
   writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
 
   mt_gotoXY(1, 23);
   writeChar(1, "Enter save file name: ");
@@ -184,7 +178,6 @@ int memoryLoad(int position)
   refreshGui(position);
 
   mt_gotoXY(1, 23);
-  writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
   writeChar(1, "                                                                                \n");
 
