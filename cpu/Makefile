@@ -3,8 +3,8 @@ CFLAGS = -g3 -std=c99
 
 all: ./../lib/libCPU.a
 
-./../lib/libCPU.a: ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/timer.o ./obj/global.o ./obj/read.o ./obj/command.o
-	ar rvs ./../lib/libCPU.a ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/timer.o ./obj/global.o ./obj/read.o ./obj/command.o
+./../lib/libCPU.a: ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/handlers.o ./obj/global.o ./obj/read.o ./obj/command.o
+	ar rvs ./../lib/libCPU.a ./obj/cpu.o ./obj/change.o ./obj/print.o ./obj/handlers.o ./obj/global.o ./obj/read.o ./obj/command.o
 
 ./obj/cpu.o: ./src/cpu.c
 	$(CC) -c ./src/cpu.c -o ./obj/cpu.o $(CFLAGS) 
@@ -18,8 +18,8 @@ all: ./../lib/libCPU.a
 ./obj/read.o: ./src/read.c
 	$(CC) -c ./src/read.c -o ./obj/read.o $(CFLAGS)
 
-./obj/timer.o: ./src/timer.c
-	$(CC) -c ./src/timer.c -o ./obj/timer.o $(CFLAGS)
+./obj/handlers.o: ./src/handlers.c
+	$(CC) -c ./src/handlers.c -o ./obj/handlers.o $(CFLAGS)
 
 ./obj/global.o: ./src/global.c
 	$(CC) -c ./src/global.c -o ./obj/global.o $(CFLAGS)
