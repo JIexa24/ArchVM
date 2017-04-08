@@ -1,17 +1,17 @@
 CC = gcc
 CFLAGS = -g3 -std=c99
-LIB = -L../../lib -lSimpleComputer
+LIB = -L../lib -lSimpleComputer
 
 all: tst
 	./bin/tests
 
-tst: ./obj/main.o ./obj/tests.o 
-	$(CC) ./obj/main.o ./obj/tests.o -o ./bin/tests $(LIB)
+tst: ./obj/main.o ./obj/testsSC.o 
+	$(CC) ./obj/main.o ./obj/testsSC.o -o ./bin/tests $(LIB)
 
-./obj/tests.o: ./src/tests.c
-	$(CC) -c ./src/tests.c -o ./obj/tests.o $(CFLAGS)
+./obj/testsSC.o: ./src/testsSC.c
+	$(CC) -c ./src/testsSC.c -o ./obj/testsSC.o $(CFLAGS)
 
-./obj/main.o: ./src/tests.c
+./obj/main.o: ./src/main.c
 	$(CC) -c ./src/main.c -o ./obj/main.o $(CFLAGS)
 
     

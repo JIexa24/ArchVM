@@ -8,5 +8,6 @@
 #include "../../simpleComputer/include/sc_command.h"
 
 int test_sc_memoryInit();
+int test_sc_memorySet();
 
 #endif

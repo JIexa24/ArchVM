@@ -12,6 +12,7 @@ HANDMADE:
 	make -C cpu
 	make -C asm
 	make -C main
+	make TEST
 
 restruct:
 	make clean
