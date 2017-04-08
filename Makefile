@@ -26,6 +26,9 @@ restruct:
 	make restruct -C asm
 	make restruct -C main
 
+TEST:
+	make TEST -C simpleComputer
+
 clean:
 	rm -f lib/*
 	rm -f simpleComputer/obj/*.o

@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -g3 -std=c99
 
-all: ./../lib/libSimpleComputer.a
+all: LIBR
 
-./../lib/libSimpleComputer.a: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o 
+LIBR: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o 
 	ar rvs ./../lib/libSimpleComputer.a ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 
 ./obj/sc_memory.o: ./src/sc_memory.c
@@ -18,11 +18,9 @@ all: ./../lib/libSimpleComputer.a
 ./obj/global.o: ./src/global.c
 	$(CC) -c ./src/global.c -o ./obj/global.o $(CFLAGS)
 
-tst: ./tst/main.o
-	$(CC) ./tst/main.o  -lAsm -lSimpleComputer -lWriteInt -L../lib/
-
-./tst/main.o: ./tst/main.c
-	$(CC) -c ./tst/main.c -o ./tst/main.o $(CFLAGS)
+TEST:
+	make LIBR
+	make -C tests
 
 restruct:
 	make clean
