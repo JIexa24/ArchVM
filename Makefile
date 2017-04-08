@@ -27,7 +27,8 @@ restruct:
 	make restruct -C main
 
 TEST:
-	make TEST -C simpleComputer
+	make -C tests
+
 
 clean:
 	rm -f lib/*

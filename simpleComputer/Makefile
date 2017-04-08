@@ -18,10 +18,6 @@ LIBR: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 ./obj/global.o: ./src/global.c
 	$(CC) -c ./src/global.c -o ./obj/global.o $(CFLAGS)
 
-TEST:
-	make LIBR
-	make -C tests
-
 restruct:
 	make clean
 	make all
