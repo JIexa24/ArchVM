@@ -1,5 +1,6 @@
 all:
 	make -C build
+	make TEST
 
 HANDMADE:
 	make -C print
