@@ -33,7 +33,6 @@ int sc_regGet(int scRegister, int* value)
 {
   if ((scRegister >= 0) && (scRegister <=5)) {
     *value = BITCHECK(sc_register, scRegister);
-    return *value;
   } else { 
     return ERR_WRONG_FLAG;
   }

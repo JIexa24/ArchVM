@@ -138,6 +138,113 @@ int test_sc_regInit()
   return ret;
 }
 /*---------------------------------------------------------------------------*/
+int test_sc_regSet()
+{
+  int i;
+  int ret = 0;
+  int retf;
+
+  sc_register = 0;
+  retf = sc_regSet(FLAG_OUTMEM, 1);
+
+  if (!retf) {
+    if (!(sc_register == 4)) {
+      ret = 1;
+    } else {
+      ret = ret;
+    }
+  } else {
+    ret = 1;
+  }
+
+  retf = sc_regSet(FLAG_OUTMEM, 0);
+  if (!retf) {
+    if (!sc_register) {
+      ret = ret;
+    } else {
+      ret = 1;
+    }
+  } else {
+    ret = 1;
+  }
+
+  retf = sc_regSet(FLAG_OUTMEM, 4);
+  if (!retf) {
+    ret = 1;
+  } else {
+    ret = ret;
+  }
+
+  retf = sc_regSet(10, 0);
+  if (retf == 0) {
+    ret = 1;
+  } else {
+    ret = ret;
+  }
+
+  if (ret) {
+    write(1, "\n", 1);
+    write(1, TEST_FAIL, strlen(TEST_FAIL));
+    write(1, "Test sc_regSet(): FAIL", 22);
+  } else {
+    write(1, TEST_OK, strlen(TEST_OK));
+    write(1, "\n", 1);
+    write(1, "Test sc_regSet(): OK", 20);
+  }
+  return ret;
+}
+/*---------------------------------------------------------------------------*/
+int test_sc_regGet()
+{
+  int i;
+  int ret = 0;
+  int retf;
+  int flag;
+
+  sc_register = 0x4;
+
+  retf = sc_regGet(FLAG_OUTMEM, &flag);
+  if (retf) {
+    if (flag) {
+      ret = ret;
+    } else {
+      ret = 1;
+    }
+  } else {
+    ret = 1;
+  }
+
+  sc_register = 0x1;
+  retf = sc_regGet(FLAG_OUTMEM, &flag);
+  if (!retf) {
+    if (flag) {
+      ret = 1;
+    } else {
+      ret = ret;
+    }
+  } else {
+    ret = 1;
+  }
+
+  retf = sc_regGet(100, &flag);
+  if (!retf) {
+    ret = 1;
+  } else {
+    ret = ret;
+  }
+
+  if (ret) {
+    write(1, "\n", 1);
+    write(1, TEST_FAIL, strlen(TEST_FAIL));
+    write(1, "Test sc_regGet(): FAIL", 22);
+  } else {
+    write(1, TEST_OK, strlen(TEST_OK));
+    write(1, "\n", 1);
+    write(1, "Test sc_regGet(): OK", 20);
+  }
+  return ret;
+}
+/*---------------------------------------------------------------------------*/
 int test_sc_commandEncode()
 {
   int ret = 0;

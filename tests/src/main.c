@@ -8,6 +8,8 @@ int main ()
   ret = !(test_sc_memorySet()) ? ret : 1;
   ret = !(test_sc_memoryGet()) ? ret : 1;
   ret = !(test_sc_regInit()) ? ret : 1;
+  ret = !(test_sc_regSet()) ? ret : 1;
+  ret = !(test_sc_regGet()) ? ret : 1;
   ret = !(test_sc_commandEncode()) ? ret : 1;
   ret = !(test_sc_commandDecode()) ? ret : 1;
 
