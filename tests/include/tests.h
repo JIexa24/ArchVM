@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #ifndef TEST_H
 #define TEST_H
 
@@ -11,4 +14,7 @@ int test_sc_regSet();
 int test_sc_regGet();
 int test_sc_commandEncode();
 int test_sc_commandDecode();
+/*---------------------------------------------------------------------------*/
+
+
 #endif
