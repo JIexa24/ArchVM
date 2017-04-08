@@ -204,7 +204,7 @@ int test_sc_regGet()
   sc_register = 0x4;
 
   retf = sc_regGet(FLAG_OUTMEM, &flag);
-  if (retf) {
+  if (!retf) {
     if (flag) {
       ret = ret;
     } else {
