@@ -42,6 +42,7 @@ void refreshGuiSt(int position);
 void refreshGui(int position);
 void printBoxes();
 void printCounter();
+void printAccum();
 void printKeys(int x, int y);
 void printLabels();
 void printOperation(int position);

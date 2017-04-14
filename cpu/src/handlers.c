@@ -24,6 +24,7 @@ void timerHand(int sig)
 /*---------------------------------------------------------------------------*/
 void ursignalHand(int sig)
 {
+  sc_memoryInit();
   sc_regInit();
   sc_regSet(FLAG_INTERRUPT, 1);
   instructionRegisterCount = 0; 

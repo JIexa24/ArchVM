@@ -154,7 +154,6 @@ int main(int argc, char** argv)
     } else if (key == KEY_i) {
       raise(SIGUSR1);
       refreshFlg = 0;
-      instructionRegisterCount = 0;
       cursorX = 0;
       cursorY = 0;
     } else if (key == KEY_r) {

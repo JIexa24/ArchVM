@@ -42,13 +42,7 @@ void refreshGuiSt(int position)
   printLabels();
   printKeys(48, 14);
   printCounter();
-
-  mt_gotoXY(70, 2);
-  if (SCANPRINTRADIX == 16) {
-    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
-  } else if (SCANPRINTRADIX == 10) {
-    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
-  }
+  printAccum();
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);
@@ -60,22 +54,25 @@ void refreshGuiSt(int position)
 void refreshGui(int position)
 {
   printCounter();
-
-  mt_gotoXY(70, 2);
-  writeChar(1, "     ");
-  mt_gotoXY(70, 2);
-  if (SCANPRINTRADIX == 16) {
-    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
-  } else if (SCANPRINTRADIX == 10) {
-    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
-  }
-
+  printAccum();
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(68, 11);
   printMcell(bigChars, position);
   printWriteValue();
   mt_gotoXY(1, 23);
+}
+/*---------------------------------------------------------------------------*/
+void printAccum()
+{
+  mt_gotoXY(68, 2);
+  writeChar(1, "     ");
+  mt_gotoXY(68, 2);
+  if (SCANPRINTRADIX == 16) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
+  } else if (SCANPRINTRADIX == 10) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
+  }
 }
 /*---------------------------------------------------------------------------*/
 void printBoxes()
@@ -91,7 +88,7 @@ void printBoxes()
 /*---------------------------------------------------------------------------*/
 void printCounter()
 {
-  mt_gotoXY(70, 5);
+  mt_gotoXY(68, 5);
   mt_setfgcolor(INSTREGCOLORG);
   writeInt(1, instructionRegisterCount, SCANPRINTRADIX, 4);
   mt_setfgcolor(clr_default);
@@ -161,9 +158,7 @@ void printOperation(int position)
     } else {
       writeChar(1, "        ");
       mt_gotoXY(68, 8);
-      c = ' ';
-      writeChar(1, "  ");  
-      writeInt(1, localRAM[position] & 0x3FFF, 16, 4);
+      writeInt(1, mem & 0x3FFF, 16, 4);
     }
   }
 }
