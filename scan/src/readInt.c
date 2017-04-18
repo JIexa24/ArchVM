@@ -5,15 +5,16 @@
 
 int myPow(int a, int b)
 {
+  int tmp = a;
   if (b == 0) {
     return 1;
   } else if (b == 1) {
     return a;
   } else {
-    int i = 0;
+    int i = 1;
 
     for (i = 1; i < b; i++)
-      a *= a;
+      a = a * tmp;
     return a;
   }
 }
