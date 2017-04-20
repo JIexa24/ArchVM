@@ -55,6 +55,8 @@ int rk_readkey(enum keys *key)
     *key = KEY_x;
   } else if (strcmp(buf, "d") == 0) {
     *key = KEY_d;
+  } else if (strcmp(buf, "c") == 0) {
+    *key = KEY_c;
   } else if (strcmp(buf, "\n") == 0) {
     *key = KEY_enter;
   } else if (strcmp(buf, "\E[15~") == 0) { 

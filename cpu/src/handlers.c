@@ -27,9 +27,14 @@ void ursignalHand(int sig)
   sc_memoryInit();
   sc_regInit();
   sc_regSet(FLAG_INTERRUPT, 1);
-  instructionRegisterCount = 0; 
   accumulator = 0;
   writeUse = 0;
+  instructionRegisterCount = 0; 
+}
+/*---------------------------------------------------------------------------*/
+void ursignalHand2(int sig)
+{
+  sc_regSet(FLAG_INTERRUPT, 1);
 }
 /*---------------------------------------------------------------------------*/
 void windHand(int sig)

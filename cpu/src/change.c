@@ -13,6 +13,7 @@ void setSignals()
 {
   signal(SIGALRM, timerHand);
   signal(SIGUSR1, ursignalHand);
+  signal(SIGUSR2, ursignalHand2);
   signal(SIGWINCH, windHand);
   signal(SIGTERM, killHand);
   signal(SIGSTOP, killHand);

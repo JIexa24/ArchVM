@@ -152,13 +152,15 @@ int main(int argc, char** argv)
     if (key == KEY_q) {
       exit = 1;
       break;
+    } else if (key == KEY_c) {
+      raise(SIGUSR2);
     } else if (key == KEY_i) {
       raise(SIGUSR1);
       refreshFlg = 0;
       cursorX = 0;
       cursorY = 0;
     } else if (key == KEY_esc) {  
-        raise(SIGTERM); 
+      raise(SIGTERM); 
     } else if (key == KEY_r) {
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {

@@ -36,6 +36,7 @@ int ALU(int command, int operand);
 
 void timerHand(int sig);
 void ursignalHand(int sig);
+void ursignalHand2(int sig);
 void windHand(int sig);
 void killHand(int sig);
 
