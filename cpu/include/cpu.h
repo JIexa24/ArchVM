@@ -49,6 +49,7 @@ void printLabels();
 void printOperation(int position);
 void printFlags(int x, int y);
 int printMcell(int *bigchars, int pos);
+void printLine(int ctr);
 void printMemory(int x, int y, int position);
 
 void setSignals();

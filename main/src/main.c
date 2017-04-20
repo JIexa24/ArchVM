@@ -16,6 +16,7 @@ int main(int argc, char** argv)
 {
   sc_memoryInit();
   sc_regInit();
+  rk_mytermsave();
 
   int cursorX = 0;
   int cursorY = 0;
@@ -180,4 +181,7 @@ int main(int argc, char** argv)
     }
     position = cursorY + cursorX * 10;
   }
+  rk_mytermrestore();
+  system("rm -f termsettings");
+  return 0;
 }

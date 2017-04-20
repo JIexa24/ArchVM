@@ -16,6 +16,7 @@ void setSignals()
   signal(SIGWINCH, windHand);
   signal(SIGTERM, killHand);
   signal(SIGSTOP, killHand);
+  signal(SIGINT, killHand);
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
@@ -24,9 +25,7 @@ int changeCell(int pos)
   int command, operand, mem;
   refreshGui(pos);
   mt_gotoXY(1, 23);
-
-  writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
+  printLine(2);
 
   mt_gotoXY(1, 23);
   writeChar(1, "Enter num: ");
@@ -66,8 +65,7 @@ int changeAccumulator(int pos)
   refreshGui(pos);
 
   mt_gotoXY(1, 23);
-  writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
+  printLine(2);
 
   mt_gotoXY(1, 23);
   writeChar(1, "Change Accum (");
@@ -94,8 +92,7 @@ int changeInstRegisterCount(int pos)
   refreshGui(pos);
 
   mt_gotoXY(1, 23);
-  writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
+  printLine(2);
 
   mt_gotoXY(1, 23);
   writeChar(1, "Change Register (");
@@ -148,9 +145,7 @@ int memorySave(int position)
 
   refreshGui(position);
   mt_gotoXY(1, 23);
-
-  writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
+  printLine(2);
 
   mt_gotoXY(1, 23);
   writeChar(1, "Enter save file name: ");
@@ -180,8 +175,7 @@ int memoryLoad(int position)
   refreshGui(position);
 
   mt_gotoXY(1, 23);
-  writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
+  printLine(2);
 
   mt_gotoXY(1, 23);
   writeChar(1, "Enter load file name: ");

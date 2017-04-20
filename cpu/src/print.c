@@ -16,8 +16,7 @@ static void printWriteValue()
 {
   int command, opcode, operand;
   mt_gotoXY(1, 23);
-  writeChar(1, "                                                                                \n");
-  writeChar(1, "                                                                                \n");
+  printLine(2);
 
   mt_gotoXY(1, 23);
   command = (writeValue >> 14) & 1;
@@ -32,6 +31,17 @@ static void printWriteValue()
       writeChar(1," ");
       writeInt(1, writeValue & 0x3FFF, SCANPRINTRADIX, 4);
     }	
+  }
+}
+/*---------------------------------------------------------------------------*/
+void printLine(int ctr){
+  int x, y, i, j;
+
+  mt_getscreensize(&y, &x);
+  for (j = 0; j < ctr; j++) {
+    for (i = 0; i < x; i++) 
+      writeChar(1," ");
+    writeChar(1,"\n");
   }
 }
 /*---------------------------------------------------------------------------*/
