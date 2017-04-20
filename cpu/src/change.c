@@ -106,7 +106,7 @@ int changeInstRegisterCount(int pos)
   if ((num >= 0) && (num < sizeRAM)) {
     instructionRegisterCount = num;
   } else {
-    writeChar(2, "Accumutalor range: from 0 to 99 (0x63)");
+    writeChar(2, "Instruction range: from 0 to 99 (0x63)");
     return -1;
   }
   return 0;

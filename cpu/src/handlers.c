@@ -44,6 +44,7 @@ void windHand(int sig)
 /*---------------------------------------------------------------------------*/
 void killHand(int sig)
 { 
+  mt_clrscr();
   rk_mytermrestore();
   system("rm -f termsettings");
   exit(0);
