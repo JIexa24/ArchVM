@@ -16,7 +16,6 @@ void setSignals()
   signal(SIGUSR2, ursignalHand2);
   signal(SIGWINCH, windHand);
   signal(SIGTERM, killHand);
-  signal(SIGSTOP, killHand);
   signal(SIGINT, killHand);
 }
 /*---------------------------------------------------------------------------*/
