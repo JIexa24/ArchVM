@@ -57,18 +57,20 @@ int rk_readkey(enum keys *key)
     *key = KEY_d;
   } else if (strcmp(buf, "\n") == 0) {
     *key = KEY_enter;
-  } else if (strcmp(buf, "\033[15~") == 0) { 
+  } else if (strcmp(buf, "\E[15~") == 0) { 
     *key = KEY_f5;
-  } else if (strcmp(buf, "\033[17~") == 0) {
+  } else if (strcmp(buf, "\E[17~") == 0) {
     *key = KEY_f6;
-  } else if (strcmp(buf, "\033[A") == 0) {
+  } else if (strcmp(buf, "\E[A") == 0) {
     *key = KEY_up;
-  } else if (strcmp(buf, "\033[B") == 0) {
+  } else if (strcmp(buf, "\E[B") == 0) {
     *key = KEY_down;
-  } else if (strcmp(buf, "\033[C") == 0) {
+  } else if (strcmp(buf, "\E[C") == 0) {
     *key = KEY_right;
-  } else if (strcmp(buf, "\033[D") == 0) {
+  } else if (strcmp(buf, "\E[D") == 0) {
     *key = KEY_left;
+  } else if (strcmp(buf, "\E") == 0) {
+    *key = KEY_esc;
   } else {
     *key = KEY_other;
   }

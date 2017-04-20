@@ -37,6 +37,7 @@ int ALU(int command, int operand);
 void timerHand(int sig);
 void ursignalHand(int sig);
 void windHand(int sig);
+void killHand(int sig);
 
 void refreshGuiSt(int position);
 void refreshGui(int position);

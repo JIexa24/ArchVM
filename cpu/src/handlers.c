@@ -36,3 +36,9 @@ void windHand(int sig)
 {
   refreshGuiSt(0);
 }
+/*---------------------------------------------------------------------------*/
+void killHand(int sig)
+{
+  mt_clrscr();
+  exit(0);
+}

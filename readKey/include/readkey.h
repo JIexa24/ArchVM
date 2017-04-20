@@ -40,6 +40,7 @@ enum keys {
   KEY_left,
   KEY_right,
   KEY_enter,
+  KEY_esc,
   KEY_other
 };
 

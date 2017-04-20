@@ -156,11 +156,13 @@ int main(int argc, char** argv)
       refreshFlg = 0;
       cursorX = 0;
       cursorY = 0;
+    } else if (key == KEY_esc) {  
+        raise(SIGTERM); 
     } else if (key == KEY_r) {
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
         sc_regSet(FLAG_INTERRUPT, 0);
-        timerHand(SIGALRM);
+        raise(SIGALRM);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10 + 1;
         cursorY = instructionRegisterCount % 10;
