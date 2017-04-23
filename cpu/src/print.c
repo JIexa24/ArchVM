@@ -55,7 +55,7 @@ void refreshGuiSt(int position)
   printAccum();
   printOperation(position);
   printMemory(2, 2, position);
-  printFlags(68, 11);
+  printFlags(66, 11);
   printMcell(bigChars, position);
   printWriteValue();
   mt_gotoXY(1, 23);
@@ -67,7 +67,7 @@ void refreshGui(int position)
   printAccum();
   printOperation(position);
   printMemory(2, 2, position);
-  printFlags(68, 11);
+  printFlags(66, 11);
   printMcell(bigChars, position);
   printWriteValue();
   mt_gotoXY(1, 23);
@@ -183,6 +183,7 @@ void printFlags(int x, int y)
   } else {
     writeChar(1, " ");
   }
+  writeChar(1, " ");
   if (BITCHECK(sc_register, FLAG_COMMAND) == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "E");
@@ -190,13 +191,15 @@ void printFlags(int x, int y)
   } else {
     writeChar(1, " ");
   }
+  writeChar(1, " ");
   if (BITCHECK(sc_register, FLAG_INTERRUPT) == 1) {
     mt_setfgcolor(REGCOLOR);
-    writeChar(1, "V");
+    writeChar(1, "T");
     mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
+  writeChar(1, " ");
   if (BITCHECK(sc_register, FLAG_OUTMEM) == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "M");
@@ -204,6 +207,7 @@ void printFlags(int x, int y)
   } else {
     writeChar(1, " ");
   }
+  writeChar(1, " ");
   if (BITCHECK(sc_register, FLAG_DIVISION) == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "Z");
