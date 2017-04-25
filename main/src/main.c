@@ -131,7 +131,7 @@ int main(int argc, char** argv)
 					
         case KEY_t:
           raise(SIGALRM);
-		  position = instructionRegisterCount;
+          position = instructionRegisterCount;
           cursorX = instructionRegisterCount / 10;
           cursorY = instructionRegisterCount % 10;
         break;
