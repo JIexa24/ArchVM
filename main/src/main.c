@@ -130,7 +130,7 @@ int main(int argc, char** argv)
         break;
 					
         case KEY_t:
-          timerHand(SIGALRM);
+          raise(SIGALRM);
 		  position = instructionRegisterCount;
           cursorX = instructionRegisterCount / 10;
           cursorY = instructionRegisterCount % 10;
