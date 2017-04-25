@@ -17,6 +17,8 @@ void setSignals()
   signal(SIGWINCH, windHand);
   signal(SIGTERM, killHand);
   signal(SIGINT, killHand);
+  signal(SIGTSTP, killHand);
+  signal(SIGQUIT, killHand);
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
