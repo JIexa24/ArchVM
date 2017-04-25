@@ -176,39 +176,51 @@ void printOperation(int position)
 void printFlags(int x, int y)
 {
   mt_gotoXY(x, y);
-  if (BITCHECK(sc_register, FLAG_OVERFLOW) == 1) {
+
+  int reg;
+
+  sc_regGet(FLAG_OVERFLOW, &reg);
+  if (reg == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "O");
     mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
+
   writeChar(1, " ");
-  if (BITCHECK(sc_register, FLAG_COMMAND) == 1) {
+  sc_regGet(FLAG_COMMAND, &reg);
+  if (reg == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "E");
     mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
+
   writeChar(1, " ");
-  if (BITCHECK(sc_register, FLAG_INTERRUPT) == 1) {
+  sc_regGet(FLAG_INTERRUPT, &reg);
+  if (reg == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "T");
     mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
+
   writeChar(1, " ");
-  if (BITCHECK(sc_register, FLAG_OUTMEM) == 1) {
+  sc_regGet(FLAG_OUTMEM, &reg);
+  if (reg == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "M");
     mt_setfgcolor(clr_default);
   } else {
     writeChar(1, " ");
   }
+
   writeChar(1, " ");
-  if (BITCHECK(sc_register, FLAG_DIVISION) == 1) {
+  sc_regGet(FLAG_DIVISION, &reg);
+  if (reg == 1) {
     mt_setfgcolor(REGCOLOR);
     writeChar(1, "Z");
     mt_setfgcolor(clr_default);
