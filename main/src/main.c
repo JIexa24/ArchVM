@@ -4,9 +4,7 @@
 #include "./../include/mainHeader.h"
 
 extern int accumulator;
-extern int localRAM[];
 extern int instructionRegisterCount;
-extern short int sc_register;
 extern int writeUsed; 
 extern int writeValue;
 extern int bigChars[];

@@ -3,10 +3,7 @@
 */
 #include "./../include/cpu.h"
 
-extern int accumulator;
-extern int localRAM[];
 extern int instructionRegisterCount;
-extern short int sc_register;
 
 int readMcell(int pos)
 {

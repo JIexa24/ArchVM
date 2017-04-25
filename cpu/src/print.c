@@ -4,9 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int localRAM[];
 extern int instructionRegisterCount;
-extern short int sc_register;
 extern int bigChars[];
 extern int writeValue;
 extern int writeUse;
