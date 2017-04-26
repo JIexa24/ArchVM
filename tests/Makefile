@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g3 -std=c99
-LIB = -L../lib -lSimpleComputer
+LIB = -L../lib -lSimpleComputer -lWriteInt
 
 all: tst
 	./bin/tests
