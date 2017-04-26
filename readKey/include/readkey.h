@@ -25,7 +25,7 @@ c_iflag - флаги констант:
 
 */
 enum keys {
-  KEY_l,
+  KEY_l = 0,
   KEY_s,
   KEY_r,
   KEY_t,

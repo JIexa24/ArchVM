@@ -73,6 +73,7 @@ void refreshGui(int position)
 /*---------------------------------------------------------------------------*/
 void printAccum()
 {
+  mt_setfgcolor(ACCUMCOLORFG);
   mt_gotoXY(68, 2);
   writeChar(1, "     ");
   mt_gotoXY(68, 2);
@@ -81,6 +82,7 @@ void printAccum()
   } else if (SCANPRINTRADIX == 10) {
     writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
   }
+  mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
 void printBoxes()
@@ -97,13 +99,14 @@ void printBoxes()
 void printCounter()
 {
   mt_gotoXY(68, 5);
-  mt_setfgcolor(INSTREGCOLORG);
+  mt_setfgcolor(INSTREGCOLORFG);
   writeInt(1, instructionRegisterCount, SCANPRINTRADIX, 4);
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
 void printKeys(int x, int y)
 {
+  mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(x, y);
   writeChar(1, "l  - load");
   mt_gotoXY(x, y + 1);
@@ -120,10 +123,12 @@ void printKeys(int x, int y)
   writeChar(1, "F6 - instructionCounter");
   mt_gotoXY(x, y + 7);
   writeChar(1, "q  - quit");
+  mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
 void printLabels()
 {
+  mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(30, 1);
   writeChar(1, " Memory ");
   mt_gotoXY(64, 1);
@@ -136,6 +141,7 @@ void printLabels()
   writeChar(1, " Flags ");
   mt_gotoXY(48, 13);
   writeChar(1, " Keys: ");
+  mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
 void printOperation(int position)
@@ -150,7 +156,7 @@ void printOperation(int position)
   int command;
   int operand;
   int isCommand = (mem >> 14) & 1;
-  char c;
+  char c = '+';
 
   mt_gotoXY(68, 8);
   if ((position >= 0) && (position < sizeRAM)) {
@@ -158,15 +164,19 @@ void printOperation(int position)
       sc_commandDecode(mem, &command, &operand);
       writeChar(1, "        ");
       mt_gotoXY(68, 8);
+      mt_setfgcolor(COMMANDCOLORFG);
       write(1, &c, 1);
       writeInt(1, command, 16, 2);
       writeChar(1, " : ");
+      mt_setfgcolor(OPERANDCOLORFG);
       writeInt(1, operand, 16, 2);
-      c = '+';
+      mt_setfgcolor(clr_default);
     } else {
+      mt_setfgcolor(COMMANDCOLORFG);
       writeChar(1, "        ");
       mt_gotoXY(68, 8);
       writeInt(1, mem & 0x3FFF, 16, 4);
+      mt_setfgcolor(clr_default);
     }
   }
 }
@@ -179,7 +189,7 @@ void printFlags(int x, int y)
 
   sc_regGet(FLAG_OVERFLOW, &reg);
   if (reg == 1) {
-    mt_setfgcolor(REGCOLOR);
+    mt_setfgcolor(REGCOLORFG);
     writeChar(1, "O");
     mt_setfgcolor(clr_default);
   } else {
@@ -189,7 +199,7 @@ void printFlags(int x, int y)
   writeChar(1, " ");
   sc_regGet(FLAG_COMMAND, &reg);
   if (reg == 1) {
-    mt_setfgcolor(REGCOLOR);
+    mt_setfgcolor(REGCOLORFG);
     writeChar(1, "E");
     mt_setfgcolor(clr_default);
   } else {
@@ -199,7 +209,7 @@ void printFlags(int x, int y)
   writeChar(1, " ");
   sc_regGet(FLAG_INTERRUPT, &reg);
   if (reg == 1) {
-    mt_setfgcolor(REGCOLOR);
+    mt_setfgcolor(REGCOLORFG);
     writeChar(1, "T");
     mt_setfgcolor(clr_default);
   } else {
@@ -209,7 +219,7 @@ void printFlags(int x, int y)
   writeChar(1, " ");
   sc_regGet(FLAG_OUTMEM, &reg);
   if (reg == 1) {
-    mt_setfgcolor(REGCOLOR);
+    mt_setfgcolor(REGCOLORFG);
     writeChar(1, "M");
     mt_setfgcolor(clr_default);
   } else {
@@ -219,7 +229,7 @@ void printFlags(int x, int y)
   writeChar(1, " ");
   sc_regGet(FLAG_DIVISION, &reg);
   if (reg == 1) {
-    mt_setfgcolor(REGCOLOR);
+    mt_setfgcolor(REGCOLORFG);
     writeChar(1, "Z");
     mt_setfgcolor(clr_default);
   } else {
@@ -236,12 +246,14 @@ int printMcell(int *bigchars, int pos)
   char c;
   int indexBigChar = 0;
 
+  mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(14,13);
   writeChar(1," Cell: ");
   writeInt(1, pos, 16, 2);
   writeChar(1,"( ");
   writeInt(1, pos, 10, 2);
   writeChar(1," ) ");
+  mt_setfgcolor(clr_default);
 
   if ((pos >= sizeRAM) && (pos < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
@@ -282,12 +294,14 @@ void printMemory(int x, int y, int position)
   int mem, command;
   int opcode, operand;
 
+  mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(68, 13);
   if (SCANPRINTRADIX == 16) {
     writeChar(1, " HEX ");
   } else if (SCANPRINTRADIX == 10) {
     writeChar(1, " DEC ");
   }
+  mt_setfgcolor(clr_default);
 
   if ((position >= sizeRAM) && (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
@@ -306,7 +320,7 @@ void printMemory(int x, int y, int position)
         mt_setbgcolor(TEXTCOLORBG);
       }
       if ((i + j * 10 ) == instructionRegisterCount) {
-        mt_setfgcolor(INSTREGCOLORG);
+        mt_setfgcolor(INSTREGCOLORFG);
       }
     
       if (command == 0) {

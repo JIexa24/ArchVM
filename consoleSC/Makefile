@@ -7,7 +7,7 @@ all: ./../lib/libTerm.a
 	ar rvs ./../lib/libTerm.a ./obj/term.o
 
 
-./obj/term.o: ./src/term.c
+./obj/term.o: ./src/term.c ./include/term.h
 	$(CC) -c ./src/term.c -o ./obj/term.o -lWriteInt -L../lib/ $(CFLAGS)
 
 restruct:

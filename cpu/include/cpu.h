@@ -26,10 +26,18 @@
 #define TEXTCOLORFG clr_black
 #define TEXTCOLORBG clr_green
 
-#define INSTREGCOLORG clr_yellow
+#define FLAGCOLORFG clr_green
 
-#define REGCOLOR clr_blue
+#define KEYCOLORFG clr_red
 
+#define INSTREGCOLORFG clr_yellow
+
+#define REGCOLORFG clr_blue
+
+#define COMMANDCOLORFG clr_purple
+#define OPERANDCOLORFG clr_light_blue
+
+#define ACCUMCOLORFG clr_default
 
 void CU();
 int ALU(int command, int operand);
