@@ -19,13 +19,13 @@ int test_sc_memoryInit()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_memoryInit(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_memoryInit(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memoryInit(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_memoryInit(): OK");
   }
   return ret;
 }
@@ -59,13 +59,13 @@ int test_sc_memorySet()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_memorySet(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_memorySet(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memorySet(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_memorySet(): OK");
   }
   return ret;
 }
@@ -106,13 +106,13 @@ int test_sc_memoryGet()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_memoryGet(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_memoryGet(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memoryGet(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_memoryGet(): OK");
   }
   return ret;
 }
@@ -130,13 +130,13 @@ int test_sc_regInit()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_regInit(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_regInit(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regInit(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_regInit(): OK");
   }
   return ret;
 }
@@ -186,13 +186,13 @@ int test_sc_regSet()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_regSet(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_regSet(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regSet(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_regSet(): OK");
   }
   return ret;
 }
@@ -237,13 +237,13 @@ int test_sc_regGet()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_regGet(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_regGet(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regGet(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_regGet(): OK");
   }
   return ret;
 }
@@ -266,13 +266,13 @@ int test_sc_commandEncode()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_commandEncode(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_commandEncode(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_commandEncode(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_commandEncode(): OK");
   }
   return ret;
 }
@@ -295,13 +295,13 @@ int test_sc_commandDecode()
   }
 
   if (ret) {
-    writeChar(1, "\n");
-    writeChar(1, TEST_FAIL);
-    writeChar(1, "Test sc_commandDecode(): FAIL");
+    printf("\n");
+    printf(TEST_FAIL);
+    printf("Test sc_commandDecode(): FAIL");
   } else {
-    writeChar(1, TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_commandDecode(): OK");
+    printf(TEST_OK);
+    printf("\n");
+    printf("Test sc_commandDecode(): OK");
   }
   return ret;
 }
