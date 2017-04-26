@@ -18,6 +18,5 @@ int main ()
 
   writeChar(1, TEST_DEF);
   writeChar(1, "\n");
-  writeChar(1, "\n");
   return ret;
 }

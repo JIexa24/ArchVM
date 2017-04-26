@@ -27,6 +27,7 @@ restruct:
 	make restruct -C cpu
 	make restruct -C asm
 	make restruct -C main
+	make restruct -C tests
 
 TEST:
 	make -C tests

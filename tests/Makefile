@@ -15,3 +15,7 @@ tst: ./obj/main.o ./obj/testsSC.o
 ./obj/main.o: ./src/main.c
 	$(CC) -c ./src/main.c -o ./obj/main.o $(CFLAGS)
 
+restruct:
+	rm ./obj/*.o
+	make all
+
