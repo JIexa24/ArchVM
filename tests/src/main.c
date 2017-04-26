@@ -16,8 +16,8 @@ int main ()
   ret = !(test_sc_commandEncode()) ? ret : 1;
   ret = !(test_sc_commandDecode()) ? ret : 1;
 
-  printf(TEST_DEF);
-  printf("\n");
-  printf("\n");
+  writeChar(1, TEST_DEF);
+  writeChar(1, "\n");
+  writeChar(1, "\n");
   return ret;
 }
