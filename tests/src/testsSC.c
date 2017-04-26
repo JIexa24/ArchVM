@@ -19,13 +19,13 @@ int test_sc_memoryInit()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_memoryInit(): FAIL", 26);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_memoryInit(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_memoryInit(): OK", 24);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_memoryInit(): OK");
   }
   return ret;
 }
@@ -59,13 +59,13 @@ int test_sc_memorySet()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_memorySet(): FAIL", 26);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_memorySet(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_memorySet(): OK", 24);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_memorySet(): OK");
   }
   return ret;
 }
@@ -106,13 +106,13 @@ int test_sc_memoryGet()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_memoryGet(): FAIL", 26);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_memoryGet(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_memoryGet(): OK", 24);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_memoryGet(): OK");
   }
   return ret;
 }
@@ -130,13 +130,13 @@ int test_sc_regInit()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_regInit(): FAIL", 23);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_regInit(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_regInit(): OK", 21);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_regInit(): OK");
   }
   return ret;
 }
@@ -186,13 +186,13 @@ int test_sc_regSet()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_regSet(): FAIL", 22);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_regSet(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_regSet(): OK", 20);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_regSet(): OK");
   }
   return ret;
 }
@@ -237,13 +237,13 @@ int test_sc_regGet()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_regGet(): FAIL", 22);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_regGet(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_regGet(): OK", 20);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_regGet(): OK");
   }
   return ret;
 }
@@ -266,13 +266,13 @@ int test_sc_commandEncode()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_commandEncode(): FAIL", 29);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_commandEncode(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_commandEncode(): OK", 27);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_commandEncode(): OK");
   }
   return ret;
 }
@@ -295,13 +295,13 @@ int test_sc_commandDecode()
   }
 
   if (ret) {
-    write(1, "\n", 1);
-    write(1, TEST_FAIL, strlen(TEST_FAIL));
-    write(1, "Test sc_commandDecode(): FAIL", 29);
+    writeChar(1, "\n");
+    writeChar(1, TEST_FAIL);
+    writeChar(1, "Test sc_commandDecode(): FAIL");
   } else {
-    write(1, TEST_OK, strlen(TEST_OK));
-    write(1, "\n", 1);
-    write(1, "Test sc_commandDecode(): OK", 27);
+    writeChar(1, TEST_OK);
+    writeChar(1, "\n");
+    writeChar(1, "Test sc_commandDecode(): OK");
   }
   return ret;
 }
