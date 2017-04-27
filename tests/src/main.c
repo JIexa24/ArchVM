@@ -16,6 +16,10 @@ int main ()
   ret = !(test_sc_commandEncode()) ? ret : 1;
   ret = !(test_sc_commandDecode()) ? ret : 1;
 
+  writeChar(1, "\n");
+
+  ret = !(test_asmCommand()) ? ret : 1;
+
   writeChar(1, TEST_DEF);
   writeChar(1, "\n");
   return ret;

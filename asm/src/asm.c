@@ -96,7 +96,7 @@ int testArgv(char *argv[])
 
   ptr1 = strrchr(argv[1], '.');
   ptr2 = strrchr(argv[2], '.');
-  if ((strcmp(ptr1, ".o") != 0) || (strcmp(ptr2, ".sa") != 0)) {
+  if ((!(strcmp(ptr1, ".o") == 0)) || (!(strcmp(ptr2, ".sa") == 0))) {
     return -1;
   } else {
     return 0;
@@ -188,7 +188,7 @@ int asmCommand(char *str)
   return ret;
 }
 /*---------------------------------------------------------------------------*/
-int strToCommand(char* ptr,int* value)
+int strToCommand(char* ptr, int* value)
 {
   int command, operand;
   int plusFlag = 0;

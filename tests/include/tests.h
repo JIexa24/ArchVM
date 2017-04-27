@@ -15,6 +15,6 @@ int test_sc_regGet();
 int test_sc_commandEncode();
 int test_sc_commandDecode();
 /*---------------------------------------------------------------------------*/
-
+int test_asmCommand();
 
 #endif

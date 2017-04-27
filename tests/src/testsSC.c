@@ -8,10 +8,10 @@ extern short int sc_register;
 
 int test_sc_memoryInit()
 {
-  int i;
   int ret = 0;
   sc_memoryInit();
 
+  int i;
   for (i = 0; i < sizeRAM; i++) {
     if (localRAM[i] != 0) {
       ret = 1;
@@ -135,7 +135,6 @@ int test_sc_regInit()
 /*---------------------------------------------------------------------------*/
 int test_sc_regSet()
 {
-  int i;
   int ret = 0;
   int retf;
 
@@ -189,7 +188,6 @@ int test_sc_regSet()
 /*---------------------------------------------------------------------------*/
 int test_sc_regGet()
 {
-  int i;
   int ret = 0;
   int retf;
   int flag;
