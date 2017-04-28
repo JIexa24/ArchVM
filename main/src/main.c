@@ -14,7 +14,9 @@ int main(int argc, char** argv)
 {
   sc_memoryInit();
   sc_regInit();
+  setSignals();
   rk_mytermsave();
+  sc_regSet(FLAG_INTERRUPT, 1);
 
   int cursorX = 0;
   int cursorY = 0;
@@ -25,9 +27,7 @@ int main(int argc, char** argv)
   int exit = 0;
   int refreshFlg = 0;
   int regis = 0, regisProg = 0;
-  enum keys key;
-  
-  sc_regSet(FLAG_INTERRUPT, 1);
+  enum keys key = KEY_other;
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
@@ -35,8 +35,9 @@ int main(int argc, char** argv)
   }
 
   bc_bigcharread(fd, bigChars, 17, &cn);
+
   close(fd);
-  setSignals();
+
   mt_clrscr();
 
   /* test memory set */
