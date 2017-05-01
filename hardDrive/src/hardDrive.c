@@ -4,7 +4,7 @@
 #include "./../include/hardDrive.h"
 
 unsigned int countCylinder;
-гnsigned int countHead;
+unsigned int countHead;
 unsigned int countSector;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS)
