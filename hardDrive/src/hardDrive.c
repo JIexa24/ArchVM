@@ -3,79 +3,97 @@
 */
 #include "./../include/hardDrive.h"
 
+unsigned int countCylinder;
+гnsigned int countHead;
+unsigned int countSector;
+
 int g_lba2chs(tLBA LBA, tCHS* CHS)
 {
-  int temp1, temp2, divider, i;
-  temp1 = LBA.lba / 63; 
-  temp2 = temp1 / 1023;
-  for (i = 2; i <= 256; i *= 2) {
-    if (i / 2 < temp2 && i > temp2) {
-      if (i == 256) {
-        --i;
-      }
-      divider = i;
-      break;
-    }
-  }
-  CHS->countSector = 63;
-  CHS->countHead = divider;
-  CHS->countCylinder = temp1 / divider;
+  CHS->countSector = (LBA.lba / 15) / 63;
+  CHS->countHead = (LBA.lba / 15) % 63;
+  CHS->countCylinder = LBA.lba % 63 + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_lba2large(tLBA LBA, tLARGE* LARGE)
 {
+  LARGE->countSector = (LBA.lba / 63) / 255;
+  LARGE->countHead = (LBA.lba / 63) % 255;
+  LARGE->countCylinder = LBA.lba % 255 + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_lba2idechs(tLBA LBA, tIDECHS* IDECHS)
 {
+  IDECHS->countSector = (LBA.lba / 15) / 255;
+  IDECHS->countHead = (LBA.lba / 15) % 255;
+  IDECHS->countCylinder = LBA.lba % 255 + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_chs2large(tCHS CHS, tLARGE* LARGE)
 {
+  tLBA tmpLBA;
+  g_chs2lba(CHS, &tmpLBA);
+  g_lba2large(tmpLBA, LARGE);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_chs2lba(tCHS CHS, tLBA* LBA)
 {
-  LBA->lba = (CHS.countCylinder * 255 + CHS.countHead) * 63 + CHS.countSector - 1;
+  LBA->lba = (CHS.countCylinder * 15 + CHS.countHead) * 63 + CHS.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_chs2idechs(tIDECHS IDECHS, tLBA* LBA)
 {
+  tLBA tmpLBA;
+  g_chs2lba(IDECHS, &tmpLBA);
+  g_lba2idechs(tmpLBA, LBA);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_large2chs(tLARGE LARGE, tCHS* CHS)
 {
+  tLBA tmpLBA;
+  g_large2lba(LARGE, &tmpLBA);
+  g_lba2chs(tmpLBA, CHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_large2idechs(tLARGE LARGE, tIDECHS* IDECHS)
 {
+  tLBA tmpLBA;
+  g_large2lba(LARGE, &tmpLBA);
+  g_lba2idechs(tmpLBA, IDECHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_large2lba(tLARGE LARGE, tLBA* LBA)
 {
+  LBA->lba = (LARGE.head + 255 * LARGE.cyl) * 63 + LARGE.sec - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_idechs2chs(tIDECHS IDECHS, tCHS* CHS)
 {
+  tLBA tmpLBA;
+  g_idechs2lba(IDECHS, &tmpLBA);
+  g_lba2chs(tmpLBA, CHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_idechs2lagre(tIDECHS IDECHS, tLARGE* LARGE)
 {
+  tLBA tmpLBA;
+  g_idechs2lba(IDECHS, &tmpLBA);
+  g_lba2large(tmpLBA, LARGE);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_idechs2lba(tIDECHS IDECHS, tLBA* LBA)
 {
+  LBA->lba = (IDECHS.head + 15 * IDECHS.cyl) * 255 + IDECHS.sec - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/;
