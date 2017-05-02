@@ -7,25 +7,25 @@
 #include "./../../cpu/include/cpu.h"
 
 typedef struct TCHS {
-  unsigned int countCylinder: 10;
-  unsigned int countHead:      4;
-  unsigned int countSector:    6;
+  unsigned int countCylinder; /* 10 */
+  unsigned int countHead;     /* 4 */
+  unsigned int countSector;   /* 6 */
 } tCHS;
 
 typedef struct TLARGE { 
-  unsigned int countCylinder: 10;
-  unsigned int countHead:      8;
-  unsigned int countSector:    6;
+  unsigned int countCylinder; /* 10 */
+  unsigned int countHead;     /* 8 */
+  unsigned int countSector;   /* 6 */
 } tLARGE;
 
 typedef struct TIDECHS {
-  unsigned int countCylinder: 16;
-  unsigned int countHead:      8;
-  unsigned int countSector:    6;
+  unsigned int countCylinder; /* 16 */
+  unsigned int countHead;     /* 8 */
+  unsigned int countSector;   /* 6 */
 } tIDECHS;
 
 typedef struct TLBA { 
-  unsigned int lba: 32;
+  unsigned int lba; /* 32 */
 } tLBA;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS);

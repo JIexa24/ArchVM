@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -g3 -std=c99
-LIB = -L../lib -lSimpleComputer -lWriteInt -lAsm -lReadInt
+LIB = -L../lib -lSimpleComputer -lWrite -lAsm -lReadInt
 CMAKELIB = -L../build/simpleComputer -L../build/print -L../build/asm -L../build/scan
 
 all: tst
