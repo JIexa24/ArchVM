@@ -11,14 +11,10 @@ int main(int argc, char** argv)
 {
   double sizeDisc;
   tIDECHS geometry;
-  printf("\n%u %u %u",geometry.countCylinder,geometry.countHead,geometry.countSector);
   initIdesh(&geometry);
-  printf("\n%u %u %u",geometry.countCylinder,geometry.countHead,geometry.countSector);
 
   tCHS chs;
-  printf("\n%u %u %u",chs.countCylinder,chs.countHead,chs.countSector);
   g_idechs2chs(geometry, &chs);
-  printf("\n%u %u %u",chs.countCylinder,chs.countHead,chs.countSector);
 
   sizeDisc = chs.countCylinder * chs.countHead * chs.countSector;
   sizeDisc = sizeDisc / (1024 * 1024);
