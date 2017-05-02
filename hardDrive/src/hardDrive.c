@@ -3,9 +3,9 @@
 */
 #include "./../include/hardDrive.h"
 
-unsigned int countCylinder;
-unsigned int countHead;
-unsigned int countSector;
+extern unsigned int countCylinder;
+extern unsigned int countHead;
+extern unsigned int countSector;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS)
 {

@@ -55,5 +55,7 @@ int a_idechs2large(tIDECHS geometry1, tLARGE geometry2, tIDECHS IDECHS,
                    tLARGE* LARGE);
 int a_chs2idechs(tCHS geometry1, tIDECHS geometry2, tCHS CHS, tIDECHS* IDECHS);
 int a_idechs2chs(tIDECHS geometry1, tCHS geometry2, tIDECHS IDECHS,tCHS* CHS);
+/*---------------------------------------------------------------------------*/
+int initIdesh(tIDECHS* geometry);
 
 #endif
