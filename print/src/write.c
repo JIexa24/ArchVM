@@ -1,7 +1,7 @@
 /*
   Created by JIexa24 (Alexey R.)
 */
-#include "./../include/writeInt.h"
+#include "./../include/write.h"
 
 void writeChar(int fd, char* str)
 {

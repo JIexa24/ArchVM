@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "./../../print/include/writeInt.h"
 
 #define sizeRAM 100 
 #define countCmd 38

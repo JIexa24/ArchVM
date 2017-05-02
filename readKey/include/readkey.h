@@ -11,7 +11,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-#include "./../../print/include/writeInt.h"
+#include "../../cpu/include/cpu.h"
 
 /*
 

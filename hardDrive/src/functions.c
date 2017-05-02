@@ -15,7 +15,7 @@ int initIdesh(tIDECHS* geometry) {
 
   writeChar(1, "countCylinder\n");
   do {
-    read(1,&buffer[i++],1);
+    read(1, &buffer[i++], 1);
   } while (buffer[i - 1] != '\n');
   buffer[i - 1] = '\0';
   sreadInt(buffer, &tmp, 10);
@@ -24,7 +24,7 @@ int initIdesh(tIDECHS* geometry) {
 
   writeChar(1, "countHead\n");
   do {
-    read(1,&buffer[i++],1);
+    read(1, &buffer[i++], 1);
   } while (buffer[i - 1] != '\n');
   buffer[i - 1] = '\0';
   sreadInt(buffer, &tmp, 10);
@@ -33,7 +33,7 @@ int initIdesh(tIDECHS* geometry) {
 
   writeChar(1, "countSector\n");
   do {
-    read(1,&buffer[i++],1);
+    read(1, &buffer[i++], 1);
   } while (buffer[i - 1] != '\n');
   buffer[i - 1] = '\0';
   sreadInt(buffer, &tmp, 10);

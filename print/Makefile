@@ -1,13 +1,13 @@
 CC = gcc
 CFLAGS = -g3 -std=c99
 
-all: ./../lib/libWriteInt.a
+all: ./../lib/libWrite.a
 
-./../lib/libWriteInt.a: ./obj/writeInt.o 
-	ar rvs ./../lib/libWriteInt.a ./obj/writeInt.o
+./../lib/libWrite.a: ./obj/write.o 
+	ar rvs ./../lib/libWrite.a ./obj/write.o
 
-./obj/writeInt.o: ./src/writeInt.c
-	$(CC) -c ./src/writeInt.c -o ./obj/writeInt.o $(CFLAGS)
+./obj/write.o: ./src/write.c
+	$(CC) -c ./src/write.c -o ./obj/write.o $(CFLAGS)
 
 clean:
 	rm -f ./obj/*.o

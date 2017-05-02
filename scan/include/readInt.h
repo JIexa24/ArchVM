@@ -6,7 +6,7 @@
 
 #include <unistd.h>
 #include <string.h>
-#include "./../../print/include/writeInt.h"
+#include "./../../print/include/write.h"
 
 int sreadInt(char* buffers, int* num, int radix);
 int myPow(int a, int b);

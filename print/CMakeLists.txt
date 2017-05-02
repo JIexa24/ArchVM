@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8) 
 
-set(SOURCE_LIB src/writeInt.c)		# Установка переменной со списком исходников
+set(SOURCE_LIB src/write.c)		# Установка переменной со списком исходников
 include_directories(include)
-add_library(WriteInt STATIC ${SOURCE_LIB})	
+add_library(Write STATIC ${SOURCE_LIB})	

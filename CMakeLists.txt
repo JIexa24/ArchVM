@@ -14,14 +14,14 @@ include_directories(main/include)
 add_executable(../bin/simplecomputer main/src/main.c)
 
 target_link_libraries(../bin/simplecomputer CPU Term SimpleComputer Asm 
-WriteInt ReadInt BigChars ReadKey)
+Write ReadInt BigChars ReadKey)
 
 include_directories(asm/include)
 add_executable(../bin/sat asm/src/main.c)
-target_link_libraries(../bin/sat Asm CPU Term SimpleComputer WriteInt ReadInt BigChars ReadKey)
+target_link_libraries(../bin/sat Asm CPU Term SimpleComputer Write ReadInt BigChars ReadKey)
 
 include_directories(hardDrive/include)
 add_executable(../bin/hard hardDrive/src/main.c)
-target_link_libraries(../bin/hard HardDrive WriteInt ReadInt)
+target_link_libraries(../bin/hard HardDrive Write ReadInt)
 
 

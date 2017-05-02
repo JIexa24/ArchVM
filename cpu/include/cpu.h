@@ -10,7 +10,7 @@
 #include "./../../bc/include/bc.h"
 #include "./../../consoleSC/include/term.h"
 #include "./../../readKey/include/readkey.h"
-#include "./../../print/include/writeInt.h"
+#include "./../../print/include/write.h"
 #include "./../../scan/include/readInt.h"
 #include "./../../hardDrive/include/hardDrive.h"
 #include "./../../asm/include/asm.h"
