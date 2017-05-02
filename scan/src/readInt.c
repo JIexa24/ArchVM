@@ -18,7 +18,7 @@ int myPow(int a, int b)
     return a;
   }
 }
-
+/*---------------------------------------------------------------------------*/
 int sreadInt(char* buffers, int* num, int radix)
 {
   int size = strlen(buffers) - 1;

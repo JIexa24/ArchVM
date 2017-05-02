@@ -114,7 +114,7 @@ int changeInstRegisterCount(int pos)
 /*---------------------------------------------------------------------------*/
 int scanNum(int *plusFlag, int *n)
 {
-  char buffer[256];
+  char buffer[SIZE_BUFFER];
   int pos = 0;
   int i = 0;
 
@@ -140,7 +140,7 @@ int scanNum(int *plusFlag, int *n)
 /*---------------------------------------------------------------------------*/
 int memorySave(int position)
 {
-  char filename[256];
+  char filename[SIZE_BUFFER];
   int i = 0;
 
   refreshGui(position);
@@ -169,7 +169,7 @@ int memorySave(int position)
 /*---------------------------------------------------------------------------*/
 int memoryLoad(int position)
 {
-  char filename[256];
+  char filename[SIZE_BUFFER];
   int i = 0;
 
   refreshGui(position);

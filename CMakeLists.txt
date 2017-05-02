@@ -22,6 +22,6 @@ target_link_libraries(../bin/sat Asm CPU Term SimpleComputer WriteInt ReadInt Bi
 
 include_directories(hardDrive/include)
 add_executable(../bin/hard hardDrive/src/main.c)
-target_link_libraries(../bin/sat HardDrive)
+target_link_libraries(../bin/hard HardDrive WriteInt ReadInt)
 
 

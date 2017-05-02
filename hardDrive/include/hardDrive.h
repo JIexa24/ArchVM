@@ -4,6 +4,8 @@
 #ifndef BC_H
 #define BC_H
 
+#include "./../../cpu/include/cpu.h"
+
 typedef struct TCHS {
   unsigned int countCylinder: 10;
   unsigned int countHead:      4;
