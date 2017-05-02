@@ -1,10 +1,10 @@
 CC = gcc
 CFLAGS = -g3
 
-all:  ./../lib/libAsm.a ./../bin/sat
+all:  ./../bin/sat
 
-./../bin/sat: ./obj/main.o ./obj/asm.o
-	$(CC) ./obj/main.o ./obj/asm.o -o ./../bin/sat -lSimpleComputer -lReadInt -lm -L../lib
+./../bin/sat: ./obj/main.o  ./../lib/libAsm.a
+	$(CC) ./obj/main.o -o ./../bin/sat -lAsm -lSimpleComputer -lReadInt -lm -L../lib
 
 ./../lib/libAsm.a: ./obj/asm.o
 	ar rvs ./../lib/libAsm.a ./obj/asm.o 
