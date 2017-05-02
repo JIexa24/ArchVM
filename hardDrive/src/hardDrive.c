@@ -110,11 +110,17 @@ int a_lba2chs(tCHS geometry, tLBA LBA, tCHS* CHS)
 /*---------------------------------------------------------------------------*/
 int a_lba2large(tLARGE geometry, tLBA LBA, tLARGE* LARGE)
 {
+  LARGE->countSector = (LBA.lba / geometry.countCylinder) / geometry.countHead;
+  LARGE->countHead = (LBA.lba / geometry.countSector) % geometry.countHead;
+  LARGE->countCylinder = LBA.lba % geometry.countHead + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int a_lba2idechs(tIDECHS geometry, tLBA LBA,tIDECHS* IDECHS)
+int a_lba2idechs(tIDECHS geometry, tLBA LBA, tIDECHS* IDECHS)
 {
+  IDECHS->countSector = (LBA.lba / geometry.countCylinder) / geometry.countHead;
+  IDECHS->countHead = (LBA.lba / geometry.countSector) % geometry.countHead;
+  IDECHS->countCylinder = LBA.lba % geometry.countHead + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
