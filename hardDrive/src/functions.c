@@ -20,6 +20,7 @@ int initIdesh(tIDECHS* geometry) {
   buffer[i - 1] = '\0';
   sreadInt(buffer, &tmp, 10);
   geometry->countCylinder = tmp;
+  i = 0;
 
   writeChar(1, "countHead\n");
   do {
@@ -28,6 +29,7 @@ int initIdesh(tIDECHS* geometry) {
   buffer[i - 1] = '\0';
   sreadInt(buffer, &tmp, 10);
   geometry->countHead = tmp;
+  i = 0;
 
   writeChar(1, "countSector\n");
   do {
