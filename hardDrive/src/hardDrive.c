@@ -4,7 +4,7 @@
 #include "./../include/hardDrive.h"
 
 unsigned int countCylinder;
-гnsigned int countHead;
+unsigned int countHead;
 unsigned int countSector;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS)
@@ -41,15 +41,16 @@ int g_chs2large(tCHS CHS, tLARGE* LARGE)
 /*---------------------------------------------------------------------------*/
 int g_chs2lba(tCHS CHS, tLBA* LBA)
 {
-  LBA->lba = (CHS.countCylinder * 15 + CHS.countHead) * 63 + CHS.countSector - 1;
+  LBA->lba = (CHS.countCylinder * 15 + CHS.countHead) * 63 + 
+              CHS.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int g_chs2idechs(tIDECHS IDECHS, tLBA* LBA)
+int g_chs2idechs(tCHS CHS, tIDECHS* IDECHS)
 {
   tLBA tmpLBA;
-  g_chs2lba(IDECHS, &tmpLBA);
-  g_lba2idechs(tmpLBA, LBA);
+  g_chs2lba(CHS, &tmpLBA);
+  g_lba2idechs(tmpLBA, IDECHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -71,7 +72,8 @@ int g_large2idechs(tLARGE LARGE, tIDECHS* IDECHS)
 /*---------------------------------------------------------------------------*/
 int g_large2lba(tLARGE LARGE, tLBA* LBA)
 {
-  LBA->lba = (LARGE.head + 255 * LARGE.cyl) * 63 + LARGE.sec - 1;
+  LBA->lba = (LARGE.countHead + 255 * LARGE.countCylinder) * 63 + 
+              LARGE.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -93,12 +95,16 @@ int g_idechs2lagre(tIDECHS IDECHS, tLARGE* LARGE)
 /*---------------------------------------------------------------------------*/
 int g_idechs2lba(tIDECHS IDECHS, tLBA* LBA)
 {
-  LBA->lba = (IDECHS.head + 15 * IDECHS.cyl) * 255 + IDECHS.sec - 1;
+  LBA->lba = (IDECHS.countHead + 15 * IDECHS.countCylinder) * 255 + 
+              IDECHS.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/;
 int a_lba2chs(tCHS geometry, tLBA LBA, tCHS* CHS)
 {
+  CHS->countCylinder = LBA.lba / geometry.countCylinder / geometry.countHead;
+  CHS->countHead = (LBA.lba / geometry.countSector) % geometry.countHead;
+  CHS->countSector = LBA.lba % geometry.countHead + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -114,46 +120,71 @@ int a_lba2idechs(tIDECHS geometry, tLBA LBA,tIDECHS* IDECHS)
 /*---------------------------------------------------------------------------*/
 int a_chs2lba(tCHS geometry, tCHS CHS, tLBA* LBA)
 {
+  LBA->lba = (CHS.countCylinder * geometry.countHead + CHS.countHead) * 
+             geometry.countSector + CHS.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_large2lba(tLARGE geometry, tLARGE LARGE, tLBA* LBA)
 {
+  LBA->lba = (LARGE.countCylinder * geometry.countHead + LARGE.countHead) *
+               geometry.countSector + LARGE.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_idechs2lba(tIDECHS geometry, tIDECHS IDECHS, tLBA* LBA)
 {
+  LBA->lba = (IDECHS.countCylinder * geometry.countHead + IDECHS.countHead) * 
+             geometry.countSector + IDECHS.countSector - 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_large2chs(tLARGE geometry1,tCHS geometry2,tLARGE LARGE, tCHS* CHS)
 {
+  tLBA tmpLBA;
+  a_large2lba(geometry1, LARGE, &tmpLBA);
+  a_lba2chs(geometry2, tmpLBA, CHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int a_large2idechs(tLARGE geometry1, tIDECHS geometry2, tLARGE LARGE,tIDECHS* IDECHS)
+int a_large2idechs(tLARGE geometry1, tIDECHS geometry2, tLARGE LARGE,
+                   tIDECHS* IDECHS)
 {
+  tLBA tmpLBA;
+  a_large2lba(geometry1, LARGE, &tmpLBA);
+  a_lba2idechs(geometry2, tmpLBA, IDECHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_chs2large(tCHS geometry1, tLARGE geometry2, tCHS CHS, tLARGE* LARGE)
 {
+  tLBA tmpLBA;
+  a_chs2lba(geometry1, CHS, &tmpLBA);
+  a_lba2large(geometry2, tmpLBA, LARGE);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_idechs2large(tIDECHS geometry1, tLARGE geometry2, tIDECHS IDECHS, tLARGE* LARGE)
 {
+  tLBA tmpLBA;
+  a_idechs2lba(geometry1, IDECHS, &tmpLBA);
+  a_lba2large(geometry2, tmpLBA, LARGE);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_chs2idechs(tCHS geometry1, tIDECHS geometry2, tCHS CHS, tIDECHS* IDECHS)
 {
+  tLBA tmpLBA;
+  a_chs2lba(geometry1, CHS, &tmpLBA);
+  a_lba2idechs(geometry2, tmpLBA, IDECHS);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int a_idechs2chs(tIDECHS geometry1, tCHS geometry2, tIDECHS IDECHS,tCHS* CHS)
 {
+  tLBA tmpLBA;
+  a_idechs2lba(geometry1, IDECHS, &tmpLBA);
+  a_lba2chs(geometry2, tmpLBA, CHS);
   return 0;
 }
 
