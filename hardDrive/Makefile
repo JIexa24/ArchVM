@@ -7,7 +7,7 @@ all:  ./../bin/hard
 	$(CC) ./obj/main.o -o ./../bin/hard -lHardDrive -lWriteInt -lReadInt -L../lib
 
 ./../lib/libHardDrive.a: ./obj/hardDrive.o ./obj/functions.o
-	ar rvs ./../lib/libHardDrive.a ./obj/hardDrive.o
+	ar rvs ./../lib/libHardDrive.a ./obj/hardDrive.o ./obj/functions.o
 
 ./obj/functions.o: ./src/functions.c
 	$(CC) -c ./src/functions.c -o ./obj/functions.o $(CFLAGS)
