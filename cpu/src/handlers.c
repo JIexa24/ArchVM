@@ -15,7 +15,7 @@ void timerHand(int sig)
   sc_regGet(FLAG_INTERRUPT, &reg);
   if (!reg) {
     /* raise для непрерывного выполнения. alarm - одна секунда */  
-    usleep(MKR(0.5));
+    usleep(MKR(TIMESLEEP));
     raise(SIGALRM);
     //alarm(1);
   }
