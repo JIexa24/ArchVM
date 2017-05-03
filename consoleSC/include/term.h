@@ -7,7 +7,7 @@
 #include <sys/ioctl.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "./../../cpu/include/cpu.h"
+#include "./../../print/include/write.h"
 
 enum colors {
 	clr_black = 0,

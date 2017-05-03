@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include "./../../consoleSC/include/term.h"
-#include "./../../cpu/include/cpu.h"
+#include "./../../print/include/write.h"
 
 #define BOXCHAR_REC 'a'
 #define BOXCHAR_BR "j"
