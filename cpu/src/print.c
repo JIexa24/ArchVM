@@ -299,8 +299,9 @@ void printMemory(int x, int y, int position)
   if (SCANPRINTRADIX == 16) {
     writeChar(1, " HEX ");
   } else if (SCANPRINTRADIX == 10) {
-    writeChar(1, " DEC ");
+    writeChar(1, " DEC ");    
   }
+
   mt_setfgcolor(clr_default);
 
   if ((position >= sizeRAM) && (position < 0)) {
