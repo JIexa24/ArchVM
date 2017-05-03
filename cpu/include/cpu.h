@@ -17,6 +17,7 @@
 
 #include <signal.h>
 #include <fcntl.h>
+#include <time.h>
 
 /* CPU */
 
@@ -38,6 +39,10 @@
 #define OPERANDCOLORFG clr_light_blue
 
 #define ACCUMCOLORFG clr_default
+
+#define MKR(X)  (X * 1000000)
+
+#define TIMESLEEP 1 /* SECONDS */
 
 void CU();
 int ALU(int command, int operand);
