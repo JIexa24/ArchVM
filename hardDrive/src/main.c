@@ -3,10 +3,6 @@
 */
 #include "./../include/hardDrive.h"
 
-extern unsigned int countCylinder;
-extern unsigned int countHead;
-extern unsigned int countSector;
-
 int main(int argc, char** argv)
 {
   double sizeDisc;
