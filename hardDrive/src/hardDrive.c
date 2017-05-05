@@ -3,10 +3,6 @@
 */
 #include "./../include/hardDrive.h"
 
-extern unsigned int countCylinder;
-extern unsigned int countHead;
-extern unsigned int countSector;
-
 int g_lba2chs(tLBA LBA, tCHS* CHS)
 {
   CHS->countSector = (LBA.lba / 15) / 63;
