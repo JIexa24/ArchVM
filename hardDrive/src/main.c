@@ -93,13 +93,16 @@ int main(int argc, char** argv)
     writeChar(1, "Type: ");
     switch(table[tmpIndPart].fileSystem - '0') {
       case 1:
-      writeChar(1, "Ext\n");
+        writeChar(1, "Ext\n");
       break;
       case 2:
-      writeChar(1, "NTFS\n");
+        writeChar(1, "NTFS\n");
       break;
       case 3:
-      writeChar(1, "Linux_swap\n");
+        writeChar(1, "Linux_swap\n");
+      break;
+      default:
+        writeChar(1, "\n");
       break;
     }
 
