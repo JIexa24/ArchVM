@@ -1,3 +1,4 @@
+
 /*
 Created by JIexa24 (Alexey R.)
 */
@@ -18,23 +19,25 @@ int main(int argc, char** argv)
   int indPart               = 0;
   int tmpIndPart            = 0;
 
-  tPartitionTable* table = malloc(sizeof(tPartitionTable) * (indPart + 1));
-  tIDECHS chs;
-  initIdesh(&chs);  
-  printf("%u %u %u\n",chs.countCylinder,chs.countHead ,chs.countSector  );
+  tPartitionTable* table = malloc(sizeof(tPartitionTable*));
+  tIDECHS geometry;
+  initIdesh(&geometry);
+
+  tCHS chs;
+  g_idechs2chs(geometry, &chs);
+
   sizeDisc = chs.countCylinder * chs.countHead * chs.countSector * 512;
-  sizeDisc = sizeDisc / (1024 * 1024);
+  sizeDisc = sizeDisc / (1024 * 1024 * 1024 * 1024);
 
   sprintf(sizeDsc,"%.12lf", sizeDisc);
   tmpSizeDisc = sizeDisc;
   while (1) {
-    writeChar(1, "\nFree Size Disc(Gb): ");
+    writeChar(1, "\nSize Disc(Gb): ");
     sprintf(buffer, "%lf", tmpSizeDisc);
     writeChar(1, buffer);
     writeChar(1, "\n");
 
     while (sizePart < 0 ) {
-      i = 0;
       writeChar(1,"Please, input size of part: ");
       do {
         read(0, &buffer[i++], 1);
@@ -42,7 +45,8 @@ int main(int argc, char** argv)
       buffer[i - 1] = '\0';
       sscanf(buffer,"%lf", &sizePart);
     }
-    if (sizePart <= 0) {
+
+    if (sizePart == 0) {
       break;
     }
     while (!(typeOfPart < '4' && typeOfPart > '0')) {
@@ -59,9 +63,7 @@ int main(int argc, char** argv)
       read(1, &active, 1);
       read(1, &enter, 1);
       active == 'y' ? flgactive = 1 : ((active == 'n') ? (flgactive = 0) :
-                                                         (flgactive = -1));
-      if (flgactive == 0)
-        break;
+      (flgactive = -1));
       tmpIndPart = 0;
     }
 
@@ -74,32 +76,29 @@ int main(int argc, char** argv)
     table[indPart].size = sizePart;
     table[indPart].fileSystem = typeOfPart;
 
+    i          = 0;
     typeOfPart = 0;
     active     = 'n';
     sizePart   = -1;
     indPart++;
-    table = realloc(table, sizeof(*table) * (indPart + 1));
+    table = realloc(table, sizeof(table) * (indPart + 1));
   }
-  writeChar(1, "\n\n");
   while (1) {
     writeChar(1, "Part: ");
-    sprintf(buffer,"%lf",table[tmpIndPart].size);
+    printf(buffer,"lf",table[tmpIndPart].size);
     writeChar(1, buffer);
     writeChar(1, "\n");
 
     writeChar(1, "Type: ");
-    switch(table[tmpIndPart].fileSystem - '0') {
-      case 1:
-        writeChar(1, "Ext\n");
+    switch(table[tmpIndPart].fileSystem) {
+      case '1':
+      writeChar(1, "Ext\n");
       break;
-      case 2:
-        writeChar(1, "NTFS\n");
+      case '2':
+      writeChar(1, "NTFS\n");
       break;
-      case 3:
-        writeChar(1, "Linux_swap\n");
-      break;
-      default:
-        writeChar(1, "\n");
+      case '3':
+      writeChar(1, "Linux_swap\n");
       break;
     }
 
@@ -107,9 +106,8 @@ int main(int argc, char** argv)
     char c = table[tmpIndPart].flagActive;
     write(1, &c, 1);
     writeChar(1, "\n");
-    writeChar(1, "\n");
     tmpIndPart++;
-    if (tmpIndPart >= indPart) {
+    if (tmpIndPart >= indPart + 1) {
       break;
     }
   }
