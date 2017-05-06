@@ -36,7 +36,7 @@ int sc_commandEncode(int command, int operand, int* value)
 /*---------------------------------------------------------------------------*/
 int sc_commandDecode(int value, int* command, int* operand)
 {
-  int *correctCommand  = -1;
+  int *correctCommand;
   int attribute        = (value >> 14) & 1;
   int tmpCommand       = 0;
   int tmpOperand       = 0;
