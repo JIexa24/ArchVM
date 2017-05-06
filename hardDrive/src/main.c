@@ -33,21 +33,20 @@ int main(int argc, char** argv)
     writeChar(1, sizeDsc);
     writeChar(1, "\n");
 
-    while (sizePart < 0 ) {
-      printf("%lf", sizePart);
+    while (sizePart < 0) {
 	  	writeChar(1,"Please, input size of part: ");
       do {
-        read(0, &buffer[i++], 1);
+        read(1, &buffer[i++], 1);
       } while (buffer[i - 1] != '\n');
       buffer[i - 1] = '\0';
-      sprintf(buffer,"%.12lf", sizePart);
+      sscanf(buffer,"%lf", &sizePart);
     }
 
     if (!sizePart) {
       break;
     }
 
-    while (!(typeOfPart < 4 && typeOfPart > 0)) {
+    while (!(typeOfPart < '4' && typeOfPart > '0')) {
 	    writeChar(1, "Input type of part:\n");
 	    writeChar(1, "\tExt\t=1\n");
 	    writeChar(1, "\tNTFS\t=2\n");
