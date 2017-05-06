@@ -6,14 +6,16 @@
 int main(int argc, char** argv)
 {
   double sizeDisc = 0;
-  double sizePart = 0;
+  double sizePart = -1;
   char sizeDsc[SIZE_BUFFER];
   char buffer[SIZE_BUFFER];
   char active     = 0;
   char flgactive  = 0;
   char typeOfPart = 0;
   char enter      = 0;
-  int i = 0;
+  int i           = 0;
+  int indPart     = 0;
+
   tPartitionTable table = malloc(sizeof(tPartitionTable));
   tIDECHS geometry;
   initIdesh(&geometry);
@@ -31,7 +33,8 @@ int main(int argc, char** argv)
     writeChar(1, sizeDsc);
     writeChar(1, "\n");
 
-    while (sizePart <=0 ) {
+    while (sizePart < 0 ) {
+      printf("%lf", sizePart);
 	  	writeChar(1,"Please, input size of part: ");
       do {
         read(0, &buffer[i++], 1);
@@ -58,9 +61,15 @@ int main(int argc, char** argv)
       read(1, &enter, 1);
       active == 'y' ? flgactive = 1 : ((active == 'n') ? (flgactive = 0) : (flgactive = -1));
     }
+    table[indPart].flagActive = flgactive;
+    table[indPart].size = sizePart;
+    table[indPart].fileSystem = typeOfPart;
+
     typeOfPart = 0;
     flgactive  = 0;
     active     = 0;
+    sizePart   = -1;
+    indPart++;
   }
   return 0;
 }

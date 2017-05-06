@@ -189,8 +189,8 @@ void printOperation(int position)
 /*---------------------------------------------------------------------------*/
 void printFlags(int x, int y)
 {
-  int reg = 0
-  ;
+  int reg = 0;
+  
   mt_gotoXY(x, y);
 
   sc_regGet(FLAG_OVERFLOW, &reg);
