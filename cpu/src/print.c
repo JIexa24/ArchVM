@@ -12,7 +12,9 @@ extern int SCANPRINTRADIX;
 
 static void printWriteValue()
 {
-  int command, opcode, operand;
+  int command = 0;
+  int opcode  = 0;
+  int operand = 0;
   mt_gotoXY(1, 23);
   printLine(2);
 
@@ -24,20 +26,23 @@ static void printWriteValue()
       sc_commandDecode(writeValue, &opcode, &operand);
       writeChar(1,"+");
       writeInt(1, opcode, 16, 2);
-      writeInt(1, operand, 16, 2);       
+      writeInt(1, operand, 16, 2);
     } else {
       writeChar(1," ");
       writeInt(1, writeValue & 0x3FFF, SCANPRINTRADIX, 4);
-    }	
+    }
   }
 }
 /*---------------------------------------------------------------------------*/
 void printLine(int ctr){
-  int x, y, i, j;
+  int x = 0;
+  int y = 0;
+  int i = 0;
+  int j = 0;
 
   mt_getscreensize(&y, &x);
   for (j = 0; j < ctr; j++) {
-    for (i = 0; i < x; i++) 
+    for (i = 0; i < x; i++)
       writeChar(1," ");
     writeChar(1,"\n");
   }
@@ -146,17 +151,18 @@ void printLabels()
 /*---------------------------------------------------------------------------*/
 void printOperation(int position)
 {
+  int mem       = 0;
+  int command   = 0;
+  int operand   = 0;
+  int isCommand = (mem >> 14) & 1;
+  char c        = '+';
+
   if ((position >= sizeRAM) && (position <= 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
-  int mem;  
   sc_memoryGet(position, &mem);
 
-  int command;
-  int operand;
-  int isCommand = (mem >> 14) & 1;
-  char c = '+';
 
   mt_gotoXY(68, 8);
   if ((position >= 0) && (position < sizeRAM)) {
@@ -183,9 +189,9 @@ void printOperation(int position)
 /*---------------------------------------------------------------------------*/
 void printFlags(int x, int y)
 {
+  int reg = 0
+  ;
   mt_gotoXY(x, y);
-
-  int reg;
 
   sc_regGet(FLAG_OVERFLOW, &reg);
   if (reg == 1) {
@@ -239,11 +245,13 @@ void printFlags(int x, int y)
 /*---------------------------------------------------------------------------*/
 int printMcell(int *bigchars, int pos)
 {
-  int command;
-  int mem;
-  int i, opcode, operand;
-  char str[10];
-  char c;
+  int command      = 0;
+  int mem          = 0;
+  int i            = 0;
+  int opcode       = 0;
+  int operand      = 0;
+  char str[10]     = {0};
+  char c           = 0;
   int indexBigChar = 0;
 
   mt_setfgcolor(KEYCOLORFG);
@@ -262,7 +270,7 @@ int printMcell(int *bigchars, int pos)
 
   sc_memoryGet(pos, &mem);
   command = (mem >> 14) & 1;
-  mem &= 0x3FFF;   
+  mem &= 0x3FFF;
 
   if (command == 0) {
     sc_commandDecode(mem, &opcode, &operand);
@@ -278,7 +286,7 @@ int printMcell(int *bigchars, int pos)
     mt_gotoXY(2 + 9 * i, 14);
     indexBigChar = (str[i] == '+') ? 0 : (((str[i] >= '0') && (str[i] <= '9'))
                                           ? (str[i] - '0' + 1)
-                                          : ((str[i] >= 'A') && 
+                                          : ((str[i] >= 'A') &&
                                              (str[i] <= 'F'))
                                              ? (str[i] - 'A' + 11) : -1);
     bc_printbigchar(bigchars + (indexBigChar * 2), 2 + i*9, 14, BIGCHARSCOLORFG,
@@ -290,9 +298,12 @@ int printMcell(int *bigchars, int pos)
 /*---------------------------------------------------------------------------*/
 void printMemory(int x, int y, int position)
 {
-  int i, j;
-  int mem, command;
-  int opcode, operand;
+  int i       =0;
+  int j       =0;
+  int mem     =0;
+  int command =0;
+  int opcode  =0;
+  int operand =0;
 
   mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(68, 13);
@@ -323,7 +334,7 @@ void printMemory(int x, int y, int position)
       if ((i + j * 10 ) == instructionRegisterCount) {
         mt_setfgcolor(INSTREGCOLORFG);
       }
-    
+
       if (command == 0) {
         sc_commandDecode(mem, &opcode, &operand);
         writeChar(1, "+");

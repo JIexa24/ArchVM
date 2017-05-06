@@ -5,29 +5,32 @@
 
 int asmTrans(int argc, char** argv)
 {
-  FILE *input, *output;
-  char buffer[SIZE_BUFFER];
-  int ram[sizeRAM];
-  int counterTokens = 0;  
-  int flagign = 0;  
-  int i = 0;
-  int addres = 5, value = 0, ret = 0;
+  FILE *input              = NULL;
+  FILE *output             = NULL;
+  char buffer[SIZE_BUFFER] = {0};
+  int ram[sizeRAM]         = {0};
+  int counterTokens        = 0;
+  int flagign              = 0;
+  int i                    = 0;
+  int addres               = 5;
+  int value                = 0;
+  int ret                  = 0;
 
-  if (argc != 3) {
-    exit(1);
-  }
-  if (testArgv(argv) != 0) {
-    exit(1);
-  }
+  assert(!(argc < 4));
+  assert(!(testArgv(argv)));
+
   if ((output = fopen(argv[1], "wb")) == NULL) {
     exit(1);
   }
+
   if ((input = fopen(argv[2], "rb")) == NULL) {
     exit(1);
   }
+
   for (i = 0; i < sizeRAM; i++) {
     ram[i] = 0;
   }
+
   i = 0;
   do {
     fread(&buffer[i], sizeof(char), 1, input);
@@ -92,7 +95,8 @@ int asmTrans(int argc, char** argv)
 /*---------------------------------------------------------------------------*/
 int testArgv(char *argv[])
 {
-  char *ptr1, *ptr2;
+  char *ptr1 = NULL;
+  char *ptr2 = NULL;
 
   ptr1 = strrchr(argv[1], '.');
   ptr2 = strrchr(argv[2], '.');
@@ -105,7 +109,7 @@ int testArgv(char *argv[])
 /*---------------------------------------------------------------------------*/
 int asmCommand(char *str)
 {
-  int ret;
+  int ret = 0;
   if (strcmp(str, "READ") == 0) {
     ret = 0x10;
   } else if (strcmp(str, "WRITE") == 0) {
@@ -190,12 +194,13 @@ int asmCommand(char *str)
 /*---------------------------------------------------------------------------*/
 int strToCommand(char* ptr, int* value)
 {
-  int command, operand;
+  int command  = 0;
+  int operand  = 0;
   int plusFlag = 0;
   int position = 0;
-  int tmp;
+  int tmp      = 0;
 
-  if (*ptr == '+') { 
+  if (*ptr == '+') {
     position++;
     plusFlag = 1;
   }
@@ -214,13 +219,13 @@ int strToCommand(char* ptr, int* value)
 }
 /*---------------------------------------------------------------------------*/
 int parsingLine(char* str, int* addres, int* value)
-{  
-  char* ptr = str;
-  int command, operand;
+{
+  char* ptr       = str;
+  int command     = 0;
+  int operand     = 0;
   int flagCommand = 0;
-  int i = 0;
-  
-  char* tmpPtr = ptr; 
+  int i           = 0;
+  char* tmpPtr    = ptr;
 
   while (1) {
     if (tmpPtr[i] == TOKENSYMB) {
@@ -242,7 +247,7 @@ int parsingLine(char* str, int* addres, int* value)
   if (*ptr == '=') {
     flagCommand = 1;
   }
- 
+
   if (flagCommand) {
     while (1) {
       if (tmpPtr[i] == TOKENSYMB) {
@@ -274,7 +279,7 @@ int parsingLine(char* str, int* addres, int* value)
       *value |= (1 << 14);
       *value &= 0x7FFF;
     }
- 
+
   } else {
     while (1) {
       if (tmpPtr[i] == TOKENSYMB) {

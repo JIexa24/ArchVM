@@ -5,7 +5,7 @@
 
 void swap(int* a, int* b)
 {
-  int tmp;
+  int tmp = 0;
   tmp = *a;
   *a = *b;
   *b = tmp;
@@ -21,9 +21,11 @@ int bc_printA(char *str)
 /*---------------------------------------------------------------------------*/
 int bc_box(int x1, int y1, int x2, int y2)
 {
-  int maxx, maxy;
-  int i, j;
-	
+  int maxx = 0;
+  int maxy = 0;
+  int i    = 0;
+  int j    = 0;
+
   if (x1 > x2) {
     swap(&x1, &x2);
   }
@@ -64,10 +66,13 @@ int bc_box(int x1, int y1, int x2, int y2)
 /*---------------------------------------------------------------------------*/
 int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 {
-  int maxx, maxy;
-  int pos, bit;
-  int i, j;
-  char row[9];
+  int pos     = 0;
+  int bit     = 0;
+  int maxx    = 0;
+  int maxy    = 0;
+  int i       = 0;
+  int j       = 0;
+  char row[9] = {0};
 
   mt_getscreensize(&maxy, &maxx);
 
@@ -77,7 +82,7 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 
   mt_setfgcolor(fg);
   mt_setbgcolor(bg);
-  
+
   for (i = 0; i < 8; i++) {
     for (j = 0; j < 8; j++) {
       pos = i >> 2;
@@ -87,7 +92,7 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
       } else {
         row[j] = BOXCHAR_REC;
       }
-    } 
+    }
     mt_gotoXY(x, y + i);
     bc_printA(row);
   }
@@ -98,8 +103,8 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 /*---------------------------------------------------------------------------*/
 int bc_setbigcharpos(int *big, int x, int y, int value)
 {
-  int pos;
-  if ((x < 0) || (y < 0) || (x > 7) || (y > 7) || (value < 0) || (value > 1)) { 
+  int pos = 0;
+  if ((x < 0) || (y < 0) || (x > 7) || (y > 7) || (value < 0) || (value > 1)) {
     return -1;
   }
 
@@ -121,7 +126,7 @@ int bc_setbigcharpos(int *big, int x, int y, int value)
 /*---------------------------------------------------------------------------*/
 int bc_getbigcharpos(int *big, int x, int y, int *value)
 {
-  int pos;
+  int pos = 0;
 
   if ((x < 0) || (y < 0) || (x > 7) || (y > 7)) {
     return -1;
@@ -142,7 +147,7 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 /*---------------------------------------------------------------------------*/
 int bc_bigcharwrite(int fd, int *big, int count)
 {
-  int err;
+  int err = 0;
 
   err = write(fd, &count, sizeof(count));
   if (err == -1) {
@@ -159,7 +164,7 @@ int bc_bigcharwrite(int fd, int *big, int count)
 int bc_bigcharread(int fd, int *big, int need_count, int *count)
 {
   int n, cnt, err;
-	
+
   err = read(fd, &n, sizeof(n));
   if (err == -1 || (err != sizeof(n))) {
     return -1;

@@ -21,8 +21,11 @@ void setSignals()
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
 {
-  int plusFlag, num;
-  int command, operand, mem;
+  int plusFlag = 0;
+  int num      = 0;
+  int command  = 0;
+  int operand  = 0;
+  int mem      = 0;
   refreshGui(pos);
   mt_gotoXY(1, 23);
   printLine(2);
@@ -60,7 +63,8 @@ int changeCell(int pos)
 /*---------------------------------------------------------------------------*/
 int changeAccumulator(int pos)
 {
-  int plusFlag, num;
+  int plusFlag =0;
+  int num      =0;
 
   refreshGui(pos);
 
@@ -88,7 +92,8 @@ int changeAccumulator(int pos)
 /*---------------------------------------------------------------------------*/
 int changeInstRegisterCount(int pos)
 {
-  int plusFlag, num;
+  int plusFlag =0;
+  int num      =0;
   refreshGui(pos);
 
   mt_gotoXY(1, 23);
@@ -114,9 +119,9 @@ int changeInstRegisterCount(int pos)
 /*---------------------------------------------------------------------------*/
 int scanNum(int *plusFlag, int *n)
 {
-  char buffer[SIZE_BUFFER];
-  int pos = 0;
-  int i = 0;
+  char buffer[SIZE_BUFFER] = {0};
+  int pos                  = 0;
+  int i                    = 0;
 
   do {
     read(0,&buffer[i++],1);
@@ -140,8 +145,8 @@ int scanNum(int *plusFlag, int *n)
 /*---------------------------------------------------------------------------*/
 int memorySave(int position)
 {
-  char filename[SIZE_BUFFER];
-  int i = 0;
+  char filename[SIZE_BUFFER] = {0};
+  int i                      = 0;
 
   refreshGui(position);
   mt_gotoXY(1, 23);
@@ -169,8 +174,8 @@ int memorySave(int position)
 /*---------------------------------------------------------------------------*/
 int memoryLoad(int position)
 {
-  char filename[SIZE_BUFFER];
-  int i = 0;
+  char filename[SIZE_BUFFER] = {0};
+  int i                      = 0;
 
   refreshGui(position);
 

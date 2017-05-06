@@ -3,9 +3,9 @@
 */
 #include "./../include/cpu.h"
 
-int accumulator;
-int instructionRegisterCount;
-int bigChars[34];
-int writeUse; 
-int writeValue;
-int SCANPRINTRADIX = 16;
+int accumulator              = 0;
+int instructionRegisterCount = 0;
+int bigChars[34]             = {0};
+int writeUse                 = 0;
+int writeValue               = 0;
+int SCANPRINTRADIX           = 16;

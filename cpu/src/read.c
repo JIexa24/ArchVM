@@ -7,16 +7,20 @@ extern int instructionRegisterCount;
 
 int readMcell(int pos)
 {
-  int plusFlag, num, ret = 0;
-  int command, operand, mem;
+  int plusFlag = 0;
+  int num      = 0;
+  int ret      = 0;
+  int command  = 0;
+  int operand  = 0;
+  int mem      = 0;
 
   struct termios orig_options;
-  
+
   if (tcgetattr(STDIN_FILENO, &orig_options) != 0) {
     return -1;
   }
   rk_mytermregime(0, 0, 1, 1, 1);
- 
+
   refreshGui(instructionRegisterCount);
   mt_gotoXY(1, 23);
   writeChar(1,"READ: ");
