@@ -119,7 +119,7 @@ int scanNum(int *plusFlag, int *n)
   int i = 0;
 
   do {
-    read(1,&buffer[i++],1);
+    read(0,&buffer[i++],1);
   } while (buffer[i - 1] != '\n');
 
   buffer[i - 1] = '\0';
@@ -160,7 +160,7 @@ int memorySave(int position)
     refreshGui(position);
     writeChar(1,"File successfully saved");
     return 0;
-  } else { 
+  } else {
     writeChar(1,"Cannot save file: ");
     writeChar(1, filename);
     return -1;
@@ -205,7 +205,7 @@ int memoryLoad(int position)
       args[1] = filename;
       args[2] = ptr;
       asmTrans(3, args);
-    } 
+    }
   }
 
   if (sc_memoryLoad(filename) == 0) {
