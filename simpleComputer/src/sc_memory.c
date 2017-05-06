@@ -13,14 +13,13 @@ int sc_memoryInit(void)
   for (int i = 0; i < sizeRAM; i++) {
     localRAM[i] = 0;
   }
-
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int sc_memorySet(int addres, int value)
 {
-  if ((addres < sizeRAM) && (addres >= 0)) { 
-    localRAM[addres] = value; 
+  if ((addres < sizeRAM) && (addres >= 0)) {
+    localRAM[addres] = value;
     return 0;
   } else {
     sc_regSet(FLAG_OUTMEM, 1);
@@ -30,7 +29,7 @@ int sc_memorySet(int addres, int value)
 /*---------------------------------------------------------------------------*/
 int sc_memoryGet(int addres, int* value)
 {
-  if ((addres < sizeRAM) && (addres >=0) && (value != NULL)) { 
+  if ((addres < sizeRAM) && (addres >=0) && (value != NULL)) {
     *value = localRAM[addres];
     return 0;
   } else {
@@ -41,8 +40,8 @@ int sc_memoryGet(int addres, int* value)
 /*---------------------------------------------------------------------------*/
 int sc_memorySave(char* filename)
 {
-  FILE *data;
-  int write;
+  FILE *data = NULL;
+  int write  = 0;
 
   data = fopen(filename, "wb");
 
@@ -60,10 +59,11 @@ int sc_memorySave(char* filename)
 /*---------------------------------------------------------------------------*/
 int sc_memoryLoad(char* filename)
 {
-  FILE *data;
-  int read;
-  int i;
-  int ram[sizeRAM];
+  FILE *data       = NULL;
+  int read         = 0;
+  int i            = 0;
+  int ram[sizeRAM] = {0};
+
   data = fopen(filename, "rb");
   if (data == NULL) {
     return ERR_OPEN_FILE;

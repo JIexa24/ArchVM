@@ -10,8 +10,8 @@ extern int correctCommands[];
 
 int sc_commandEncode(int command, int operand, int* value)
 {
+  int i           = 0;
   int *commandPtr = NULL;
-  int i; 
 
   for (i = 0; i < countCmd; i++) {
     if (command == correctCommands[i]) commandPtr = &(correctCommands[i]);
@@ -23,9 +23,9 @@ int sc_commandEncode(int command, int operand, int* value)
       sc_regSet(FLAG_OVERFLOW,1);
     }
     if (value != NULL) {
-      *value = (command << 7) | operand; 
+      *value = (command << 7) | operand;
       sc_regSet(FLAG_COMMAND, 0);
-      return 0; 
+      return 0;
     }
   } else {
     sc_regSet(FLAG_COMMAND, 1);
@@ -36,10 +36,12 @@ int sc_commandEncode(int command, int operand, int* value)
 /*---------------------------------------------------------------------------*/
 int sc_commandDecode(int value, int* command, int* operand)
 {
-  void *correctCommand;
-  int attribute = (value >> 14) & 1;
-  int tmpCommand, tmpOperand, i;
-  
+  void *correctCommand = NULL;
+  int attribute        = (value >> 14) & 1;
+  int tmpCommand       = 0;
+  int tmpOperand       = 0;
+  int i                = 0;
+
   if (command != NULL && operand != NULL) {
     if (attribute == 0) {
       tmpCommand = (value >> 7) & 0x7F;
@@ -62,4 +64,3 @@ int sc_commandDecode(int value, int* command, int* operand)
   }
   return 0;
 }
-

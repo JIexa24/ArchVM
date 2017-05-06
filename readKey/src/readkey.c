@@ -4,10 +4,10 @@
 #include "./../include/readkey.h"
 /*
 
-  tcflag_t c_iflag;      // режимы ввода 
-  tcflag_t c_oflag;      // режимы вывода 
-  tcflag_t c_cflag;      // режимы управления 
-  tcflag_t c_lflag;      // режимы локали 
+  tcflag_t c_iflag;      // режимы ввода
+  tcflag_t c_oflag;      // режимы вывода
+  tcflag_t c_cflag;      // режимы управления
+  tcflag_t c_lflag;      // режимы локали
   cc_t c_cc[NCCS];       // управляющие символы
 
   c_iflag - флаги констант:
@@ -15,15 +15,15 @@
 int rk_readkey(enum keys *key)
 {
   struct termios orig_options;
-  char buf[16];
-  int readNum;
+  char buf[16] = {0};
+  int readNum  = 0;
 /*---------------------------------------------------------------------------*/
 /*
-  tcgetattr(int fd, struct termios *termios_p) : получить параметры, 
+  tcgetattr(int fd, struct termios *termios_p) : получить параметры,
   связанные с объектом, на который ссылается fd, и сохранить их в структуре
   termios, на которую ссылается termios_p. Эта функция может быть запущена из
   фонового процесса;однако, атрибуты терминала могут в дальнейшем изменяться
-  основным процессом. 
+  основным процессом.
 */
   if (tcgetattr(STDIN_FILENO, &orig_options) != 0) {
     return -1;
@@ -39,7 +39,7 @@ int rk_readkey(enum keys *key)
 
   buf[readNum] = '\0';
 
-  if (strcmp(buf, "l") == 0) { 
+  if (strcmp(buf, "l") == 0) {
     *key = KEY_l;
   } else if (strcmp(buf, "s") == 0) {
     *key = KEY_s;
@@ -59,7 +59,7 @@ int rk_readkey(enum keys *key)
     *key = KEY_c;
   } else if (strcmp(buf, "\n") == 0) {
     *key = KEY_enter;
-  } else if (strcmp(buf, "\E[15~") == 0) { 
+  } else if (strcmp(buf, "\E[15~") == 0) {
     *key = KEY_f5;
   } else if (strcmp(buf, "\E[17~") == 0) {
     *key = KEY_f6;
@@ -78,7 +78,7 @@ int rk_readkey(enum keys *key)
   }
 /*
   int tcsetattr(int fd, int optional_actions, struct termios *termios_p)
-  меняет параметры, связанные с терминалом (если требуется поддержка 
+  меняет параметры, связанные с терминалом (если требуется поддержка
   используемого оборудования, которая недоступна), и параметры структуры
   termios, связанной с termios_p. Для того, чтобы изменения вступили в силу,
   необходимо указать optional_actions:
@@ -93,7 +93,7 @@ int rk_readkey(enum keys *key)
 int rk_mytermsave(void)
 {
   struct termios options;
-  FILE *save;
+  FILE *save = NULL;
 
   if (tcgetattr(STDIN_FILENO, &options) != 0) {
     return -1;
@@ -103,14 +103,14 @@ int rk_mytermsave(void)
   }
   fwrite(&options, sizeof(options), 1, save);
   fclose(save);
-	
+
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int rk_mytermrestore(void)
 {
   struct termios options;
-  FILE *data;
+  FILE *data = NULL;;
 
   if ((data = fopen("termsettings", "rb")) == NULL) {
     return -1;
@@ -119,9 +119,9 @@ int rk_mytermrestore(void)
 /*
   TCSAFLUSH
   изменения начинают работу после того, как на объект, на который указывает
-  fd, были переданы все данные, предназначенные для вывода на запись; все 
-  данные, которые были приняты (но не считаны), будут отменены перед тем, 
-  как произошли изменения. 
+  fd, были переданы все данные, предназначенные для вывода на запись; все
+  данные, которые были приняты (но не считаны), будут отменены перед тем,
+  как произошли изменения.
 */
       if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &options) != 0) {
         fclose(data);
@@ -140,7 +140,7 @@ int rk_mytermrestore(void)
 int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
 {
   struct termios options;
-      
+
   if (tcgetattr(STDIN_FILENO, &options) != 0) {
     return -1;
   }

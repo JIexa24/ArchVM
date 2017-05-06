@@ -10,9 +10,9 @@ extern int writeValue;
 
 int commandHandler(int command, int operand)
 {
-  int tmp;
-  int tmpMem;
-  int flag;
+  int tmp    = 0;
+  int tmpMem = 0;
+  int flag   = 0;
 
   switch (command) {
 /*--------------------------------------------------------------------------1*/
@@ -193,7 +193,7 @@ int commandHandler(int command, int operand)
     case 0x60:  /* CHL */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
-      } 
+      }
       if (tmpMem) {
         tmpMem = tmpMem << 1;
         tmpMem &= 0x7FFF;
@@ -217,10 +217,10 @@ int commandHandler(int command, int operand)
     case 0x62:  /* RCL */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
-      } 
-      if (tmpMem) { 
-        tmp = (tmpMem >> 14) & 1; 
-        tmpMem = tmpMem << 1 | ((tmpMem >> 13) & 1); 
+      }
+      if (tmpMem) {
+        tmp = (tmpMem >> 14) & 1;
+        tmpMem = tmpMem << 1 | ((tmpMem >> 13) & 1);
         tmpMem = tmpMem | (tmp << 14);
         tmpMem &= 0x7FFF;
       }
@@ -230,10 +230,10 @@ int commandHandler(int command, int operand)
     case 0x63:  /* RCR */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
-      } 
-      if (tmpMem) { 
-        tmp = tmpMem & 1; 
-        tmpMem = tmpMem >> 1 | ((tmpMem & 1) << 13); 
+      }
+      if (tmpMem) {
+        tmp = tmpMem & 1;
+        tmpMem = tmpMem >> 1 | ((tmpMem & 1) << 13);
         tmpMem = tmpMem | (tmp << 14);
         tmpMem &= 0x7FFF;
       }
@@ -243,8 +243,8 @@ int commandHandler(int command, int operand)
     case 0x64:  /* NEG */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
-      } 
-      if (tmpMem) { 
+      }
+      if (tmpMem) {
         tmpMem = (~tmpMem + 1);
         tmpMem &= 0x7FFF;
       }
@@ -323,7 +323,7 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-      if (tmpMem) { 
+      if (tmpMem) {
 
         if (sc_memoryGet(accumulator, &tmp) != 0) {
           return -1;
@@ -345,7 +345,7 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-      if (tmpMem) { 
+      if (tmpMem) {
         if (sc_memoryGet(accumulator, &tmp) != 0) {
         return -1;
         }
@@ -363,7 +363,7 @@ int commandHandler(int command, int operand)
       }
     break;
 /*-------------------------------------------------------------------------33*/
-    case 0x71:  /* MOVA */ 
+    case 0x71:  /* MOVA */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
@@ -379,7 +379,7 @@ int commandHandler(int command, int operand)
       }
     break;
 /*-------------------------------------------------------------------------34*/
-    case 0x72:  /* MOVR */ 
+    case 0x72:  /* MOVR */
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
         return -1;
       }
@@ -394,7 +394,7 @@ int commandHandler(int command, int operand)
       }
     break;
 /*-------------------------------------------------------------------------35*/
-    case 0x73:  /* MOVCA */ 
+    case 0x73:  /* MOVCA */
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
         return -1;
       }
@@ -414,7 +414,7 @@ int commandHandler(int command, int operand)
       }
     break;
 /*-------------------------------------------------------------------------36*/
-    case 0x74:  /* MOVCR */ 
+    case 0x74:  /* MOVCR */
       if (sc_memoryGet(accumulator, &tmpMem) != 0) {
         return -1;
       }
@@ -435,7 +435,7 @@ int commandHandler(int command, int operand)
       }
     break;
 /*-------------------------------------------------------------------------37*/
-    case 0x75:  /* ADDC */ 
+    case 0x75:  /* ADDC */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
@@ -452,7 +452,7 @@ int commandHandler(int command, int operand)
       }
     break;
 /*-------------------------------------------------------------------------38*/
-    case 0x76:  /* SUBC */ 
+    case 0x76:  /* SUBC */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }

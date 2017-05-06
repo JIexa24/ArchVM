@@ -1,7 +1,7 @@
 /*
   Created by JIexa24 (Alexey R.)
 */
-#include "../include/tests.h" 
+#include "../include/tests.h"
 
 extern int localRAM[];
 extern short int sc_register;
@@ -30,7 +30,7 @@ int test_sc_memoryInit()
 /*---------------------------------------------------------------------------*/
 int test_sc_memorySet()
 {
-  int ret = 0;
+  int ret  = 0;
   int retf = sc_memorySet(1, 6);
 
   if (!retf) {
@@ -44,13 +44,13 @@ int test_sc_memorySet()
   }
 
   retf = sc_memorySet(100, 6);
-  if (!retf) { 
+  if (!retf) {
     ret = 1;
   } else {
     ret = ret;
   }
   retf = sc_memorySet(-15, 6);
-  if (!retf) { 
+  if (!retf) {
     ret = 1;
   } else {
     ret = ret;
@@ -68,9 +68,9 @@ int test_sc_memorySet()
 /*---------------------------------------------------------------------------*/
 int test_sc_memoryGet()
 {
-  int ret = 0;
-  int value;
-  int retf;
+  int ret       = 0;
+  int value     = 0;
+  int retf      = 0;
   const int val = 15;
   const int ind = 10;
 
@@ -88,14 +88,14 @@ int test_sc_memoryGet()
   }
 
   retf = sc_memoryGet(-5, &value);
-  if (!retf) {  
+  if (!retf) {
     ret = 1;
   } else {
     ret = ret;
   }
 
   retf = sc_memoryGet(sizeRAM, &value);
-  if (!retf) {  
+  if (!retf) {
     ret = 1;
   } else {
     ret = ret;
@@ -113,7 +113,7 @@ int test_sc_memoryGet()
 /*---------------------------------------------------------------------------*/
 int test_sc_regInit()
 {
-  int i;
+  int i   = 0;
   int ret = 0;
   sc_regInit();
 
@@ -135,8 +135,8 @@ int test_sc_regInit()
 /*---------------------------------------------------------------------------*/
 int test_sc_regSet()
 {
-  int ret = 0;
-  int retf;
+  int ret  = 0;
+  int retf = 0;
 
   sc_register = 0;
   retf = sc_regSet(FLAG_OUTMEM, 1);
@@ -188,9 +188,9 @@ int test_sc_regSet()
 /*---------------------------------------------------------------------------*/
 int test_sc_regGet()
 {
-  int ret = 0;
-  int retf;
-  int flag;
+  int ret  = 0;
+  int retf = 0;
+  int flag = 0;
 
   sc_register = 0x4;
 
@@ -236,9 +236,9 @@ int test_sc_regGet()
 /*---------------------------------------------------------------------------*/
 int test_sc_commandEncode()
 {
-  int ret = 0;
-  int value;
-  int retf;
+  int ret   = 0;
+  int value = 0;
+  int retf  = 0;
 
   retf = sc_commandEncode(0x10, 0x10, &value);
   if (!retf) {
@@ -263,9 +263,10 @@ int test_sc_commandEncode()
 /*---------------------------------------------------------------------------*/
 int test_sc_commandDecode()
 {
-  int ret = 0;
-  int com, op;
-  int retf;
+  int ret  = 0;
+  int com  = 0;
+  int op   = 0;
+  int retf = 0;
 
   retf = sc_commandDecode(0x0810, &com, &op);
   if (!retf) {

@@ -5,7 +5,7 @@
 
 extern int accumulator;
 extern int instructionRegisterCount;
-extern int writeUsed; 
+extern int writeUsed;
 extern int writeValue;
 extern int bigChars[];
 extern int SCANPRINTRADIX;
@@ -18,16 +18,17 @@ int main(int argc, char** argv)
   rk_mytermsave();
   sc_regSet(FLAG_INTERRUPT, 1);
 
-  int cursorX = 0;
-  int cursorY = 0;
-  int position = 0;
-  int fd = 0;
-  int cn;
-  int tmp = 0;
-  int exit = 0;
+  int cursorX    = 0;
+  int cursorY    = 0;
+  int position   = 0;
+  int fd         = 0;
+  int cn         = 0;
+  int tmp        = 0;
+  int exit       = 0;
   int refreshFlg = 0;
-  int regis = 0, regisProg = 0;
-  enum keys key = KEY_other;
+  int regis      = 0;
+  int regisProg  = 0;
+  enum keys key  = KEY_other;
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
@@ -112,7 +113,7 @@ int main(int argc, char** argv)
 	    case KEY_x:
           SCANPRINTRADIX = 16;
           refreshFlg = 0;
-        break; 
+        break;
 
         case KEY_d:
           SCANPRINTRADIX = 10;
@@ -129,7 +130,7 @@ int main(int argc, char** argv)
             refreshFlg = changeCell(position);
           }
         break;
-					
+
         case KEY_t:
           raise(SIGALRM);
           position = instructionRegisterCount;
@@ -158,8 +159,8 @@ int main(int argc, char** argv)
       refreshFlg = 0;
       cursorX = 0;
       cursorY = 0;
-    } else if (key == KEY_esc) {  
-      raise(SIGTERM); 
+    } else if (key == KEY_esc) {
+      raise(SIGTERM);
     } else if (key == KEY_r) {
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {

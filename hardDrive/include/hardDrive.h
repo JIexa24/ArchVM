@@ -12,7 +12,7 @@ typedef struct TCHS {
   unsigned int countSector;   /* 6 */
 } tCHS;
 
-typedef struct TLARGE { 
+typedef struct TLARGE {
   unsigned int countCylinder; /* 10 */
   unsigned int countHead;     /* 8 */
   unsigned int countSector;   /* 6 */
@@ -24,9 +24,15 @@ typedef struct TIDECHS {
   unsigned int countSector;   /* 6 */
 } tIDECHS;
 
-typedef struct TLBA { 
+typedef struct TLBA {
   unsigned int lba; /* 32 */
 } tLBA;
+
+typedef struct PARTTABLE {
+  char flagActive[8];
+	unsigned int size;
+  char fileSystem[8];
+} *tPartitionTable;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS);
 int g_lba2large(tLBA LBA, tLARGE* LARGE);

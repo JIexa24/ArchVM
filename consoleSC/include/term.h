@@ -10,15 +10,15 @@
 #include "./../../cpu/include/cpu.h"
 
 enum colors {
-	clr_black = 0,
-	clr_red = 1,
-	clr_green = 2,
-	clr_yellow = 3,
-	clr_blue = 4,
-	clr_purple = 5,
-	clr_cyan = 6,
+	clr_black      = 0,
+	clr_red        = 1,
+	clr_green      = 2,
+	clr_yellow     = 3,
+	clr_blue       = 4,
+	clr_purple     = 5,
+	clr_cyan       = 6,
 	clr_light_blue = 7,
-	clr_default = 9
+	clr_default    = 9
 };
 
 int mt_clrscr();

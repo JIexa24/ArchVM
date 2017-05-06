@@ -10,7 +10,11 @@ void writeChar(int fd, char* str)
 /*---------------------------------------------------------------------------*/
 int writeInt(int std, int num, int radix, int znac)
 {
-  int i = 0;
+  int i                    = 0;
+  char sign                = '-';
+  char buffer[SIZE_BUFFER] = {0};
+  int counter              = SIZE_BUFFER;
+
   if (num == 0) {
     if (znac == -1)
       write(std, "0", 1);
@@ -19,11 +23,7 @@ int writeInt(int std, int num, int radix, int znac)
       write(std, "0", 1);
     return i;
   }
-  
-  char sign = '-';
 
-  char buffer[SIZE_BUFFER];
-  int counter = SIZE_BUFFER;
 
   if (radix == 10) {
     if (num < 0) {
@@ -56,13 +56,13 @@ int writeInt(int std, int num, int radix, int znac)
 /*---------------------------------------------------------------------------*/
 int swriteInt(char* buff, int num, int radix, int znac)
 {
-  
-  char sign = '-';
-  int i = 0;
-  int j = 0;
-  int k = 0;
-  char buffer[SIZE_BUFFER];
-  int counter = SIZE_BUFFER;
+
+  char sign                = '-';
+  int i                    = 0;
+  int j                    = 0;
+  int k                    = 0;
+  char buffer[SIZE_BUFFER] = {0};
+  int counter              = SIZE_BUFFER;
 
 
   if (num == 0) {
@@ -92,7 +92,7 @@ int swriteInt(char* buff, int num, int radix, int znac)
   if (znac > -1) {
     if ((SIZE_BUFFER - counter) < znac) {
       znac = znac - SIZE_BUFFER + counter;
-      while (znac) { 
+      while (znac) {
         buff[i] = '0';
         i++;
         j++;
@@ -100,7 +100,7 @@ int swriteInt(char* buff, int num, int radix, int znac)
       }
     }
   }
-  
+
   while(i < SIZE_BUFFER - counter + j) {
     buff[i] = buffer[counter + k++];
     i++;
@@ -108,4 +108,3 @@ int swriteInt(char* buff, int num, int radix, int znac)
 
   return counter;
 }
-
