@@ -29,9 +29,9 @@ typedef struct TLBA {
 } tLBA;
 
 typedef struct PARTTABLE {
-  char flagActive[8];
-	unsigned int size;
-  char fileSystem[8];
+  char flagActive;
+	double size;
+  char fileSystem;
 } *tPartitionTable;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS);
