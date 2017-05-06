@@ -19,25 +19,26 @@ int main(int argc, char** argv)
   int indPart               = 0;
   int tmpIndPart            = 0;
 
-  tPartitionTable* table = malloc(sizeof(tPartitionTable*));
+  tPartitionTable* table = malloc(sizeof(tPartitionTable) * (indPart + 1));
   tIDECHS geometry;
   initIdesh(&geometry);
 
   tCHS chs;
   g_idechs2chs(geometry, &chs);
 
-  sizeDisc = chs.countCylinder * chs.countHead * chs.countSector;
+  sizeDisc = chs.countCylinder * chs.countHead * chs.countSector * 512;
   sizeDisc = sizeDisc / (1024 * 1024);
 
   sprintf(sizeDsc,"%.12lf", sizeDisc);
   tmpSizeDisc = sizeDisc;
   while (1) {
-    writeChar(1, "\nSize Disc(Gb): ");
+    writeChar(1, "\nFree Size Disc(Gb): ");
     sprintf(buffer, "%lf", tmpSizeDisc);
     writeChar(1, buffer);
     writeChar(1, "\n");
 
     while (sizePart < 0 ) {
+      i = 0;
       writeChar(1,"Please, input size of part: ");
       do {
         read(0, &buffer[i++], 1);
@@ -45,8 +46,7 @@ int main(int argc, char** argv)
       buffer[i - 1] = '\0';
       sscanf(buffer,"%lf", &sizePart);
     }
-
-    if (!sizePart) {
+    if (sizePart <= 0) {
       break;
     }
     while (!(typeOfPart < '4' && typeOfPart > '0')) {
@@ -63,7 +63,9 @@ int main(int argc, char** argv)
       read(1, &active, 1);
       read(1, &enter, 1);
       active == 'y' ? flgactive = 1 : ((active == 'n') ? (flgactive = 0) :
-      (flgactive = -1));
+                                                         (flgactive = -1));
+      if (flgactive == 0)
+        break;
       tmpIndPart = 0;
     }
 
@@ -80,23 +82,23 @@ int main(int argc, char** argv)
     active     = 'n';
     sizePart   = -1;
     indPart++;
-    table = realloc(table, sizeof(table) * (indPart + 1));
+    table = realloc(table, sizeof(*table) * (indPart + 1));
   }
   while (1) {
     writeChar(1, "Part: ");
-    printf(buffer,"lf",table[tmpIndPart].size);
+    sprintf(buffer,"%lf",table[tmpIndPart].size);
     writeChar(1, buffer);
     writeChar(1, "\n");
 
     writeChar(1, "Type: ");
-    switch(table[tmpIndPart].fileSystem) {
-      case '1':
+    switch(table[tmpIndPart].fileSystem - '0') {
+      case 1:
       writeChar(1, "Ext\n");
       break;
-      case '2':
+      case 2:
       writeChar(1, "NTFS\n");
       break;
-      case '3':
+      case 3:
       writeChar(1, "Linux_swap\n");
       break;
     }
@@ -106,7 +108,7 @@ int main(int argc, char** argv)
     write(1, &c, 1);
     writeChar(1, "\n");
     tmpIndPart++;
-    if (tmpIndPart >= indPart + 1) {
+    if (tmpIndPart >= indPart) {
       break;
     }
   }

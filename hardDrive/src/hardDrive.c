@@ -5,25 +5,25 @@
 
 int g_lba2chs(tLBA LBA, tCHS* CHS)
 {
-  CHS->countSector = (LBA.lba / 15) / 63;
-  CHS->countHead = (LBA.lba / 15) % 63;
-  CHS->countCylinder = LBA.lba % 63 + 1;
+  CHS->countSector = (LBA.lba / 16) / 64;
+  CHS->countHead = (LBA.lba / 16) % 64;
+  CHS->countCylinder = LBA.lba % 64 + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_lba2large(tLBA LBA, tLARGE* LARGE)
 {
-  LARGE->countSector = (LBA.lba / 63) / 255;
-  LARGE->countHead = (LBA.lba / 63) % 255;
-  LARGE->countCylinder = LBA.lba % 255 + 1;
+  LARGE->countSector = (LBA.lba / 64) / 256;
+  LARGE->countHead = (LBA.lba / 64) % 256;
+  LARGE->countCylinder = LBA.lba % 256 + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int g_lba2idechs(tLBA LBA, tIDECHS* IDECHS)
 {
-  IDECHS->countSector = (LBA.lba / 15) / 255;
-  IDECHS->countHead = (LBA.lba / 15) % 255;
-  IDECHS->countCylinder = LBA.lba % 255 + 1;
+  IDECHS->countSector = (LBA.lba / 16) / 256;
+  IDECHS->countHead = (LBA.lba / 16) % 256;
+  IDECHS->countCylinder = LBA.lba % 256 + 1;
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -37,7 +37,7 @@ int g_chs2large(tCHS CHS, tLARGE* LARGE)
 /*---------------------------------------------------------------------------*/
 int g_chs2lba(tCHS CHS, tLBA* LBA)
 {
-  LBA->lba = (CHS.countCylinder * 15 + CHS.countHead) * 63 + 
+  LBA->lba = (CHS.countCylinder * 16 + CHS.countHead) * 64 + 
               CHS.countSector - 1;
   return 0;
 }
@@ -68,7 +68,7 @@ int g_large2idechs(tLARGE LARGE, tIDECHS* IDECHS)
 /*---------------------------------------------------------------------------*/
 int g_large2lba(tLARGE LARGE, tLBA* LBA)
 {
-  LBA->lba = (LARGE.countHead + 255 * LARGE.countCylinder) * 63 + 
+  LBA->lba = (LARGE.countHead + 256 * LARGE.countCylinder) * 64 + 
               LARGE.countSector - 1;
   return 0;
 }
@@ -91,7 +91,7 @@ int g_idechs2lagre(tIDECHS IDECHS, tLARGE* LARGE)
 /*---------------------------------------------------------------------------*/
 int g_idechs2lba(tIDECHS IDECHS, tLBA* LBA)
 {
-  LBA->lba = (IDECHS.countHead + 15 * IDECHS.countCylinder) * 255 + 
+  LBA->lba = (IDECHS.countHead + 16 * IDECHS.countCylinder) * 256 + 
               IDECHS.countSector - 1;
   return 0;
 }
