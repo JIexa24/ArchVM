@@ -32,7 +32,7 @@ typedef struct PARTTABLE {
   char flagActive;
 	double size;
   char fileSystem;
-} *tPartitionTable;
+} tPartitionTable;
 
 int g_lba2chs(tLBA LBA, tCHS* CHS);
 int g_lba2large(tLBA LBA, tLARGE* LARGE);

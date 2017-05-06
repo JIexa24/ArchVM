@@ -1,22 +1,25 @@
+
 /*
-  Created by JIexa24 (Alexey R.)
+Created by JIexa24 (Alexey R.)
 */
 #include "./../include/hardDrive.h"
 
 int main(int argc, char** argv)
 {
-  double sizeDisc = 0;
-  double sizePart = -1;
-  char sizeDsc[SIZE_BUFFER];
-  char buffer[SIZE_BUFFER];
-  char active     = 0;
-  char flgactive  = 0;
-  char typeOfPart = 0;
-  char enter      = 0;
-  int i           = 0;
-  int indPart     = 0;
+  double sizeDisc           = 0;
+  double tmpSizeDisc        = 0;
+  double sizePart           = -1;
+  char sizeDsc[SIZE_BUFFER] = {0};
+  char buffer[SIZE_BUFFER]  = {0};
+  char active               = 'n';
+  char flgactive            = 0;
+  char typeOfPart           = 0;
+  char enter                = 0;
+  int i                     = 0;
+  int indPart               = 0;
+  int tmpIndPart            = 0;
 
-  tPartitionTable table = malloc(sizeof(tPartitionTable));
+  tPartitionTable* table = malloc(sizeof(tPartitionTable*));
   tIDECHS geometry;
   initIdesh(&geometry);
 
@@ -27,16 +30,17 @@ int main(int argc, char** argv)
   sizeDisc = sizeDisc / (1024 * 1024);
 
   sprintf(sizeDsc,"%.12lf", sizeDisc);
-
+  tmpSizeDisc = sizeDisc;
   while (1) {
     writeChar(1, "\nSize Disc(Gb): ");
-    writeChar(1, sizeDsc);
+    sprintf(buffer, "%lf", tmpSizeDisc);
+    writeChar(1, buffer);
     writeChar(1, "\n");
 
-    while (sizePart < 0) {
-	  	writeChar(1,"Please, input size of part: ");
+    while (sizePart < 0 ) {
+      writeChar(1,"Please, input size of part: ");
       do {
-        read(1, &buffer[i++], 1);
+        read(0, &buffer[i++], 1);
       } while (buffer[i - 1] != '\n');
       buffer[i - 1] = '\0';
       sscanf(buffer,"%lf", &sizePart);
@@ -45,30 +49,68 @@ int main(int argc, char** argv)
     if (!sizePart) {
       break;
     }
-
     while (!(typeOfPart < '4' && typeOfPart > '0')) {
-	    writeChar(1, "Input type of part:\n");
-	    writeChar(1, "\tExt\t=1\n");
-	    writeChar(1, "\tNTFS\t=2\n");
-	    writeChar(1, "\tLinux_swap\t=3\n");
+      writeChar(1, "Input type of part:\n");
+      writeChar(1, "\tExt\t=1\n");
+      writeChar(1, "\tNTFS\t=2\n");
+      writeChar(1, "\tLinux_swap\t=3\n");
       read(1, &typeOfPart, 1);
       read(1, &enter, 1);
     }
+
     while (!(flgactive == 1)) {
       writeChar(1, "This part is active? (y/n):\n");
       read(1, &active, 1);
       read(1, &enter, 1);
-      active == 'y' ? flgactive = 1 : ((active == 'n') ? (flgactive = 0) : (flgactive = -1));
+      active == 'y' ? flgactive = 1 : ((active == 'n') ? (flgactive = 0) :
+      (flgactive = -1));
+      tmpIndPart = 0;
     }
-    table[indPart].flagActive = flgactive;
+
+
+    tmpSizeDisc = tmpSizeDisc - sizePart;
+    if (tmpSizeDisc < 0) {
+      break;
+    }
+    table[indPart].flagActive = active;
     table[indPart].size = sizePart;
     table[indPart].fileSystem = typeOfPart;
 
     typeOfPart = 0;
-    flgactive  = 0;
-    active     = 0;
+    active     = 'n';
     sizePart   = -1;
     indPart++;
+    table = realloc(table, sizeof(table) * (indPart + 1));
   }
+  while (1) {
+    writeChar(1, "Part: ");
+    printf(buffer,"lf",table[tmpIndPart].size);
+    writeChar(1, buffer);
+    writeChar(1, "\n");
+
+    writeChar(1, "Type: ");
+    switch(table[tmpIndPart].fileSystem) {
+      case '1':
+      writeChar(1, "Ext\n");
+      break;
+      case '2':
+      writeChar(1, "NTFS\n");
+      break;
+      case '3':
+      writeChar(1, "Linux_swap\n");
+      break;
+    }
+
+    writeChar(1, "Active:");
+    char c = table[tmpIndPart].flagActive;
+    write(1, &c, 1);
+    writeChar(1, "\n");
+    tmpIndPart++;
+    if (tmpIndPart >= indPart + 1) {
+      break;
+    }
+  }
+
+  free(table);
   return 0;
 }
