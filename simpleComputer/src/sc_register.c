@@ -3,9 +3,7 @@
 */
 #include "./../include/sc_register.h"
 
-extern int localRAM[];
 extern short int sc_register;
-extern int* correctCommands;
 
 int sc_regInit(void)
 {
