@@ -4,8 +4,6 @@
 #include "./../include/sc_command.h"
 #include "./../include/sc_register.h"
 
-extern int localRAM[];
-extern short int sc_register;
 extern int correctCommands[];
 
 int sc_commandEncode(int command, int operand, int* value)
