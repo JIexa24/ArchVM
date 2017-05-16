@@ -34,34 +34,10 @@ int main(int argc, char** argv)
     writeChar(2,"Cannot open ascibig\n");
     return -1;
   }
-
   bc_bigcharread(fd, bigChars, 17, &cn);
-
   close(fd);
 
   mt_clrscr();
-
-  /* test memory set */
-  sc_commandEncode(0x10, 50, &tmp);
-  sc_memorySet(0, tmp);
-  sc_commandEncode(0x10, 51, &tmp);
-  sc_memorySet(1, tmp);
-
-  sc_commandEncode(0x11, 50, &tmp);
-  sc_memorySet(2, tmp);
-  sc_commandEncode(0x11, 51, &tmp);
-  sc_memorySet(3, tmp);
-  sc_commandEncode(0x40, 10, &tmp);
-  sc_memorySet(4, tmp);
-  sc_commandEncode(0x73, 16, &tmp);
-  sc_memorySet(10, tmp);
-  sc_commandEncode(0x43, 0, &tmp);
-  sc_memorySet(11, tmp);
-
-  sc_memorySet(16, 222 | (1 << 14));
-  sc_memorySet(22, 23 | (1 << 14));
-
-  accumulator = 22;
 
   refreshGuiSt(position);
   while (!exit) {

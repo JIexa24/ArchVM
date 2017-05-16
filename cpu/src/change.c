@@ -163,11 +163,12 @@ int memorySave(int position)
 
   if (sc_memorySave(filename) == 0) {
     refreshGui(position);
-    writeChar(1,"File successfully saved");
+    writeChar(1,"File successfully saved\n");
     return 0;
   } else {
     writeChar(1,"Cannot save file: ");
     writeChar(1, filename);
+    writeChar(1,"\n");
     return -1;
   }
 }
@@ -215,11 +216,12 @@ int memoryLoad(int position)
 
   if (sc_memoryLoad(filename) == 0) {
     refreshGui(position);
-    writeChar(1,"File successfully loaded");
+    writeChar(1,"File successfully loaded\n");
     return 0;
   } else {
     writeChar(1,"Cannot load file: ");
     writeChar(1, filename);
+    writeChar(1,"\n");
     return -1;
   }
 }
