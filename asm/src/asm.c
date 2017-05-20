@@ -44,7 +44,7 @@ int asmTrans(int argc, char** argv)
         continue;
       }
     }
-    if (buffer[i] == EOF && flagign == 0) {
+    if (buffer[i] == EOF & flagign == 0) {
       if (counterTokens == 2) {
         buffer[i] = '\0';
         ret = parsingLine(buffer, &addres, &value);
@@ -54,22 +54,22 @@ int asmTrans(int argc, char** argv)
       }
       break;
     }
-    if (buffer[i] == '\n' && flagign == 1) {
+    if (buffer[i] == '\n' & flagign == 1) {
       flagign = 0;
       i = 0;
       counterTokens = 0;
       continue;
     }
     if (flagign == 0) {
-      if (buffer[i] == TOKENSYMB && counterTokens < 2) {
+      if (buffer[i] == TOKENSYMB & counterTokens < 2) {
         counterTokens++;
         if (counterTokens == 2) {
           i++;
         }
       }
-      if (counterTokens == 2 && (buffer[i] == ';' || buffer[i] == '\n'
-          || buffer[i] == ' ' || buffer[i] == TOKENSYMB)) {
-        if (buffer[i] == ';' || buffer[i] == ' ' || buffer[i] == TOKENSYMB) {
+      if (counterTokens == 2 & (buffer[i] == ';' | buffer[i] == '\n'
+          | buffer[i] == ' ' | buffer[i] == TOKENSYMB)) {
+        if (buffer[i] == ';' | buffer[i] == ' ' | buffer[i] == TOKENSYMB) {
           flagign = 1;
         }
         buffer[i] = '\0';
@@ -100,7 +100,7 @@ int testArgv(char *argv[])
 
   ptr1 = strrchr(argv[1], '.');
   ptr2 = strrchr(argv[2], '.');
-  if ((!(strcmp(ptr1, ".o") == 0)) || (!(strcmp(ptr2, ".sa") == 0))) {
+  if ((!(strcmp(ptr1, ".o") == 0)) | (!(strcmp(ptr2, ".sa") == 0))) {
     return -1;
   } else {
     return 0;
@@ -238,7 +238,7 @@ int parsingLine(char* str, int* addres, int* value)
 
   sreadInt(tmpPtr, addres, 10);
 
-  if (*addres < 0 || *addres > sizeRAM) {
+  if (*addres < 0 | *addres > sizeRAM) {
     return -1;
   }
 

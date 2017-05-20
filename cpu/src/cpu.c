@@ -13,10 +13,10 @@ void CU()
     sc_regSet(FLAG_OUTMEM, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     refreshGui(instructionRegisterCount);
-    instructionRegisterCount = 0; 
+    instructionRegisterCount = 0;
     return;
   }
-  
+
   sc_memoryGet(instructionRegisterCount, &mem);
 
   if (sc_commandDecode(mem, &command, &operand)
@@ -25,7 +25,7 @@ void CU()
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
   }
-  if ((operand < 0) || (operand >= sizeRAM)) {
+  if ((operand < 0) | (operand >= sizeRAM)) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
@@ -44,7 +44,7 @@ void CU()
 /*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)
 {
-  if ((operand < 0) || (operand >= sizeRAM)) {
+  if ((operand < 0) | (operand >= sizeRAM)) {
     sc_regSet(FLAG_OUTMEM,1);
     return ERR_WRONG_ADDR;
   } else {
@@ -58,7 +58,7 @@ int ALU(int command, int operand)
     } else {
       sc_regSet(FLAG_ODD, 1);
     }
-    if ((accumulator > 0x7FFF) || (accumulator < 0)) {
+    if ((accumulator > 0x7FFF) | (accumulator < 0)) {
       accumulator &= 0x7FFF;
       sc_regSet(FLAG_OVERFLOW, 1);
     } else {

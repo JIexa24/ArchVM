@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 
   tPartitionTable* table = malloc(sizeof(tPartitionTable) * (indPart + 1));
   tIDECHS chs;
-  initIdesh(&chs);  
+  initIdesh(&chs);
   printf("%u %u %u\n",chs.countCylinder,chs.countHead ,chs.countSector  );
   sizeDisc = chs.countCylinder * chs.countHead * chs.countSector * 512;
   sizeDisc = sizeDisc / (1024 * 1024);
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
     if (sizePart <= 0) {
       break;
     }
-    while (!(typeOfPart < '4' && typeOfPart > '0')) {
+    while (!(typeOfPart < '4' & typeOfPart > '0')) {
       writeChar(1, "Input type of part:\n");
       writeChar(1, "\tExt\t=1\n");
       writeChar(1, "\tNTFS\t=2\n");

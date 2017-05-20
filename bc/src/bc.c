@@ -35,7 +35,7 @@ int bc_box(int x1, int y1, int x2, int y2)
 
   mt_getscreensize(&maxy, &maxx);
 
-  if ((x1 < 0) || (y1 < 0) || (x2 > maxx) || (y2 > maxy) || (x2 - x1 < 2) ||
+  if ((x1 < 0) | (y1 < 0) | (x2 > maxx) | (y2 > maxy) | (x2 - x1 < 2) |
       (y2 - y1 < 2)) {
     return -1;
   }
@@ -76,8 +76,9 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 
   mt_getscreensize(&maxy, &maxx);
 
-  if ((x < 0) || (y < 0) || (x + 8 > maxx) || (y + 8 > maxy))
+  if ((x < 0) | (y < 0) | (x + 8 > maxx) | (y + 8 > maxy))
     return -1;
+
   row[8] = '\0';
 
   mt_setfgcolor(fg);
@@ -104,7 +105,7 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 int bc_setbigcharpos(int *big, int x, int y, int value)
 {
   int pos = 0;
-  if ((x < 0) || (y < 0) || (x > 7) || (y > 7) || (value < 0) || (value > 1)) {
+  if ((x < 0) | (y < 0) | (x > 7) | (y > 7) | (value < 0) | (value > 1)) {
     return -1;
   }
 
@@ -128,7 +129,7 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 {
   int pos = 0;
 
-  if ((x < 0) || (y < 0) || (x > 7) || (y > 7)) {
+  if ((x < 0) | (y < 0) | (x > 7) | (y > 7)) {
     return -1;
   }
 
@@ -166,7 +167,7 @@ int bc_bigcharread(int fd, int *big, int need_count, int *count)
   int n, cnt, err;
 
   err = read(fd, &n, sizeof(n));
-  if (err == -1 || (err != sizeof(n))) {
+  if (err == -1 | (err != sizeof(n))) {
     return -1;
   }
 

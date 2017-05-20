@@ -157,7 +157,7 @@ void printOperation(int position)
   int isCommand = (mem >> 14) & 1;
   char c        = '+';
 
-  if ((position >= sizeRAM) && (position <= 0)) {
+  if ((position >= sizeRAM) & (position <= 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
@@ -165,7 +165,7 @@ void printOperation(int position)
 
 
   mt_gotoXY(68, 8);
-  if ((position >= 0) && (position < sizeRAM)) {
+  if ((position >= 0) & (position < sizeRAM)) {
     if (isCommand == 0) {
       sc_commandDecode(mem, &command, &operand);
       writeChar(1, "        ");
@@ -190,7 +190,7 @@ void printOperation(int position)
 void printFlags(int x, int y)
 {
   int reg = 0;
-  
+
   mt_gotoXY(x, y);
 
   sc_regGet(FLAG_OVERFLOW, &reg);
@@ -263,7 +263,7 @@ int printMcell(int *bigchars, int pos)
   writeChar(1," ) ");
   mt_setfgcolor(clr_default);
 
-  if ((pos >= sizeRAM) && (pos < 0)) {
+  if ((pos >= sizeRAM) & (pos < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return 1;
   }
@@ -298,24 +298,24 @@ int printMcell(int *bigchars, int pos)
 /*---------------------------------------------------------------------------*/
 void printMemory(int x, int y, int position)
 {
-  int i       =0;
-  int j       =0;
-  int mem     =0;
-  int command =0;
-  int opcode  =0;
-  int operand =0;
+  int i       = 0;
+  int j       = 0;
+  int mem     = 0;
+  int command = 0;
+  int opcode  = 0;
+  int operand = 0;
 
   mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(68, 13);
   if (SCANPRINTRADIX == 16) {
     writeChar(1, " HEX ");
   } else if (SCANPRINTRADIX == 10) {
-    writeChar(1, " DEC ");    
+    writeChar(1, " DEC ");
   }
 
   mt_setfgcolor(clr_default);
 
-  if ((position >= sizeRAM) && (position < 0)) {
+  if ((position >= sizeRAM) & (position < 0)) {
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
@@ -323,7 +323,7 @@ void printMemory(int x, int y, int position)
     mt_gotoXY(x, y + i);
     for (j = 0; j < 10; j++) {
 
-      sc_memoryGet(i+j*10, &mem);
+      sc_memoryGet(i + j * 10, &mem);
       command = (mem >> 14) & 1;
       mem &= 0x3FFF;
 

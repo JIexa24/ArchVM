@@ -36,7 +36,7 @@ int changeCell(int pos)
     writeChar(2, "Not a number!");
     return -1;
   }
-  if ((num >= 0) && (num < 0x8000)) {
+  if ((num >= 0) & (num < 0x8000)) {
     if (plusFlag) {
       command = (num >> 8) & 0x7F;
       if (num & 0x80) {
@@ -63,8 +63,8 @@ int changeCell(int pos)
 /*---------------------------------------------------------------------------*/
 int changeAccumulator(int pos)
 {
-  int plusFlag =0;
-  int num      =0;
+  int plusFlag = 0;
+  int num      = 0;
 
   refreshGui(pos);
 
@@ -80,7 +80,7 @@ int changeAccumulator(int pos)
     writeChar(2, "Not a number!");
     return -1;
   }
-  if ((num >= 0) && (num < 0x8000)) {
+  if ((num >= 0) & (num < 0x8000)) {
     accumulator = num;
   } else {
     writeChar(2, "Accumutalor is 15 bit wide");
@@ -92,8 +92,8 @@ int changeAccumulator(int pos)
 /*---------------------------------------------------------------------------*/
 int changeInstRegisterCount(int pos)
 {
-  int plusFlag =0;
-  int num      =0;
+  int plusFlag = 0;
+  int num      = 0;
   refreshGui(pos);
 
   mt_gotoXY(1, 23);
@@ -108,7 +108,7 @@ int changeInstRegisterCount(int pos)
     writeChar(2, "Not a number!");
     return -1;
   }
-  if ((num >= 0) && (num < sizeRAM)) {
+  if ((num >= 0) & (num < sizeRAM)) {
     instructionRegisterCount = num;
   } else {
     writeChar(2, "Instruction range: from 0 to 99 (0x63)");
@@ -124,7 +124,7 @@ int scanNum(int *plusFlag, int *n)
   int i                    = 0;
 
   do {
-    read(0,&buffer[i++],1);
+    read(0, &buffer[i++], 1);
   } while (buffer[i - 1] != '\n');
 
   buffer[i - 1] = '\0';
@@ -156,7 +156,7 @@ int memorySave(int position)
   writeChar(1, "Enter save file name: ");
 
   do {
-    read(1,&filename[i++],1);
+    read(0, &filename[i++], 1);
   } while (filename[i - 1] != '\n');
 
   filename[i - 1] = '\0';
@@ -187,7 +187,7 @@ int memoryLoad(int position)
   writeChar(1, "Enter load file name: ");
 
   do {
-    read(1,&filename[i++],1);
+    read(0, &filename[i++], 1);
   } while (filename[i - 1] != '\n');
 
   filename[i - 1] = '\0';
