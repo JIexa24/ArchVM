@@ -146,6 +146,8 @@ void printLabels()
   writeChar(1, " Flags ");
   mt_gotoXY(48, 13);
   writeChar(1, " Keys: ");
+  mt_gotoXY(2, 22);
+  writeChar(1, " Input/Output ");
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
