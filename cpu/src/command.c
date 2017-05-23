@@ -75,9 +75,13 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-
-      if (tmpMem != 0) {
-        accumulator /= tmpMem;
+      if (((tmpMem >> 14) & 1) == 1) {
+        tmpMem = tmpMem & (0x3FFF);
+      } else {
+        tmpMem = tmpMem;
+      }
+      if (tmpMem > 0) {
+        accumulator = accumulator / tmpMem;
       } else {
         sc_regSet(FLAG_DIVISION, 1);
         return -1;

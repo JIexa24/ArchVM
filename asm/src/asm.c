@@ -16,9 +16,6 @@ int asmTrans(int argc, char** argv)
   int value                = 0;
   int ret                  = 0;
 
-  assert(!(argc < 4));
-  assert(!(testArgv(argv)));
-
   if ((output = fopen(argv[1], "wb")) == NULL) {
     exit(1);
   }
