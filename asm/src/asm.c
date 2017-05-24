@@ -5,6 +5,7 @@
 
 int asmTrans(int argc, char** argv)
 {
+  testArgv(argv);
   FILE *input              = NULL;
   FILE *output             = NULL;
   char buffer[SIZE_BUFFER] = {0};
