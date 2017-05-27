@@ -13,10 +13,10 @@ void setSignals()
   signal(SIGUSR1, ursignalHand);
   signal(SIGUSR2, ursignalHand2);
   signal(SIGWINCH, windHand);
-  signal(SIGTERM, killHand);
-  signal(SIGINT, killHand);
-  signal(SIGTSTP, killHand);
-  signal(SIGQUIT, killHand);
+  signal(SIGTERM, killHand); /*kill (default)*/
+  signal(SIGINT, killHand);  /*Ctrl-C*/
+  signal(SIGTSTP, killHand); /*Ctrl-Z*/
+  signal(SIGQUIT, killHand); /*Ctrl-\*/
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
