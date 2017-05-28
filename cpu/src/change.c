@@ -15,7 +15,7 @@ void setSignals()
   signal(SIGWINCH, windHand);
   signal(SIGTERM, killHand); /*kill (default)*/
   signal(SIGINT, killHand);  /*Ctrl-C*/
-  signal(SIGTSTP, killHand); /*Ctrl-Z*/
+  signal(SIGTSTP, ursignalHand2); /*Ctrl-Z*/
   signal(SIGQUIT, killHand); /*Ctrl-\*/
 }
 /*---------------------------------------------------------------------------*/
