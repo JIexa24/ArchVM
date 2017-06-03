@@ -25,8 +25,9 @@ enum keywords {
 };
 
 typedef struct varBasic {
-  char name;
-  int operand;
+  char name[2];
+  int cell;
+  int variable;
 } var;
 
 int keywordCode(char* str);
