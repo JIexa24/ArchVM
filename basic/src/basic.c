@@ -3,6 +3,8 @@
 */
 #include "basic.h"
 
+var alfabet[26];
+
 int keywordCode(char *str)
 {
   if (strcmp(str, "REM") == 0) {
