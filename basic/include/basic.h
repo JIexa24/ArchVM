@@ -1,4 +1,6 @@
-#ifndef BASIC_H
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #define BASIC_H
 
 #include <stdio.h>

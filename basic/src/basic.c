@@ -1,3 +1,6 @@
+/*
+  Created by JIexa24 (Alexey R.)
+*/
 #include "basic.h"
 
 int keywordCode(char *str)
