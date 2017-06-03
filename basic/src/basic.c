@@ -1,6 +1,5 @@
 #include "basic.h"
 
-
 int keywordCode(char *str)
 {
   if (strcmp(str, "REM") == 0) {
@@ -19,5 +18,19 @@ int keywordCode(char *str)
     return KEYW_END;
   } else {
     return KEYW_E;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int testArgv(char *argv[])
+{
+  char *ptr1 = NULL;
+  char *ptr2 = NULL;
+
+  ptr1 = strrchr(argv[1], '.');
+  ptr2 = strrchr(argv[2], '.');
+  if ((!(strcmp(ptr1, ".o") == 0)) | (!(strcmp(ptr2, ".sb") == 0))) {
+    return -1;
+  } else {
+    return 0;
   }
 }

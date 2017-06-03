@@ -16,11 +16,12 @@ enum keywords {
   KEYW_E = -1
 };
 
-struct varBasic {
+typedef struct varBasic {
   char name;
   int operand;
-};
+} var;
 
 int keywordCode(char *str);
+int testArgv(char *argv[]);
 
 #endif
