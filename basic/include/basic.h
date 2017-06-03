@@ -21,7 +21,9 @@ typedef struct varBasic {
   int operand;
 } var;
 
-int keywordCode(char *str);
-int testArgv(char *argv[]);
+int keywordCode(char* str);
+int testArgv(char* argv[]);
+int testFile(char* filename);
+void parsingLine(char* str,int* command, int* operand);
 
 #endif

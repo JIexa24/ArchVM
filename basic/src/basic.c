@@ -34,3 +34,16 @@ int testArgv(char *argv[])
     return 0;
   }
 }
+/*---------------------------------------------------------------------------*/
+int testFile(char* filename)
+{
+  FILE* file = fopen(filename, "r");
+  char c = 0;
+  while(c != EOF)
+  {
+    fscanf(file, "%c", &c);
+    if (c >= a & c <= z) {
+      return 1;
+    }
+  }
+}
