@@ -14,7 +14,6 @@ int main(int argc, char** argv)
 {
   sc_memoryInit();
   sc_regInit();
-    printf("ya tut!\n");
   setSignals();
   rk_mytermsave();
   sc_regSet(FLAG_INTERRUPT, 1);

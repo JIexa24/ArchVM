@@ -9,7 +9,6 @@ extern int writeUse;
 
 void timerHand(int sig)
 {
-  printf("ya tut!\n");
   int reg;
   CU();
   refreshGui(instructionRegisterCount);

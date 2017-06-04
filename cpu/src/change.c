@@ -9,7 +9,6 @@ extern int SCANPRINTRADIX;
 
 void setSignals()
 {
-  printf("ya tut!\n");
   signal(SIGALRM, timerHand);
   signal(SIGUSR1, ursignalHand);
   signal(SIGUSR2, ursignalHand2);
