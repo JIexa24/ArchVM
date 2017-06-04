@@ -16,7 +16,6 @@ void timerHand(int sig)
   if (!reg) {
     /* raise для непрерывного выполнения. alarm - одна секунда */
     usleep(MKR(TIMESLEEP));
-      printf("ya tut!\n");
     raise(SIGALRM);
     //alarm(1);
   }
