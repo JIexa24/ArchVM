@@ -10,7 +10,7 @@ extern int writeValue;
 extern int bigChars[];
 extern int SCANPRINTRADIX;
 
-struct itimerval bval, eval;
+struct itimerval nval, oval;
 
 int main(int argc, char** argv)
 {
@@ -32,11 +32,11 @@ int main(int argc, char** argv)
   int regisProg  = 0;
   enum keys key  = KEY_other;
 
-  bval.it_interval.tv_sec = TIMESLEEPSEC;
-  bval.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
-  bval.it_value.tv_sec = TIMESLEEPSEC;
-  bval.it_value.tv_usec = MKR(TIMESLEEPUSEC);
-  setitimer(ITIMER_REAL, &bval, &eval);
+  nval.it_interval.tv_sec = TIMESLEEPSEC;
+  nval.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
+  nval.it_value.tv_sec = TIMESLEEPSEC;
+  nval.it_value.tv_usec = MKR(TIMESLEEPUSEC);
+  setitimer(ITIMER_REAL, &nval, &oval);
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
