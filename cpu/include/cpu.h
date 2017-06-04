@@ -42,7 +42,7 @@
 #define ACCUMCOLORFG    clr_default
 
 #define MKR(X)  (X * 1000000)
-#define TIMESLEEP 0.5
+#define TIMESLEEP 2
 
 void CU();
 int ALU(int command, int operand);

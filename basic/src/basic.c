@@ -4,14 +4,14 @@
 #include "./../include/basic.h"
 
 var alfabet[26];
-int begin       = 0;
-int end         = 99;
-int tmp         = 0;
-int tmp1        = 0;
-char readc[11]  = "   READ   \n";
-char writec[12] = "   WRITE   \n";
-char jmpc[10]   = "   JMP   \n";
-char haltc[11]  = "   HALT   \n";
+static int begin       = 0;
+static int end         = 99;
+static int tmp         = -1;
+static int tmp1        = 0;
+static char readc[11]  = "   READ   \n";
+static char writec[12] = "   WRITE   \n";
+static char jmpc[11]   = "   JUMP   \n";
+static char haltc[11]  = "   HALT   \n";
 
 int keywordCode(char *str)
 {
@@ -64,7 +64,7 @@ int testFile(char* filename)
 /*---------------------------------------------------------------------------*/
 int basicTrans(int argc, char *argv[])
 {
-  assert(!testFile(argv[1]));
+  //assert(!testFile(argv[1]));
   FILE *input              = NULL;
   FILE *output             = NULL;
   char buffer[SIZE_BUFFER] = {0};
@@ -74,7 +74,7 @@ int basicTrans(int argc, char *argv[])
   char *ptr                = NULL;
   int ret                  = 0;
   int BR                   = 0;
-  tmp                      = 0;
+  tmp                      = -1;
   tmp1                     = 0;
   begin                    = 0;
   end                      = 99;
@@ -147,7 +147,8 @@ int parsingLineB(char* str, FILE *output)
   if (!(str[0] >= '0' & str[0] <= '9')) {
     return 0;
   }
-  tmp = tmp1;
+  if (tmp1 > 0)
+    tmp = tmp1;
   sreadInt(tmpPtr, &tmp1, 10);
   assert(tmp1 > tmp);
 
@@ -196,9 +197,13 @@ int parsingLineB(char* str, FILE *output)
     }
   } else if (ret == KEYW_GOTO) {
     jmpc[0] = begin / 10 + '0';
-    jmpc[1] = begin++ % 10 + '0';
-    jmpc[7] = tmpPtr[0];
-    jmpc[8] = tmpPtr[1];
+    jmpc[1] = begin % 10 + '0';
+    int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
+    cell = cell - tmp1;
+    cell = cell / 10;
+    jmpc[8] = (begin + cell) / 10 + '0';
+    jmpc[9] = (begin + cell) % 10 + '0';
+    ++begin;
     fwrite(jmpc, sizeof(char) * strlen(jmpc), 1, output);
   } else if (ret == KEYW_IF) {
 
