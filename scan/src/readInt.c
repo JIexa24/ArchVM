@@ -22,9 +22,9 @@ int myPow(int a, int b)
 int sreadInt(char* buffers, int* num, int radix)
 {
   int size = strlen(buffers) - 1;
-  int i    = 0;
-  int k    = 0;
-
+  int i = size;
+  int k = 0;
+  
   *num = 0;
   for (i = size; i >= 0; i--) {
     if ((buffers[i] >= '0') & (buffers[i] <= '9')) {

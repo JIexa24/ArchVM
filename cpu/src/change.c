@@ -211,9 +211,34 @@ int memoryLoad(int position)
       args[1] = filename;
       args[2] = ptr;
       asmTrans(3, args);
+    } else if (strcmp(ptr1, ".sb") == 0) {
+       char src[SIZE_BUFFER];
+       char dest[SIZE_BUFFER];
+       strcpy(src, filename);
+       strcpy(dest, filename);
+       char* ptr = strchr(dest, '.');
+       ptr[1] = 's';
+       ptr[2] = 'a';
+       ptr[3] = '\0';
+       char *argp[3] = {NULL, dest, src};
+       basicTrans(3, argp);
+
+       ptr = strchr(src, '.');
+       ptr[1] = 's';
+       ptr[2] = 'a';
+       ptr[3] = '\0';
+       ptr = strchr(dest, '.');
+       ptr[1] = 'o';
+       ptr[2] = '\0';
+       argp[1] = dest;
+       argp[2] = src;
+       asmTrans(3, argp);
+
+       ptr = strchr(filename, '.');
+       ptr[1] = 'o';
+       ptr[2] = '\0';
     }
   }
-
   if (sc_memoryLoad(filename) == 0) {
     refreshGui(position);
     writeChar(1,"File successfully loaded\n");

@@ -14,6 +14,7 @@
 #include "./../../scan/include/readInt.h"
 #include "./../../hardDrive/include/hardDrive.h"
 #include "./../../asm/include/asm.h"
+#include "./../../basic/include/basic.h"
 
 #include <signal.h>
 #include <fcntl.h>

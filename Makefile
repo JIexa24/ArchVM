@@ -12,6 +12,7 @@ HANDMADE:
 	make -C hardDrive
 	make -C cpu
 	make -C asm
+	make -C basic
 	make -C main
 	make TEST
 
@@ -26,6 +27,7 @@ restruct:
 	make restruct -C hardDrive
 	make restruct -C cpu
 	make restruct -C asm
+	make restruct -C basic
 	make restruct -C main
 	make restruct -C tests
 

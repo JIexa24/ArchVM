@@ -3,7 +3,7 @@ CFLAGS = -g3 -std=c99
 
 all: LIBR
 
-LIBR: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o 
+LIBR: ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 	ar rvs ./../lib/libSimpleComputer.a ./obj/sc_memory.o ./obj/sc_command.o ./obj/sc_register.o ./obj/global.o
 
 ./obj/sc_memory.o: ./src/sc_memory.c
