@@ -19,6 +19,8 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <time.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 /* CPU */
 
@@ -42,7 +44,8 @@
 #define ACCUMCOLORFG    clr_default
 
 #define MKR(X)  (X * 1000000)
-#define TIMESLEEP 2
+#define TIMESLEEPUSEC 0.5
+#define TIMESLEEPSEC 1
 
 void CU();
 int ALU(int command, int operand);

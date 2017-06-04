@@ -10,13 +10,13 @@ extern int writeUse;
 void timerHand(int sig)
 {
   int reg;
-  CU();
-  refreshGui(instructionRegisterCount);
   sc_regGet(FLAG_INTERRUPT, &reg);
   if (!reg) {
+    CU();
+    refreshGui(instructionRegisterCount);
     /* raise для непрерывного выполнения. alarm - одна секунда */
-    usleep(MKR(TIMESLEEP));
-    raise(SIGALRM);
+    //usleep(MKR(TIMESLEEP));
+    //raise(SIGALRM);
     //alarm(1);
   }
 }
@@ -43,6 +43,7 @@ void windHand(int sig)
 /*---------------------------------------------------------------------------*/
 void killHand(int sig)
 {
+  setitimer(ITIMER_REAL, NULL, NULL);
   mt_clrscr();
   rk_mytermrestore();
   system("rm -f termsettings");

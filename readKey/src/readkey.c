@@ -39,39 +39,39 @@ int rk_readkey(enum keys *key)
 
   buf[readNum] = '\0';
 
-  if (strcmp(buf, "l") == 0) {
+  if ((strcmp(buf, "l") == 0) | (strcmp(buf, "L") == 0)) {
     *key = KEY_l;
-  } else if (strcmp(buf, "s") == 0) {
+  } else if ((strcmp(buf, "s") == 0) | (strcmp(buf, "S") == 0)) {
     *key = KEY_s;
-  } else if (strcmp(buf, "r") == 0) {
+  } else if ((strcmp(buf, "r") == 0) | (strcmp(buf, "R") == 0)) {
     *key = KEY_r;
-  } else if (strcmp(buf, "t") == 0) {
+  } else if ((strcmp(buf, "t") == 0) | (strcmp(buf, "T") == 0)) {
     *key = KEY_t;
-  } else if (strcmp(buf, "i") == 0) {
+  } else if ((strcmp(buf, "i") == 0) | (strcmp(buf, "I") == 0)) {
     *key = KEY_i;
-  } else if (strcmp(buf, "q") == 0) {
+  } else if ((strcmp(buf, "q") == 0) | (strcmp(buf, "Q") == 0)) {
     *key = KEY_q;
-  } else if (strcmp(buf, "x") == 0) {
+  } else if ((strcmp(buf, "x") == 0) | (strcmp(buf, "X") == 0)) {
     *key = KEY_x;
-  } else if (strcmp(buf, "d") == 0) {
+  } else if ((strcmp(buf, "d") == 0) | (strcmp(buf, "D") == 0)) {
     *key = KEY_d;
-  } else if (strcmp(buf, "c") == 0) {
+  } else if ((strcmp(buf, "c") == 0) | (strcmp(buf, "C") == 0)) {
     *key = KEY_c;
-  } else if (strcmp(buf, "\n") == 0) {
+  } else if ((strcmp(buf, "\n")) == 0) {
     *key = KEY_enter;
-  } else if (strcmp(buf, "\E[15~") == 0) {
+  } else if ((strcmp(buf, "\E[15~")) == 0) {
     *key = KEY_f5;
-  } else if (strcmp(buf, "\E[17~") == 0) {
+  } else if ((strcmp(buf, "\E[17~")) == 0) {
     *key = KEY_f6;
-  } else if (strcmp(buf, "\E[A") == 0) {
+  } else if ((strcmp(buf, "\E[A")) == 0) {
     *key = KEY_up;
-  } else if (strcmp(buf, "\E[B") == 0) {
+  } else if ((strcmp(buf, "\E[B")) == 0) {
     *key = KEY_down;
-  } else if (strcmp(buf, "\E[C") == 0) {
+  } else if ((strcmp(buf, "\E[C")) == 0) {
     *key = KEY_right;
-  } else if (strcmp(buf, "\E[D") == 0) {
+  } else if ((strcmp(buf, "\E[D")) == 0) {
     *key = KEY_left;
-  } else if (strcmp(buf, "\E") == 0) {
+  } else if ((strcmp(buf, "\E")) == 0) {
     *key = KEY_esc;
   } else {
     *key = KEY_other;

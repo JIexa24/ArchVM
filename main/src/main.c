@@ -10,6 +10,8 @@ extern int writeValue;
 extern int bigChars[];
 extern int SCANPRINTRADIX;
 
+struct itimerval bval, eval;
+
 int main(int argc, char** argv)
 {
   sc_memoryInit();
@@ -29,6 +31,12 @@ int main(int argc, char** argv)
   int regis      = 0;
   int regisProg  = 0;
   enum keys key  = KEY_other;
+
+  bval.it_interval.tv_sec = TIMESLEEPSEC;
+  bval.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
+  bval.it_value.tv_sec = TIMESLEEPSEC;
+  bval.it_value.tv_usec = MKR(TIMESLEEPUSEC);
+  setitimer(ITIMER_REAL, &bval, &eval);
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
@@ -108,7 +116,8 @@ int main(int argc, char** argv)
         break;
 
         case KEY_t:
-          raise(SIGALRM);
+          CU();
+          refreshGui(instructionRegisterCount);
           position = instructionRegisterCount;
           cursorX = instructionRegisterCount / 10;
           cursorY = instructionRegisterCount % 10;
@@ -140,10 +149,12 @@ int main(int argc, char** argv)
     } else if (key == KEY_r) {
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
+        sc_regInit();
         sc_regSet(FLAG_INTERRUPT, 0);
-        raise(SIGALRM);
+
+        //raise(SIGALRM);
         position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10 + 1;
+        cursorX = instructionRegisterCount / 10;
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
         continue;
@@ -155,11 +166,12 @@ int main(int argc, char** argv)
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
         continue;
-	  }
+	    }
     }
     position = cursorY + cursorX * 10;
   }
   rk_mytermrestore();
+  setitimer(ITIMER_REAL, NULL, NULL);
   system("rm -f termsettings");
   return 0;
 }
