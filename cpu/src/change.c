@@ -10,13 +10,14 @@ extern int SCANPRINTRADIX;
 void setSignals()
 {
   signal(SIGALRM, timerHand);
+  signal(SIGVTALRM, timerHand);
   signal(SIGUSR1, ursignalHand);
   signal(SIGUSR2, ursignalHand2);
   signal(SIGWINCH, windHand);
-  signal(SIGTERM, killHand); /*kill (default)*/
-  signal(SIGINT, killHand);  /*Ctrl-C*/
-  signal(SIGTSTP, ursignalHand2); /*Ctrl-Z*/
-  signal(SIGQUIT, killHand); /*Ctrl-\*/
+  signal(SIGTERM, killHand);       /*kill (default)*/
+  signal(SIGINT, killHand);        /*Ctrl-C*/
+  signal(SIGTSTP, ursignalHand2);  /*Ctrl-Z*/
+  signal(SIGQUIT, killHand);       /*Ctrl-\*/
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
@@ -214,14 +215,14 @@ int memoryLoad(int position)
     } else if (strcmp(ptr1, ".sb") == 0) {
        char src[SIZE_BUFFER];
        char dest[SIZE_BUFFER];
-       strcpy(src, filename);
+       strcpy(src, filename); /* file.sb */
        strcpy(dest, filename);
        char* ptr = strchr(dest, '.');
        ptr[1] = 's';
        ptr[2] = 'a';
        ptr[3] = '\0';
        char *argp[3] = {NULL, dest, src};
-       basicTrans(3, argp);
+       basicTrans(3, argp); /* 0, file.sa file.sb */
 
        ptr = strchr(src, '.');
        ptr[1] = 's';
@@ -232,7 +233,7 @@ int memoryLoad(int position)
        ptr[2] = '\0';
        argp[1] = dest;
        argp[2] = src;
-       asmTrans(3, argp);
+       asmTrans(3, argp);  /* 0, file.o file.sa */
 
        ptr = strchr(filename, '.');
        ptr[1] = 'o';

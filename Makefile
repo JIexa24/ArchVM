@@ -1,8 +1,10 @@
 all:
+	rm -f ./bin/s*
 	make -C build
 	make TEST
 
 HANDMADE:
+	rm -f ./bin/s*
 	make -C print
 	make -C scan
 	make -C simpleComputer
@@ -36,21 +38,14 @@ TEST:
 
 
 clean:
-	rm -f lib/*
-	rm -f simpleComputer/obj/*.o
-	rm -f simpleComputer/tst/*.o
-	rm -f simpleComputer/a.out
-	rm -f consoleSC/obj/*.o
-	rm -f consoleSC/tst/*.o
-	rm -f consoleSC/a.out
-	rm -f readKey/obj/*.o
-	rm -f readKey/tst/*.o
-	rm -f readKey/a.out
-	rm -f bc/obj/*.o
-	rm -f bc/tst/*.o
-	rm -f bc/a.out
-	rm -f print/obj/*.o
-	rm -f hardDrive/obj/*.o
-	rm -f cpu/obj/*.o
-	rm -f main/obj/*.o
-	rm -f asm/obj/*.o
+	make clean -C print
+	make clean -C scan
+	make clean -C simpleComputer
+	make clean -C consoleSC
+	make clean -C readKey
+	make clean -C bc
+	make clean -C hardDrive
+	make clean -C cpu
+	make clean -C asm
+	make clean -C basic
+	make clean -C main

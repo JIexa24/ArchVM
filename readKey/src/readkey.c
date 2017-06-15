@@ -31,7 +31,7 @@ int rk_readkey(enum keys *key)
   if (rk_mytermregime(0, 0, 1, 0, 1) != 0) {
     return -1;
   }
-  readNum = read(STDIN_FILENO, buf, 15);
+  readNum = read(STDIN_FILENO, buf, 8);
 
   if (readNum < 0) {
     return -1;

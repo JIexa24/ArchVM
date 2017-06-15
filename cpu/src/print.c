@@ -9,6 +9,7 @@ extern int bigChars[];
 extern int writeValue;
 extern int writeUse;
 extern int SCANPRINTRADIX;
+static int counterRefresh = 0;
 
 static void printWriteValue()
 {
@@ -59,21 +60,26 @@ void refreshGuiSt(int position)
   printOperation(position);
   printMemory(2, 2, position);
   printFlags(66, 11);
-  printMcell(bigChars, position);
   printWriteValue();
   mt_gotoXY(1, 23);
 }
 /*---------------------------------------------------------------------------*/
 void refreshGui(int position)
 {
-  printCounter();
-  printAccum();
-  printOperation(position);
-  printMemory(2, 2, position);
-  printFlags(66, 11);
-  printMcell(bigChars, position);
-  printWriteValue();
-  mt_gotoXY(1, 23);
+  counterRefresh++;
+  if (counterRefresh % REFRESH == 0) {
+    refreshGuiSt(position);
+    counterRefresh = 0;
+  } else {
+    printCounter();
+    printAccum();
+    printOperation(position);
+    printMemory(2, 2, position);
+    printFlags(66, 11);
+    printWriteValue();
+    mt_gotoXY(1, 23);
+  }
+  //refreshGuiSt(position);
 }
 /*---------------------------------------------------------------------------*/
 void printAccum()
@@ -359,4 +365,5 @@ void printMemory(int x, int y, int position)
       }
     }
   }
+  printMcell(bigChars, position);
 }

@@ -214,9 +214,9 @@ int parsingLineB(char* str, FILE *output)
     haltc[1] = begin++ % 10 + '0';
     haltc[8] = '0';
     haltc[9] = '0';
-    char eof[2] = {-1, '\0'};
+    //char eof[2] = {-1, '\0'};
     fwrite(haltc, sizeof(char) * strlen(haltc), 1, output);
-    fwrite(eof, sizeof(char), 1, output);
+    //fwrite(eof, sizeof(char), 1, output);
     return 1;
   } else if (ret == KEYW_E) {
     return 0;

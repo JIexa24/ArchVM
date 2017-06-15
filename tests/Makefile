@@ -21,4 +21,3 @@ all: ./bin/tests
 restruct:
 	rm ./obj/*.o
 	make all
-

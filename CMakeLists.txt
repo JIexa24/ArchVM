@@ -14,8 +14,8 @@ add_subdirectory(hardDrive)
 include_directories(main/include)
 add_executable(../bin/simplecomputer main/src/main.c)
 
-target_link_libraries(../bin/simplecomputer CPU Term SimpleComputer Asm
-Write ReadInt BigChars ReadKey Basic)
+target_link_libraries(../bin/simplecomputer CPU Term SimpleComputer Asm Basic
+Write ReadInt BigChars ReadKey)
 
 include_directories(asm/include)
 add_executable(../bin/sat asm/src/main.c)

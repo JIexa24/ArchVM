@@ -45,11 +45,11 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-
+      tmpMem &= 0x3FFF;
       if (accumulator + tmpMem > 0x7FFF) {
         sc_regSet(FLAG_OVERFLOW, 1);
         accumulator += tmpMem;
-        accumulator &= 0x7FFF;
+        accumulator &= 0x3FFF;
       } else {
         accumulator += tmpMem;
       }
@@ -67,7 +67,7 @@ int commandHandler(int command, int operand)
       }
       accumulator -= tmp;
       if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
-        accumulator &= 0x7FFF;
+        accumulator &= 0x3FFF;
       }
     break;
 /*--------------------------------------------------------------------------7*/

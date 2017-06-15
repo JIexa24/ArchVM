@@ -10,7 +10,7 @@ extern int writeValue;
 extern int bigChars[];
 extern int SCANPRINTRADIX;
 
-struct itimerval nval, oval;
+struct itimerval val, oval;
 
 int main(int argc, char** argv)
 {
@@ -32,11 +32,11 @@ int main(int argc, char** argv)
   int regisProg  = 0;
   enum keys key  = KEY_other;
 
-  nval.it_interval.tv_sec = TIMESLEEPSEC;
-  nval.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
-  nval.it_value.tv_sec = TIMESLEEPSEC;
-  nval.it_value.tv_usec = MKR(TIMESLEEPUSEC);
-  setitimer(ITIMER_REAL, &nval, &oval);
+  val.it_interval.tv_sec = TIMESLEEPSEC;
+  val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
+  val.it_value.tv_sec = TIMESLEEPSEC;
+  val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
+  setitimer(ITIMER_REAL, &val, &oval);
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
@@ -94,7 +94,7 @@ int main(int argc, char** argv)
           refreshFlg = changeInstRegisterCount(position);
         break;
 
-	    case KEY_x:
+	      case KEY_x:
           SCANPRINTRADIX = 16;
           refreshFlg = 0;
         break;
@@ -132,18 +132,20 @@ int main(int argc, char** argv)
           memoryLoad(position);
           refreshFlg = 1;
         break;
+
+        case KEY_i:
+          raise(SIGUSR1);
+          refreshFlg = 0;
+          cursorX = 0;
+          cursorY = 0;
+        break;
+
+        case KEY_q:
+          exit = 1;
+        break;
       }
-    }
-    if (key == KEY_q) {
-      exit = 1;
-      break;
     } else if (key == KEY_c) {
       raise(SIGUSR2);
-    } else if (key == KEY_i) {
-      raise(SIGUSR1);
-      refreshFlg = 0;
-      cursorX = 0;
-      cursorY = 0;
     } else if (key == KEY_esc) {
       raise(SIGTERM);
     } else if (key == KEY_r) {
@@ -160,7 +162,7 @@ int main(int argc, char** argv)
         continue;
       } else {
         sc_regSet(FLAG_INTERRUPT, 1);
-        alarm(0);
+        raise(SIGALRM);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10 ;
         cursorY = instructionRegisterCount % 10;

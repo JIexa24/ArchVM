@@ -11,7 +11,7 @@ void timerHand(int sig)
 {
   int reg;
   sc_regGet(FLAG_INTERRUPT, &reg);
-  if (!reg) {
+  if (reg == 0) {
     CU();
     refreshGui(instructionRegisterCount);
     /* raise для непрерывного выполнения. alarm - одна секунда */

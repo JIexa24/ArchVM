@@ -24,6 +24,8 @@
 
 /* CPU */
 
+#define REFRESH 20
+
 #define BIGCHARSCOLORFG clr_cyan
 #define BIGCHARSCOLORBG clr_default
 
