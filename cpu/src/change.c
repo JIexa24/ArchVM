@@ -448,11 +448,11 @@ int memoryLoad(int position)
       }
     }
   }
-  
+
   if (!err) {
     if (sc_memoryLoad(filename) == 0) {
       refreshGui(position);
-      writeChar(1, "File kek successfully loaded\n");
+      writeChar(1, "File successfully loaded\n");
       restoreEchoRegime();
       restoreIgnoreAlarm();
       return 0;

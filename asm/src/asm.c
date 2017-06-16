@@ -5,9 +5,11 @@
 
 int asmTrans(int argc, char** argv)
 {
-  testArgv(argv);
-  FILE *input              = NULL;
-  FILE *output             = NULL;
+  if (testArgv(argv) == 1) {
+    return 1;
+  }
+  int input                = 0;
+  int output               = 0;
   char buffer[SIZE_BUFFER] = {0};
   int ram[sizeRAM]         = {0};
   int counterTokens        = 0;
@@ -17,11 +19,12 @@ int asmTrans(int argc, char** argv)
   int value                = 0;
   int ret                  = 0;
 
-  if ((input = fopen(argv[2], "rb")) == NULL) {
+
+  if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
   }
 
-  if ((output = fopen(argv[1], "wb")) == NULL) {
+  if ((output = open(argv[1], O_WRONLY)) == -1) {
     return 1;
   }
 
@@ -31,7 +34,7 @@ int asmTrans(int argc, char** argv)
 
   i = 0;
   do {
-    fread(&buffer[i], sizeof(char), 1, input);
+    read(input, &buffer[i], sizeof(char));
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
         continue;
@@ -72,8 +75,11 @@ int asmTrans(int argc, char** argv)
         }
         buffer[i] = '\0';
         ret = parsingLine(buffer, &addres, &value);
-        if (!ret) {
+        if (ret == 0 | ret == 2) {
           ram[addres] = value;
+          if (ret == 2){
+            break;
+          }
         }
         counterTokens = 0;
         i = 0;
@@ -83,10 +89,10 @@ int asmTrans(int argc, char** argv)
     }
   } while (1);
 
-  fwrite(ram, sizeof(*ram) * sizeRAM, 1, output);
+  write(output, ram, sizeof(*ram) * sizeRAM);
 
-  fclose(input);
-  fclose(output);
+  close(input);
+  close(output);
 
   return 0;
 }
@@ -99,7 +105,7 @@ int testArgv(char *argv[])
   ptr1 = strrchr(argv[1], '.');
   ptr2 = strrchr(argv[2], '.');
   if ((!(strcmp(ptr1, ".o") == 0)) | (!(strcmp(ptr2, ".sa") == 0))) {
-    return -1;
+    return 1;
   } else {
     return 0;
   }
@@ -299,6 +305,9 @@ int parsingLine(char* str, int* addres, int* value)
       return -1;
     }
     sc_commandEncode(command, operand, value);
+  }
+  if (command == 0x43) {
+    return 2;
   }
   return 0;
 }

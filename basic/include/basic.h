@@ -33,7 +33,7 @@ typedef struct varBasic {
 int keywordCode(char* str);
 int testArgvB(char* argv[]);
 int testFile(char* filename);
-int parsingLineB(char* str, FILE *output );
+int parsingLineB(char* str, int output );
 int basicTrans(int argc, char *argv[]);
 
 #endif

@@ -50,28 +50,25 @@ int testArgvB(char *argv[])
 /*---------------------------------------------------------------------------*/
 int testFile(char* filename)
 {
-  FILE* file = fopen(filename, "r");
+  int fd = open(filename, O_RDONLY);
   char c = '\0';
   while(c != EOF)
   {
-    printf("%c", c);
-    fread(&c, sizeof(c), 1, file);
-    if (c == '\n')
-      fread(&c, sizeof(c), 1, file);
-    //fscanf(file, "%c", &c);
+    read(fd, &c, sizeof(c));
     if (c >= 'a' & c <= 'z') {
-      fclose(file);
+      close(fd);
       return 1;
     }
   }
-  fclose(file);
+  close(fd);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int basicTrans(int argc, char *argv[])
 {
-  FILE *input              = NULL;
-  FILE *output             = NULL;
+  //if (testFile(argv[2])){return 1;}
+  int input                = 0;
+  int output               = 0;
   char buffer[SIZE_BUFFER] = {0};
   int i                    = 0;
   int addres               = 5;
@@ -84,10 +81,11 @@ int basicTrans(int argc, char *argv[])
   begin                    = 0;
   end                      = 99;
 
-  if ((input = fopen(argv[2], "rb")) == NULL) {
+  if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
   }
-  if ((output = fopen(argv[1], "wb")) == NULL) {
+
+  if ((output = open(argv[1], O_WRONLY)) == -1) {
     return 1;
   }
 
@@ -100,7 +98,7 @@ int basicTrans(int argc, char *argv[])
   i = 0;
 
   do {
-    fread(&buffer[i], sizeof(char), 1, input);
+    read(input, &buffer[i], sizeof(char));
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
         continue;
@@ -124,12 +122,12 @@ int basicTrans(int argc, char *argv[])
     i++;
   } while (1);
 
-  fclose(input);
-  fclose(output);
+  close(input);
+  close(output);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int parsingLineB(char* str, FILE *output)
+int parsingLineB(char* str, int output)
 {
   char* ptr    = str;
   int command  = 0;
@@ -183,7 +181,7 @@ int parsingLineB(char* str, FILE *output)
         readc[1] = begin++ % 10 + '0';
         readc[8] = alfabet[i].cell / 10 + '0';
         readc[9] = alfabet[i].cell % 10 + '0';
-        fwrite(readc, sizeof(char) * strlen(readc), 1, output);
+        write(output, readc, sizeof(char) * strlen(readc));
         break;
       }
     }
@@ -196,7 +194,7 @@ int parsingLineB(char* str, FILE *output)
         writec[1] = begin++ % 10 + '0';
         writec[9] = alfabet[i].cell / 10 + '0';
         writec[10] = alfabet[i].cell % 10 + '0';
-        fwrite(writec, sizeof(char) * strlen(writec), 1, output);
+        write(output, writec, sizeof(char) * strlen(writec));
         break;
       }
     }
@@ -209,7 +207,7 @@ int parsingLineB(char* str, FILE *output)
     jmpc[8] = (begin + cell) / 10 + '0';
     jmpc[9] = (begin + cell) % 10 + '0';
     ++begin;
-    fwrite(jmpc, sizeof(char) * strlen(jmpc), 1, output);
+    write(output, jmpc, sizeof(char) * strlen(jmpc));
   } else if (ret == KEYW_IF) {
 
   } else if (ret == KEYW_LET) {
@@ -219,7 +217,7 @@ int parsingLineB(char* str, FILE *output)
     haltc[1] = begin++ % 10 + '0';
     haltc[8] = '0';
     haltc[9] = '0';
-    fwrite(haltc, sizeof(char) * strlen(haltc), 1, output);
+    write(output, haltc, sizeof(char) * strlen(haltc));
     return 1;
   } else if (ret == KEYW_E) {
     return 0;
