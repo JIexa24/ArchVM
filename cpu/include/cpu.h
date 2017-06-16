@@ -69,6 +69,8 @@ void setSignals();
 void signalsRestore();
 void setIgnoreAlarm();
 void restoreIgnoreAlarm();
+void setEchoRegime();
+void restoreEchoRegime();
 int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
 int changeCell(int pos);

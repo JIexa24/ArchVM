@@ -7,6 +7,8 @@ extern int instructionRegisterCount;
 
 int readMcell(int pos)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
   int ret      = 0;
@@ -21,5 +23,7 @@ int readMcell(int pos)
 
   ret = changeCell(pos);
 
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
   return ret;
 }

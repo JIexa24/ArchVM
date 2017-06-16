@@ -65,11 +65,13 @@ int main(int argc, char** argv)
             cursorY = 9;
 
           refreshFlg = 0;
+          key  = KEY_other;
         break;
 
         case KEY_down:
           cursorY = (cursorY + 1) % 10;
           refreshFlg = 0;
+          key  = KEY_other;
         break;
 
         case KEY_left:
@@ -79,29 +81,35 @@ int main(int argc, char** argv)
             cursorX = 9;
 
           refreshFlg = 0;
+          key  = KEY_other;
         break;
 
         case KEY_right:
           cursorX = (cursorX + 1) % 10;
           refreshFlg = 0;
+          key  = KEY_other;
         break;
 
         case KEY_f5:
           refreshFlg = changeAccumulator(position);
+          key  = KEY_other;
         break;
 
         case KEY_f6:
           refreshFlg = changeInstRegisterCount(position);
+          key  = KEY_other;
         break;
 
 	      case KEY_x:
           SCANPRINTRADIX = 16;
           refreshFlg = 0;
+          key  = KEY_other;
         break;
 
         case KEY_d:
           SCANPRINTRADIX = 10;
           refreshFlg = 0;
+          key  = KEY_other;
         break;
 
         case KEY_enter:
@@ -113,6 +121,7 @@ int main(int argc, char** argv)
           } else if (SCANPRINTRADIX == 16) {
             refreshFlg = changeCell(position);
           }
+          key  = KEY_other;
         break;
 
         case KEY_t:
@@ -121,16 +130,19 @@ int main(int argc, char** argv)
           position = instructionRegisterCount;
           cursorX = instructionRegisterCount / 10;
           cursorY = instructionRegisterCount % 10;
+          key  = KEY_other;
         break;
 
         case KEY_s:
           memorySave(position);
           refreshFlg = 1;
+          key  = KEY_other;
         break;
 
         case KEY_l:
           memoryLoad(position);
           refreshFlg = 1;
+          key  = KEY_other;
         break;
 
         case KEY_i:
@@ -138,16 +150,21 @@ int main(int argc, char** argv)
           refreshFlg = 0;
           cursorX = 0;
           cursorY = 0;
+          key  = KEY_other;
         break;
 
         case KEY_q:
           exit = 1;
+          key  = KEY_other;
         break;
       }
-    } else if (key == KEY_c) {
+    }
+    if (key == KEY_c) {
       raise(SIGUSR2);
+      key  = KEY_other;
     } else if (key == KEY_esc) {
       raise(SIGTERM);
+      key  = KEY_other;
     } else if (key == KEY_r) {
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
@@ -169,6 +186,7 @@ int main(int argc, char** argv)
         refreshFlg = 0;
         continue;
 	    }
+      key  = KEY_other;
     }
     position = cursorY + cursorX * 10;
   }

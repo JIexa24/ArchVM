@@ -17,9 +17,13 @@ static sigset_t setalrm;
 
 static struct termios originalTerm;
 
+static int echoIgn = 0;
+static int alarmIgn = 0;
+
 void setSignals()
 {
-  for (int i = 0; i < 9; i++) {
+  int i;
+  for (i = 0; i < 9; i++) {
     memset(&(act[i]), 0, sizeof(act[i]));
     memset(&(old[i]), 0, sizeof(old[i]));
   }
@@ -82,6 +86,7 @@ void setSignals()
   sigaddset(&set, SIGSEGV);
   act[9].sa_handler = SIG_IGN;
   act[9].sa_mask = set;
+  
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -123,28 +128,48 @@ void signalsRestore()
 /*---------------------------------------------------------------------------*/
 void setIgnoreAlarm()
 {
-  sigemptyset(&setalrm);
-  sigaddset(&setalrm, SIGUSR1);
-  sigaddset(&setalrm, SIGALRM);
-  newalarm.sa_handler = SIG_IGN;
-  newalarm.sa_mask = setalrm;
-  sigaction(SIGALRM, &(newalarm), &(oldalarm));
+  if (alarmIgn == 0) {
+    sigemptyset(&setalrm);
+    sigaddset(&setalrm, SIGUSR1);
+    sigaddset(&setalrm, SIGALRM);
+    newalarm.sa_handler = SIG_IGN;
+    newalarm.sa_mask = setalrm;
+    sigaction(SIGALRM, &(newalarm), &(oldalarm));
+    alarmIgn = 1;
+ } else {
+   return;
+ }
 }
 /*---------------------------------------------------------------------------*/
 void restoreIgnoreAlarm()
 {
-  sigaction(SIGALRM, &(oldalarm), 0);
+  if (alarmIgn == 1) {
+    sigaction(SIGALRM, &(oldalarm), 0);
+    alarmIgn = 0;
+  } else {
+    return;
+  }
 }
 /*---------------------------------------------------------------------------*/
 void setEchoRegime()
 {
-  while (tcgetattr(STDIN_FILENO, &originalTerm) != 0);
-  rk_mytermregime(0, 0, 1, 1, 1);
+  if (echoIgn == 0) {
+    while (tcgetattr(STDIN_FILENO, &originalTerm) != 0);
+    rk_mytermregime(0, 0, 1, 1, 1);
+    echoIgn = 1;
+  } else {
+   return;
+  }
 }
 /*---------------------------------------------------------------------------*/
 void restoreEchoRegime()
 {
-  while (tcsetattr(STDIN_FILENO, TCSANOW, &originalTerm) != 0);
+  if (echoIgn == 1) {
+    while (tcsetattr(STDIN_FILENO, TCSANOW, &originalTerm) != 0);
+    echoIgn = 0;
+  } else {
+    return;
+  }
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
@@ -191,8 +216,7 @@ int changeCell(int pos)
       mem = num | 0x4000;
     }
     if(sc_memorySet(pos, mem) != 0) {
-
-    restoreEchoRegime();
+      restoreEchoRegime();
       restoreIgnoreAlarm();
       return -1;
     }
@@ -203,6 +227,7 @@ int changeCell(int pos)
     restoreIgnoreAlarm();
     return -1;
   }
+
   restoreEchoRegime();
   restoreIgnoreAlarm();
   return 0;
