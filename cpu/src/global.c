@@ -9,3 +9,4 @@ int bigChars[34]             = {0};
 int writeUse                 = 0;
 int writeValue               = 0;
 int SCANPRINTRADIX           = 16;
+int readUse                  = 0;

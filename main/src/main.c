@@ -169,13 +169,15 @@ int main(int argc, char** argv)
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
         sc_regInit();
-        sc_regSet(FLAG_INTERRUPT, 0);
+        restoreIgnoreAlarm();
+        //sc_regSet(FLAG_INTERRUPT, 0);
 
         //raise(SIGALRM);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10;
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
+        key  = KEY_other;
         continue;
       } else {
         sc_regSet(FLAG_INTERRUPT, 1);
@@ -184,6 +186,7 @@ int main(int argc, char** argv)
         cursorX = instructionRegisterCount / 10 ;
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
+        key  = KEY_other;
         continue;
 	    }
       key  = KEY_other;

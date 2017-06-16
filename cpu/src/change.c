@@ -20,6 +20,8 @@ static struct termios originalTerm;
 static int echoIgn = 0;
 static int alarmIgn = 0;
 
+extern int readUse;
+
 void setSignals()
 {
   int i;
@@ -86,7 +88,7 @@ void setSignals()
   sigaddset(&set, SIGSEGV);
   act[9].sa_handler = SIG_IGN;
   act[9].sa_mask = set;
-  
+
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -181,12 +183,15 @@ int changeCell(int pos)
   int command  = 0;
   int operand  = 0;
   int mem      = 0;
-  refreshGui(pos);
-  mt_gotoXY(1, 23);
-  printLine(2);
 
-  mt_gotoXY(1, 23);
-  writeChar(1, "Enter num: ");
+  if (readUse == 0) {
+    refreshGui(pos);
+    mt_gotoXY(1, 23);
+    printLine(2);
+    mt_gotoXY(1, 23);
+    writeChar(1, "Enter num: ");
+  }
+
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
 

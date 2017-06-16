@@ -4,6 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int instructionRegisterCount;
+extern int readUse;
 
 int readMcell(int pos)
 {
@@ -15,6 +16,7 @@ int readMcell(int pos)
   int command  = 0;
   int operand  = 0;
   int mem      = 0;
+  readUse = 1;
 
   refreshGui(instructionRegisterCount);
   mt_gotoXY(1, 23);
@@ -22,7 +24,8 @@ int readMcell(int pos)
   mt_gotoXY(1, 24);
 
   ret = changeCell(pos);
-
+  readUse = 0;
+  
   restoreEchoRegime();
   restoreIgnoreAlarm();
   return ret;
