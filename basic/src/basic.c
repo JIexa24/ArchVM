@@ -51,20 +51,25 @@ int testArgvB(char *argv[])
 int testFile(char* filename)
 {
   FILE* file = fopen(filename, "r");
-  char c = 0;
+  char c = '\0';
   while(c != EOF)
   {
-    fscanf(file, "%c", &c);
+    printf("%c", c);
+    fread(&c, sizeof(c), 1, file);
+    if (c == '\n')
+      fread(&c, sizeof(c), 1, file);
+    //fscanf(file, "%c", &c);
     if (c >= 'a' & c <= 'z') {
+      fclose(file);
       return 1;
     }
   }
+  fclose(file);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int basicTrans(int argc, char *argv[])
 {
-  //assert(!testFile(argv[1]));
   FILE *input              = NULL;
   FILE *output             = NULL;
   char buffer[SIZE_BUFFER] = {0};
@@ -79,17 +84,17 @@ int basicTrans(int argc, char *argv[])
   begin                    = 0;
   end                      = 99;
 
+  if ((input = fopen(argv[2], "rb")) == NULL) {
+    return 1;
+  }
+  if ((output = fopen(argv[1], "wb")) == NULL) {
+    return 1;
+  }
+
   for (i = 0; i < 26; i++) {
     alfabet[i].variable = 0;
     alfabet[i].name[0] = 'A' + i;
     alfabet[i].name[1] = '\0';
-  }
-
-  if ((output = fopen(argv[1], "wb")) == NULL) {
-    exit(1);
-  }
-  if ((input = fopen(argv[2], "rb")) == NULL) {
-    exit(1);
   }
 
   i = 0;
@@ -215,7 +220,6 @@ int parsingLineB(char* str, FILE *output)
     haltc[8] = '0';
     haltc[9] = '0';
     fwrite(haltc, sizeof(char) * strlen(haltc), 1, output);
-    
     return 1;
   } else if (ret == KEYW_E) {
     return 0;

@@ -17,12 +17,12 @@ int asmTrans(int argc, char** argv)
   int value                = 0;
   int ret                  = 0;
 
-  if ((output = fopen(argv[1], "wb")) == NULL) {
-    exit(1);
+  if ((input = fopen(argv[2], "rb")) == NULL) {
+    return 1;
   }
 
-  if ((input = fopen(argv[2], "rb")) == NULL) {
-    exit(1);
+  if ((output = fopen(argv[1], "wb")) == NULL) {
+    return 1;
   }
 
   for (i = 0; i < sizeRAM; i++) {

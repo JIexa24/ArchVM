@@ -86,7 +86,7 @@ void setSignals()
   sigemptyset(&set);
   sigaddset(&set, SIGUSR1);
   sigaddset(&set, SIGSEGV);
-  act[9].sa_handler = SIG_IGN;
+  act[9].sa_handler = SIG_DFL;
   act[9].sa_mask = set;
 
   sigaction(SIGALRM, &(act[0]), &(old[0]));
@@ -379,7 +379,7 @@ int memoryLoad(int position)
 {
   char filename[SIZE_BUFFER] = {0};
   int i                      = 0;
-
+  int err                    = 0;
   setIgnoreAlarm();
   setEchoRegime();
   refreshGui(position);
@@ -412,42 +412,59 @@ int memoryLoad(int position)
       args[0] = NULL;
       args[1] = filename;
       args[2] = ptr;
-      asmTrans(3, args);
+      if (asmTrans(3, args) == 1) {
+        err = 1;  /* 0, file.o file.sa */
+      }
+      free(ptr);
     } else if (strcmp(ptr1, ".sb") == 0) {
-       char src[SIZE_BUFFER];
-       char dest[SIZE_BUFFER];
-       strcpy(src, filename); /* file.sb */
-       strcpy(dest, filename);
-       char* ptr = strchr(dest, '.');
-       ptr[1] = 's';
-       ptr[2] = 'a';
-       ptr[3] = '\0';
-       char *argp[3] = {NULL, dest, src};
-       basicTrans(3, argp); /* 0, file.sa file.sb */
-
-       ptr = strchr(src, '.');
-       ptr[1] = 's';
-       ptr[2] = 'a';
-       ptr[3] = '\0';
-       ptr = strchr(dest, '.');
-       ptr[1] = 'o';
-       ptr[2] = '\0';
-       argp[1] = dest;
-       argp[2] = src;
-       asmTrans(3, argp);  /* 0, file.o file.sa */
-
-       ptr = strchr(filename, '.');
-       ptr[1] = 'o';
-       ptr[2] = '\0';
+      char src[SIZE_BUFFER];
+      char dest[SIZE_BUFFER];
+      strcpy(src, filename); /* file.sb */
+      strcpy(dest, filename);
+      char* ptr = strchr(dest, '.');
+      ptr[1] = 's';
+      ptr[2] = 'a';
+      ptr[3] = '\0';
+      char *argp[3] = {NULL, dest, src};
+      if (basicTrans(3, argp) == 1) { /* 0, file.sa file.sb */
+        err = 1;
+      } else {
+        ptr = strchr(src, '.');
+        ptr[1] = 's';
+        ptr[2] = 'a';
+        ptr[3] = '\0';
+        ptr = strchr(dest, '.');
+        ptr[1] = 'o';
+        ptr[2] = '\0';
+        argp[1] = dest;
+        argp[2] = src;
+        if (asmTrans(3, argp) == 1) {
+          err = 1;  /* 0, file.o file.sa */
+        } else {
+          ptr = strchr(filename, '.');
+          ptr[1] = 'o';
+          ptr[2] = '\0';
+        }
+      }
     }
   }
-  if (sc_memoryLoad(filename) == 0) {
-    refreshGui(position);
-    writeChar(1,"File successfully loaded\n");
-    restoreEchoRegime();
-    restoreIgnoreAlarm();
-    return 0;
-  } else {
+  
+  if (!err) {
+    if (sc_memoryLoad(filename) == 0) {
+      refreshGui(position);
+      writeChar(1, "File kek successfully loaded\n");
+      restoreEchoRegime();
+      restoreIgnoreAlarm();
+      return 0;
+    } else {
+      writeChar(1,"Cannot load file: ");
+      writeChar(1, filename);
+      writeChar(1,"\n");
+      restoreEchoRegime();
+      restoreIgnoreAlarm();
+      return -1;
+    }
+  } else if (err) {
     writeChar(1,"Cannot load file: ");
     writeChar(1, filename);
     writeChar(1,"\n");
@@ -455,7 +472,6 @@ int memoryLoad(int position)
     restoreIgnoreAlarm();
     return -1;
   }
-  
   restoreEchoRegime();
   restoreIgnoreAlarm();
   return 0;
