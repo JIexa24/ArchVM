@@ -94,22 +94,11 @@ void setSignals()
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
   sigaction(SIGUSR2, &(act[3]), &(old[3]));
   sigaction(SIGWINCH, &(act[4]), &(old[4]));
-  sigaction(SIGTERM, &(act[5]), &(old[5]));
-  sigaction(SIGINT, &(act[6]), &(old[6]));
-  sigaction(SIGTSTP, &(act[7]), &(old[7]));
-  sigaction(SIGQUIT, &(act[8]), &(old[8]));
+  sigaction(SIGTERM, &(act[5]), &(old[5]));  /*kill (default)*/
+  sigaction(SIGINT, &(act[6]), &(old[6]));   /*Ctrl-C*/
+  sigaction(SIGTSTP, &(act[7]), &(old[7]));  /*Ctrl-Z*/
+  sigaction(SIGQUIT, &(act[8]), &(old[8]));  /*Ctrl-\*/
   sigaction(SIGSEGV, &(act[9]), &(old[9]));
-
-//  signal(SIGALRM, timerHand);
-//  signal(SIGVTALRM, timerHand);
-//  signal(SIGUSR1, ursignalHand);
-//  signal(SIGUSR2, ursignalHand2);
-//  signal(SIGWINCH, windHand);
-//  signal(SIGTERM, killHand);       /*kill (default)*/
-//  signal(SIGINT, killHand);        /*Ctrl-C*/
-//  signal(SIGTSTP, ursignalHand2);  /*Ctrl-Z*/
-//  signal(SIGQUIT, killHand);       /*Ctrl-\*/
-//  signal(SIGSEGV, SIG_IGN);
 
 }
 /*---------------------------------------------------------------------------*/
