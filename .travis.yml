@@ -4,5 +4,5 @@ branches:
  only:
  - master
 script:
-- travis/travis-build.sh
+- ./travis-build.sh
 - make
