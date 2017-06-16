@@ -8,7 +8,8 @@ extern int localRAM[];
 
 int sc_memoryInit(void)
 {
-  for (int i = 0; i < sizeRAM; i++) {
+  int i;
+  for (i = 0; i < sizeRAM; i++) {
     localRAM[i] = 0;
   }
   return 0;
