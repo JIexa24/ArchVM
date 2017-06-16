@@ -14,10 +14,6 @@ void timerHand(int sig)
   if (reg == 0) {
     CU();
     refreshGui(instructionRegisterCount);
-    /* raise для непрерывного выполнения. alarm - одна секунда */
-    //usleep(MKR(TIMESLEEP));
-    //raise(SIGALRM);
-    //alarm(1);
   }
 }
 /*---------------------------------------------------------------------------*/
