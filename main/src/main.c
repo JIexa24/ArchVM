@@ -162,7 +162,7 @@ int main(int argc, char** argv)
         continue;
       } else {
         sc_regSet(FLAG_INTERRUPT, 1);
-        raise(SIGALRM);
+        //raise(SIGALRM);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10 ;
         cursorY = instructionRegisterCount % 10;

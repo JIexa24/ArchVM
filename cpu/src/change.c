@@ -6,9 +6,16 @@
 extern int accumulator;
 extern int instructionRegisterCount;
 extern int SCANPRINTRADIX;
-static struct sigaction act[9];
-static struct sigaction old[9];
+
+static struct sigaction act[10];
+static struct sigaction old[10];
 static sigset_t set;
+
+static struct sigaction newalarm;
+static struct sigaction oldalarm;
+static sigset_t setalrm;
+
+static struct termios originalTerm;
 
 void setSignals()
 {
@@ -70,6 +77,11 @@ void setSignals()
   act[8].sa_handler = killHand;
   act[8].sa_mask = set;
 
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGSEGV);
+  act[9].sa_handler = SIG_IGN;
+  act[9].sa_mask = set;
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -79,6 +91,7 @@ void setSignals()
   sigaction(SIGINT, &(act[6]), &(old[6]));
   sigaction(SIGTSTP, &(act[7]), &(old[7]));
   sigaction(SIGQUIT, &(act[8]), &(old[8]));
+  sigaction(SIGSEGV, &(act[9]), &(old[9]));
 
 //  signal(SIGALRM, timerHand);
 //  signal(SIGVTALRM, timerHand);
@@ -105,10 +118,39 @@ void signalsRestore()
   sigaction(SIGINT, &(old[6]), 0);
   sigaction(SIGTSTP, &(old[7]), 0);
   sigaction(SIGQUIT, &(old[8]), 0);
+  sigaction(SIGSEGV, &(old[9]), 0);
+}
+/*---------------------------------------------------------------------------*/
+void setIgnoreAlarm()
+{
+  sigemptyset(&setalrm);
+  sigaddset(&setalrm, SIGUSR1);
+  sigaddset(&setalrm, SIGALRM);
+  newalarm.sa_handler = SIG_IGN;
+  newalarm.sa_mask = setalrm;
+  sigaction(SIGALRM, &(newalarm), &(oldalarm));
+}
+/*---------------------------------------------------------------------------*/
+void restoreIgnoreAlarm()
+{
+  sigaction(SIGALRM, &(oldalarm), 0);
+}
+/*---------------------------------------------------------------------------*/
+void setEchoRegime()
+{
+  while (tcgetattr(STDIN_FILENO, &originalTerm) != 0);
+  rk_mytermregime(0, 0, 1, 1, 1);
+}
+/*---------------------------------------------------------------------------*/
+void restoreEchoRegime()
+{
+  while (tcsetattr(STDIN_FILENO, TCSANOW, &originalTerm) != 0);
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
   int command  = 0;
@@ -122,6 +164,9 @@ int changeCell(int pos)
   writeChar(1, "Enter num: ");
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
   if ((num >= 0) & (num < 0x8000)) {
@@ -129,28 +174,44 @@ int changeCell(int pos)
       command = (num >> 8) & 0x7F;
       if (num & 0x80) {
         writeChar(2, "Operand is 7 bit wide ( <= 7F). ");
+
+        restoreEchoRegime();
+        restoreIgnoreAlarm();
         return -1;
       }
       operand = num & 0x7F;
       if (sc_commandEncode(command, operand, &mem) != 0) {
         writeChar(2, "Wrong command. Aborted. ");
+
+        restoreEchoRegime();
+        restoreIgnoreAlarm();
         return -1;
       }
     } else {
       mem = num | 0x4000;
     }
     if(sc_memorySet(pos, mem) != 0) {
+
+    restoreEchoRegime();
+      restoreIgnoreAlarm();
       return -1;
     }
   } else {
     writeChar(2, "Memory cell is 15 bit wide");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int changeAccumulator(int pos)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
 
@@ -166,20 +227,30 @@ int changeAccumulator(int pos)
 
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
   if ((num >= 0) & (num < 0x8000)) {
     accumulator = num;
   } else {
     writeChar(2, "Accumutalor is 15 bit wide");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
 
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int changeInstRegisterCount(int pos)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
   refreshGui(pos);
@@ -194,19 +265,30 @@ int changeInstRegisterCount(int pos)
 
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
   if ((num >= 0) & (num < sizeRAM)) {
     instructionRegisterCount = num;
   } else {
     writeChar(2, "Instruction range: from 0 to 99 (0x63)");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int scanNum(int *plusFlag, int *n)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   char buffer[SIZE_BUFFER] = {0};
   int pos                  = 0;
   int i                    = 0;
@@ -225,14 +307,20 @@ int scanNum(int *plusFlag, int *n)
     *plusFlag = 0;
   }
   if (sreadInt(buffer + pos, n, SCANPRINTRADIX) != 1) {
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
 
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
   return 0;
 }
 /*---------------------------------------------------------------------------*/
 int memorySave(int position)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   char filename[SIZE_BUFFER] = {0};
   int i                      = 0;
 
@@ -252,17 +340,29 @@ int memorySave(int position)
   if (sc_memorySave(filename) == 0) {
     refreshGui(position);
     writeChar(1,"File successfully saved\n");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return 0;
   } else {
     writeChar(1,"Cannot save file: ");
     writeChar(1, filename);
     writeChar(1,"\n");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
 }
 /*---------------------------------------------------------------------------*/
 int memoryLoad(int position)
 {
+  setIgnoreAlarm();
+  setEchoRegime();
   char filename[SIZE_BUFFER] = {0};
   int i                      = 0;
 
@@ -330,11 +430,18 @@ int memoryLoad(int position)
   if (sc_memoryLoad(filename) == 0) {
     refreshGui(position);
     writeChar(1,"File successfully loaded\n");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return 0;
   } else {
     writeChar(1,"Cannot load file: ");
     writeChar(1, filename);
     writeChar(1,"\n");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
     return -1;
   }
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
 }

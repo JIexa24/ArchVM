@@ -67,6 +67,8 @@ void printMemory(int x, int y, int position);
 
 void setSignals();
 void signalsRestore();
+void setIgnoreAlarm();
+void restoreIgnoreAlarm();
 int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
 int changeCell(int pos);
