@@ -24,7 +24,9 @@
 
 /* CPU */
 
-#define REFRESH 20
+#define TIMER ITIMER_REAL
+
+#define REFRESH 500
 
 #define BIGCHARSCOLORFG clr_cyan
 #define BIGCHARSCOLORBG clr_default

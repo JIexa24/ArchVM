@@ -5,6 +5,7 @@
 #define TEST_H
 
 #include "../../thirdparty/tests.h"
+#include "../../thirdparty/ctest.h"
 
 int test_sc_memoryInit();
 int test_sc_memorySet();

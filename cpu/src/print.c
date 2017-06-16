@@ -79,7 +79,6 @@ void refreshGui(int position)
     printWriteValue();
     mt_gotoXY(1, 23);
   }
-  //refreshGuiSt(position);
 }
 /*---------------------------------------------------------------------------*/
 void printAccum()
@@ -315,6 +314,7 @@ void printMemory(int x, int y, int position)
 
   mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(68, 13);
+
   if (SCANPRINTRADIX == 16) {
     writeChar(1, " HEX ");
   } else if (SCANPRINTRADIX == 10) {
@@ -327,10 +327,10 @@ void printMemory(int x, int y, int position)
     sc_regSet(FLAG_OUTMEM, 1);
     return;
   }
+
   for (i = 0; i < 10; i++) {
     mt_gotoXY(x, y + i);
     for (j = 0; j < 10; j++) {
-
       sc_memoryGet(i + j * 10, &mem);
       command = (mem >> 14) & 1;
       mem &= 0x3FFF;
@@ -339,6 +339,7 @@ void printMemory(int x, int y, int position)
         mt_setfgcolor(TEXTCOLORFG);
         mt_setbgcolor(TEXTCOLORBG);
       }
+
       if ((i + j * 10 ) == instructionRegisterCount) {
         mt_setfgcolor(INSTREGCOLORFG);
       }
@@ -352,10 +353,12 @@ void printMemory(int x, int y, int position)
         writeChar(1, " ");
         writeInt(1, mem, 16, 4);
       }
+
       if ((i + j * 10) == position) {
         mt_setfgcolor(clr_default);
         mt_setbgcolor(clr_default);
       }
+      
       if ((i + j * 10 ) == instructionRegisterCount) {
         mt_setfgcolor(clr_default);
       }

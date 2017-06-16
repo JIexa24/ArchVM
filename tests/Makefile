@@ -1,10 +1,11 @@
 CC = gcc
 CFLAGS = -g3 -std=c99
-LIB = -L../lib -lSimpleComputer -lWrite -lAsm -lReadInt
-CMAKELIB = -L../build/simpleComputer -L../build/print -L../build/asm -L../build/scan
+LIB = -lCPU -lTerm -lSimpleComputer -lAsm -lBasic -lWrite -lReadInt -lBigChars -lReadKey  -L../lib
 
 all: ./bin/tests
-	./bin/tests
+	@echo " "
+	@./bin/tests
+	@echo " "
 
 ./bin/tests: ./obj/main.o ./obj/testsSC.o ./obj/testsAsm.o
 	$(CC) ./obj/main.o ./obj/testsSC.o -o ./bin/tests ./obj/testsAsm.o $(LIB) $(CMAKELIB)
@@ -17,6 +18,13 @@ all: ./bin/tests
 
 ./obj/main.o: ./src/main.c
 	$(CC) -c ./src/main.c -o ./obj/main.o $(CFLAGS)
+
+run:
+	@./bin/tests
+
+RUNTESTCMAKE:
+	@echo " "
+	@./bin/tests_ctest
 
 restruct:
 	rm ./obj/*.o

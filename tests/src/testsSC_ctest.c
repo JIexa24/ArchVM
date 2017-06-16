@@ -6,7 +6,7 @@
 extern int localRAM[];
 extern short int sc_register;
 
-int test_sc_memoryInit()
+CTEST(sc_memoryInit, test_sc_memoryInit)
 {
   int ret = 0;
   sc_memoryInit();
@@ -17,21 +17,11 @@ int test_sc_memoryInit()
       ret = 1;
     }
   }
-  
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memoryInit(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memoryInit(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_memorySet()
+CTEST(sc_memorySet, test_sc_memorySet)
 {
   int ret  = 0;
   int retf = sc_memorySet(1, 6);
@@ -59,20 +49,10 @@ int test_sc_memorySet()
     ret = ret;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memorySet(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memorySet(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_memoryGet()
+CTEST(sc_memoryGet, test_sc_memoryGet)
 {
   int ret       = 0;
   int value     = 0;
@@ -107,20 +87,10 @@ int test_sc_memoryGet()
     ret = ret;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memoryGet(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_memoryGet(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_regInit()
+CTEST(sc_regInit, test_sc_regInit)
 {
   int i   = 0;
   int ret = 0;
@@ -132,20 +102,10 @@ int test_sc_regInit()
     ret = 1;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regInit(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regInit(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_regSet()
+CTEST(sc_regSet, test_sc_regSet)
 {
   int ret  = 0;
   int retf = 0;
@@ -188,20 +148,10 @@ int test_sc_regSet()
     ret = ret;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regSet(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regSet(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_regGet()
+CTEST(sc_regGet, test_sc_regGet)
 {
   int ret  = 0;
   int retf = 0;
@@ -239,20 +189,10 @@ int test_sc_regGet()
     ret = ret;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regGet(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_regGet(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_commandEncode()
+CTEST(sc_commandEncode, test_sc_commandEncode)
 {
   int ret   = 0;
   int value = 0;
@@ -269,20 +209,10 @@ int test_sc_commandEncode()
     ret = 1;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_commandEncode(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_commandEncode(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }
 /*---------------------------------------------------------------------------*/
-int test_sc_commandDecode()
+CTEST(sc_commandDecode, test_sc_commandDecode)
 {
   int ret  = 0;
   int com  = 0;
@@ -300,15 +230,5 @@ int test_sc_commandDecode()
     ret = 1;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_commandDecode(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test sc_commandDecode(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }

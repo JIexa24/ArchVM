@@ -3,9 +3,14 @@
 */
 #include "../include/tests.h"
 
-int main ()
+int main(int argc, char** argv)
 {
   int ret = 0;
+
+  writeChar(1, "\n");
+  mt_setfgcolor(clr_cyan);
+  writeChar(1, "Running tests...\n");
+  mt_setfgcolor(clr_default);
 
   ret = !(test_sc_memoryInit())    ? ret : 1;
   ret = !(test_sc_memorySet())     ? ret : 1;
@@ -20,8 +25,8 @@ int main ()
 
   ret = !(test_asmCommand()) ? ret : 1;
 
-  writeChar(1, TEST_DEF);
+  mt_setfgcolor(clr_default);
   writeChar(1, "\n");
-  
+
   return ret;
 }

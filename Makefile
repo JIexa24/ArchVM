@@ -1,7 +1,11 @@
 all:
 	rm -f ./bin/s*
 	make -C build
-	make TEST
+	@echo " "
+	make test -C build
+	@echo " "
+	make RUNTESTCMAKE -C tests
+	@echo " "
 
 HANDMADE:
 	rm -f ./bin/s*
@@ -16,7 +20,8 @@ HANDMADE:
 	make -C basic
 	make -C main
 	make -C hardDrive
-	make TEST
+	@make TEST
+	@echo " "
 
 restruct:
 	make clean
@@ -34,6 +39,15 @@ restruct:
 	make restruct -C tests
 
 TEST:
+	make -C print
+	make -C scan
+	make -C simpleComputer
+	make -C consoleSC
+	make -C readKey
+	make -C bc
+	make -C cpu
+	make ./../lib/libAsm.a -C asm
+	make ./../lib/libBasic.a -C basic
 	make -C tests
 
 

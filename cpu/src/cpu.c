@@ -8,7 +8,9 @@ extern int instructionRegisterCount;
 
 void CU()
 {
-  int command, operand, mem;
+  int command;
+  int operand;
+  int mem;
 
   if (instructionRegisterCount >= sizeRAM) {
     sc_regSet(FLAG_OUTMEM, 1);
@@ -37,7 +39,6 @@ void CU()
       (command >= 0x51) & (command <= 0x54) |
       (command >= 0x60) & (command <= 0x70) |
       (command >= 0x75) & (command <= 0x76)) {
-
     if (ALU(command, operand) != 0)
       sc_regSet(FLAG_INTERRUPT, 1);
   } else {
@@ -53,7 +54,6 @@ int ALU(int command, int operand)
     sc_regSet(FLAG_OUTMEM,1);
     return ERR_WRONG_ADDR;
   } else {
-
     if (commandHandler(command, operand) != 0) {
       return -1;
     }

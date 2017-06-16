@@ -3,7 +3,7 @@
 */
 #include "../include/tests.h"
 
-int test_asmCommand()
+CTEST(asmCommand, test_asmCommand)
 {
   int ret = 0;
 
@@ -28,15 +28,5 @@ int test_asmCommand()
     ret = 1;
   }
 
-  if (ret) {
-    mt_setfgcolor(TEST_FAIL);
-    writeChar(1, "\n");
-    writeChar(1, "Test asmCommand(): FAIL");
-  } else {
-    mt_setfgcolor(TEST_OK);
-    writeChar(1, "\n");
-    writeChar(1, "Test asmCommand(): OK");
-  }
-  mt_setfgcolor(TEST_DEF);
-  return ret;
+  ASSERT_EQUAL(0, ret);
 }

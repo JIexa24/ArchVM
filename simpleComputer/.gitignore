@@ -1,6 +1,1 @@
 /obj/*.o
-/memory
-/src/*.out
-/tst/*.o
-/*.out
-

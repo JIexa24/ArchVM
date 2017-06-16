@@ -36,7 +36,7 @@ int main(int argc, char** argv)
   val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
   val.it_value.tv_sec = TIMESLEEPSEC;
   val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
-  setitimer(ITIMER_REAL, &val, &oval);
+  setitimer(TIMER, &val, &oval);
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     }
 
     rk_readkey(&key);
-      sc_regGet(FLAG_INTERRUPT, &regisProg);
+    sc_regGet(FLAG_INTERRUPT, &regisProg);
 
     if(regisProg) {
       switch (key) {
@@ -170,9 +170,6 @@ int main(int argc, char** argv)
       if (regis) {
         sc_regInit();
         restoreIgnoreAlarm();
-        //sc_regSet(FLAG_INTERRUPT, 0);
-
-        //raise(SIGALRM);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10;
         cursorY = instructionRegisterCount % 10;
@@ -181,7 +178,6 @@ int main(int argc, char** argv)
         continue;
       } else {
         sc_regSet(FLAG_INTERRUPT, 1);
-        //raise(SIGALRM);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10 ;
         cursorY = instructionRegisterCount % 10;
@@ -195,7 +191,7 @@ int main(int argc, char** argv)
   }
   rk_mytermrestore();
   signalsRestore();
-  setitimer(ITIMER_REAL, NULL, NULL);
+  setitimer(TIMER, NULL, NULL);
   system("rm -f termsettings");
   return 0;
 }

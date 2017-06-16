@@ -55,11 +55,14 @@ int bc_box(int x1, int y1, int x2, int y2)
     mt_gotoXY(x2, i);
     bc_printA(BOXCHAR_VERT);
   }
+
   mt_gotoXY(x1, y2);
   bc_printA(BOXCHAR_BL);
+
   for (i = x1 + 1; i < x2; i++) {
     bc_printA(BOXCHAR_HOR);
   }
+
   bc_printA(BOXCHAR_BR);
   return 0;
 }
@@ -76,8 +79,9 @@ int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
 
   mt_getscreensize(&maxy, &maxx);
 
-  if ((x < 0) | (y < 0) | (x + 8 > maxx) | (y + 8 > maxy))
+  if ((x < 0) | (y < 0) | (x + 8 > maxx) | (y + 8 > maxy)) {
     return -1;
+  }
 
   row[8] = '\0';
 
@@ -167,7 +171,7 @@ int bc_bigcharread(int fd, int *big, int need_count, int *count)
   int n, cnt, err;
 
   err = read(fd, &n, sizeof(n));
-  if (err == -1 | (err != sizeof(n))) {
+  if ((err == -1) | (err != sizeof(n))) {
     return -1;
   }
 

@@ -188,6 +188,7 @@ int changeCell(int pos)
     restoreIgnoreAlarm();
     return -1;
   }
+
   if ((num >= 0) & (num < 0x8000)) {
     if (plusFlag) {
       command = (num >> 8) & 0x7F;
@@ -199,6 +200,7 @@ int changeCell(int pos)
         return -1;
       }
       operand = num & 0x7F;
+
       if (sc_commandEncode(command, operand, &mem) != 0) {
         writeChar(2, "Wrong command. Aborted. ");
 
@@ -209,6 +211,7 @@ int changeCell(int pos)
     } else {
       mem = num | 0x4000;
     }
+
     if(sc_memorySet(pos, mem) != 0) {
       restoreEchoRegime();
       restoreIgnoreAlarm();
@@ -216,7 +219,6 @@ int changeCell(int pos)
     }
   } else {
     writeChar(2, "Memory cell is 15 bit wide");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
@@ -229,13 +231,12 @@ int changeCell(int pos)
 /*---------------------------------------------------------------------------*/
 int changeAccumulator(int pos)
 {
-  setIgnoreAlarm();
-  setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
 
+  setIgnoreAlarm();
+  setEchoRegime();
   refreshGui(pos);
-
   mt_gotoXY(1, 23);
   printLine(2);
 
@@ -246,16 +247,15 @@ int changeAccumulator(int pos)
 
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
   }
+
   if ((num >= 0) & (num < 0x8000)) {
     accumulator = num;
   } else {
     writeChar(2, "Accumutalor is 15 bit wide");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
@@ -268,12 +268,12 @@ int changeAccumulator(int pos)
 /*---------------------------------------------------------------------------*/
 int changeInstRegisterCount(int pos)
 {
-  setIgnoreAlarm();
-  setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
-  refreshGui(pos);
 
+  setIgnoreAlarm();
+  setEchoRegime();
+  refreshGui(pos);
   mt_gotoXY(1, 23);
   printLine(2);
 
@@ -284,16 +284,15 @@ int changeInstRegisterCount(int pos)
 
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
   }
+
   if ((num >= 0) & (num < sizeRAM)) {
     instructionRegisterCount = num;
   } else {
     writeChar(2, "Instruction range: from 0 to 99 (0x63)");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
@@ -306,16 +305,16 @@ int changeInstRegisterCount(int pos)
 /*---------------------------------------------------------------------------*/
 int scanNum(int *plusFlag, int *n)
 {
-  setIgnoreAlarm();
-  setEchoRegime();
   char buffer[SIZE_BUFFER] = {0};
   int pos                  = 0;
   int i                    = 0;
 
+  setIgnoreAlarm();
+  setEchoRegime();
+
   do {
     read(0, &buffer[i++], 1);
   } while (buffer[i - 1] != '\n');
-
   buffer[i - 1] = '\0';
 
   if (buffer[0] == '+') {
@@ -325,6 +324,7 @@ int scanNum(int *plusFlag, int *n)
      pos = 0;
     *plusFlag = 0;
   }
+
   if (sreadInt(buffer + pos, n, SCANPRINTRADIX) != 1) {
     restoreEchoRegime();
     restoreIgnoreAlarm();
@@ -338,11 +338,11 @@ int scanNum(int *plusFlag, int *n)
 /*---------------------------------------------------------------------------*/
 int memorySave(int position)
 {
-  setIgnoreAlarm();
-  setEchoRegime();
   char filename[SIZE_BUFFER] = {0};
   int i                      = 0;
 
+  setIgnoreAlarm();
+  setEchoRegime();
   refreshGui(position);
   mt_gotoXY(1, 23);
   printLine(2);
@@ -353,13 +353,11 @@ int memorySave(int position)
   do {
     read(0, &filename[i++], 1);
   } while (filename[i - 1] != '\n');
-
   filename[i - 1] = '\0';
 
   if (sc_memorySave(filename) == 0) {
     refreshGui(position);
     writeChar(1,"File successfully saved\n");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return 0;
@@ -367,7 +365,6 @@ int memorySave(int position)
     writeChar(1,"Cannot save file: ");
     writeChar(1, filename);
     writeChar(1,"\n");
-
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
@@ -380,13 +377,12 @@ int memorySave(int position)
 /*---------------------------------------------------------------------------*/
 int memoryLoad(int position)
 {
-  setIgnoreAlarm();
-  setEchoRegime();
   char filename[SIZE_BUFFER] = {0};
   int i                      = 0;
 
+  setIgnoreAlarm();
+  setEchoRegime();
   refreshGui(position);
-
   mt_gotoXY(1, 23);
   printLine(2);
 
@@ -396,23 +392,22 @@ int memoryLoad(int position)
   do {
     read(0, &filename[i++], 1);
   } while (filename[i - 1] != '\n');
-
   filename[i - 1] = '\0';
 
-  char* ptr1;
-
-  ptr1 = strrchr(filename, '.');
+  char* ptr1 = strrchr(filename, '.');
 
   if (ptr1 != NULL) {
     if (strcmp(ptr1, ".sa") == 0) {
       char* ptr = NULL;
       int size = strlen(filename);
       ptr = malloc(sizeof(char) * size);
+
       for (i = 0; i < size; i++) {
         ptr[i] = filename[i];
       }
       ptr1[1] = 'o';
       ptr1[2] = '\0';
+
       char* args[3];
       args[0] = NULL;
       args[1] = filename;
@@ -460,6 +455,7 @@ int memoryLoad(int position)
     restoreIgnoreAlarm();
     return -1;
   }
+  
   restoreEchoRegime();
   restoreIgnoreAlarm();
   return 0;

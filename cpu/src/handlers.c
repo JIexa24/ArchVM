@@ -11,13 +11,10 @@ void timerHand(int sig)
 {
   int reg;
   sc_regGet(FLAG_INTERRUPT, &reg);
+  
   if (reg == 0) {
     CU();
     refreshGui(instructionRegisterCount);
-    /* raise для непрерывного выполнения. alarm - одна секунда */
-    //usleep(MKR(TIMESLEEP));
-    //raise(SIGALRM);
-    //alarm(1);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -43,7 +40,7 @@ void windHand(int sig)
 /*---------------------------------------------------------------------------*/
 void killHand(int sig)
 {
-  setitimer(ITIMER_REAL, NULL, NULL);
+  setitimer(TIMER, NULL, NULL);
   mt_clrscr();
   rk_mytermrestore();
   signalsRestore();
