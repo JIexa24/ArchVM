@@ -10,7 +10,7 @@ all: ./../lib/libCPU.a
 	$(CC) -c ./src/cpu.c -o ./obj/cpu.o $(CFLAGS)
 
 ./obj/change.o: ./src/change.c include/cpu.h
-	$(CC) -c ./src/change.c -o ./obj/change.o $(CFLAGS)
+	$(CC) -c ./src/change.c -o ./obj/change.o -g3
 
 ./obj/print.o: ./src/print.c include/cpu.h
 	$(CC) -c ./src/print.c -o ./obj/print.o $(CFLAGS)

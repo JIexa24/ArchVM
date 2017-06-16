@@ -11,11 +11,11 @@ HANDMADE:
 	make -C consoleSC
 	make -C readKey
 	make -C bc
-	make -C hardDrive
 	make -C cpu
 	make -C asm
 	make -C basic
 	make -C main
+	make -C hardDrive
 	make TEST
 
 restruct:

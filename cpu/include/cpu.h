@@ -52,12 +52,6 @@
 void CU();
 int ALU(int command, int operand);
 
-void timerHand(int sig);
-void ursignalHand(int sig);
-void ursignalHand2(int sig);
-void windHand(int sig);
-void killHand(int sig);
-
 void refreshGuiSt(int position);
 void refreshGui(int position);
 void printBoxes();
@@ -72,6 +66,7 @@ void printLine(int ctr);
 void printMemory(int x, int y, int position);
 
 void setSignals();
+void signalsRestore();
 int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
 int changeCell(int pos);
@@ -85,5 +80,11 @@ static void printWriteValue();
 int commandHandler(int command, int operand);
 
 int readMcell(int pos);
+
+void timerHand(int sig);
+void ursignalHand(int sig);
+void ursignalHand2(int sig);
+void windHand(int sig);
+void killHand(int sig);
 
 #endif

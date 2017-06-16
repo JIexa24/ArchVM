@@ -4,6 +4,12 @@
 #ifndef READ_KEY_H
 #define READ_KEY_H
 
+#include "./../../simpleComputer/include/sc_register.h"
+#include "./../../simpleComputer/include/sc_command.h"
+#include "./../../simpleComputer/include/sc_memory.h"
+#include "./../../bc/include/bc.h"
+#include "./../../consoleSC/include/term.h"
+
 #include <stdio.h>
 #include <termios.h>
 #include <sys/types.h>
@@ -11,14 +17,13 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
-#include "../../cpu/include/cpu.h"
 
 /*
 
-    tcflag_t c_iflag;      // режимы ввода 
-    tcflag_t c_oflag;      // режимы вывода 
-    tcflag_t c_cflag;      // режимы управления 
-    tcflag_t c_lflag;      // режимы локали 
+    tcflag_t c_iflag;      // режимы ввода
+    tcflag_t c_oflag;      // режимы вывода
+    tcflag_t c_cflag;      // режимы управления
+    tcflag_t c_lflag;      // режимы локали
     cc_t c_cc[NCCS];       // управляющие символы
 
 c_iflag - флаги констант:

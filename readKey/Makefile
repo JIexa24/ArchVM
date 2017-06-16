@@ -14,4 +14,4 @@ restruct:
 	make all
 
 clean:
-	rm -f obj/*.o
+	rm -f ./obj/*.o

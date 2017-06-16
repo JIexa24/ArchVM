@@ -6,18 +6,105 @@
 extern int accumulator;
 extern int instructionRegisterCount;
 extern int SCANPRINTRADIX;
+static struct sigaction act[9];
+static struct sigaction old[9];
+static sigset_t set;
 
 void setSignals()
 {
-  signal(SIGALRM, timerHand);
-  signal(SIGVTALRM, timerHand);
-  signal(SIGUSR1, ursignalHand);
-  signal(SIGUSR2, ursignalHand2);
-  signal(SIGWINCH, windHand);
-  signal(SIGTERM, killHand);       /*kill (default)*/
-  signal(SIGINT, killHand);        /*Ctrl-C*/
-  signal(SIGTSTP, ursignalHand2);  /*Ctrl-Z*/
-  signal(SIGQUIT, killHand);       /*Ctrl-\*/
+  for (int i = 0; i < 9; i++) {
+    memset(&(act[i]), 0, sizeof(act[i]));
+    memset(&(old[i]), 0, sizeof(old[i]));
+  }
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGALRM);
+  act[0].sa_handler = timerHand;
+  act[0].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGVTALRM);
+  act[1].sa_handler = timerHand;
+  act[1].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  act[2].sa_handler = ursignalHand;
+  act[2].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGUSR2);
+  act[3].sa_handler = ursignalHand2;
+  act[3].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGWINCH);
+  act[4].sa_handler = windHand;
+  act[4].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGTERM);
+  act[5].sa_handler = killHand;
+  act[5].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGINT);
+  act[6].sa_handler = killHand;
+  act[6].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGTSTP);
+  act[7].sa_handler = ursignalHand2;
+  act[7].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGQUIT);
+  act[8].sa_handler = killHand;
+  act[8].sa_mask = set;
+
+  sigaction(SIGALRM, &(act[0]), &(old[0]));
+  sigaction(SIGVTALRM, &(act[1]), &(old[1]));
+  sigaction(SIGUSR1, &(act[2]), &(old[2]));
+  sigaction(SIGUSR2, &(act[3]), &(old[3]));
+  sigaction(SIGWINCH, &(act[4]), &(old[4]));
+  sigaction(SIGTERM, &(act[5]), &(old[5]));
+  sigaction(SIGINT, &(act[6]), &(old[6]));
+  sigaction(SIGTSTP, &(act[7]), &(old[7]));
+  sigaction(SIGQUIT, &(act[8]), &(old[8]));
+
+//  signal(SIGALRM, timerHand);
+//  signal(SIGVTALRM, timerHand);
+//  signal(SIGUSR1, ursignalHand);
+//  signal(SIGUSR2, ursignalHand2);
+//  signal(SIGWINCH, windHand);
+//  signal(SIGTERM, killHand);       /*kill (default)*/
+//  signal(SIGINT, killHand);        /*Ctrl-C*/
+//  signal(SIGTSTP, ursignalHand2);  /*Ctrl-Z*/
+//  signal(SIGQUIT, killHand);       /*Ctrl-\*/
+//  signal(SIGSEGV, SIG_IGN);
+
+}
+/*---------------------------------------------------------------------------*/
+void signalsRestore()
+{
+  sigemptyset(&set);
+  sigaction(SIGALRM, &(old[0]), 0);
+  sigaction(SIGVTALRM, &(old[1]), 0);
+  sigaction(SIGUSR1, &(old[2]), 0);
+  sigaction(SIGUSR2, &(old[3]), 0);
+  sigaction(SIGWINCH, &(old[4]), 0);
+  sigaction(SIGTERM, &(old[5]), 0);
+  sigaction(SIGINT, &(old[6]), 0);
+  sigaction(SIGTSTP, &(old[7]), 0);
+  sigaction(SIGQUIT, &(old[8]), 0);
 }
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)

@@ -3,7 +3,7 @@
 */
 #include "./../include/write.h"
 
-void writeChar(int fd, char* str)
+void writeChar(int fd, const char* str)
 {
   write(fd, str, strlen(str));
 }

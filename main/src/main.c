@@ -173,6 +173,7 @@ int main(int argc, char** argv)
     position = cursorY + cursorX * 10;
   }
   rk_mytermrestore();
+  signalsRestore();
   setitimer(ITIMER_REAL, NULL, NULL);
   system("rm -f termsettings");
   return 0;

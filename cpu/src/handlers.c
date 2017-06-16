@@ -46,6 +46,7 @@ void killHand(int sig)
   setitimer(ITIMER_REAL, NULL, NULL);
   mt_clrscr();
   rk_mytermrestore();
+  signalsRestore();
   system("rm -f termsettings");
   exit(0);
 }
