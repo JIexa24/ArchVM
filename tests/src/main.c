@@ -25,6 +25,10 @@ int main(int argc, char** argv)
 
   ret = !(test_asmCommand()) ? ret : 1;
 
+  writeChar(1, "\n");
+
+  ret = !(test_keywordCode()) ? ret : 1;
+
   mt_setfgcolor(clr_default);
   writeChar(1, "\n");
 

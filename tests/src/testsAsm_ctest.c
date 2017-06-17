@@ -12,16 +12,19 @@ CTEST(asmCommand, test_asmCommand)
   } else {
     ret = 1;
   }
+  
   if (asmCommand("DIVIDE") == 0x32) {
     ret = ret;
   } else {
     ret = 1;
   }
+
   if (asmCommand("test") == -1) {
     ret = ret;
   } else {
     ret = 1;
   }
+
   if (asmCommand("MOVCR") == 0x74) {
     ret = ret;
   } else {

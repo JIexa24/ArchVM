@@ -17,7 +17,7 @@ int test_sc_memoryInit()
       ret = 1;
     }
   }
-  
+
   if (ret) {
     mt_setfgcolor(TEST_FAIL);
     writeChar(1, "\n");
@@ -52,6 +52,7 @@ int test_sc_memorySet()
   } else {
     ret = ret;
   }
+  
   retf = sc_memorySet(-15, 6);
   if (!retf) {
     ret = 1;
