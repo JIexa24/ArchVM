@@ -49,7 +49,7 @@
 
 #define MKR(X)  (X * 1000000)
 #define TIMESLEEPUSEC 0.5
-#define TIMESLEEPSEC 1
+#define TIMESLEEPSEC 2
 
 void CU();
 int ALU(int command, int operand);

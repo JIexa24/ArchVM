@@ -34,18 +34,26 @@ int sc_commandEncode(int command, int operand, int* value)
 /*---------------------------------------------------------------------------*/
 int sc_commandDecode(int value, int* command, int* operand)
 {
-  int *correctCommand;
+  int *correctCommand  = NULL;
   int attribute        = (value >> 14) & 1;
   int tmpCommand       = 0;
   int tmpOperand       = 0;
   int i                = 0;
+
+  if (value == 0) {
+    *command = 0;
+    *operand = 0;
+    return 2;
+  }
 
   if (command != NULL && operand != NULL) {
     if (attribute == 0) {
       tmpCommand = (value >> 7) & 0x7F;
       tmpOperand = value & 0x7F;
       for (i = 0; i < countCmd; i ++) {
-        if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
+        if (tmpCommand == correctCommands[i]) {
+          correctCommand = &(correctCommands[i]);
+        }
       }
 
       if (!(correctCommand == NULL)) {

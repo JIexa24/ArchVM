@@ -36,7 +36,6 @@ int main(int argc, char** argv)
   val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
   val.it_value.tv_sec = TIMESLEEPSEC;
   val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
-  setitimer(TIMER, &val, &oval);
 
   if ((fd = open("ascibig", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
@@ -51,6 +50,7 @@ int main(int argc, char** argv)
   while (!exit) {
     if (!refreshFlg) {
       refreshGui(position);
+      refreshFlg = 1;
     }
 
     rk_readkey(&key);
@@ -160,32 +160,35 @@ int main(int argc, char** argv)
       }
     }
     if (key == KEY_c) {
+      position = instructionRegisterCount;
+      cursorX = instructionRegisterCount / 10;
+      cursorY = instructionRegisterCount % 10;
+      refreshFlg = 0;
       raise(SIGUSR2);
       key  = KEY_other;
     } else if (key == KEY_esc) {
       raise(SIGTERM);
       key  = KEY_other;
     } else if (key == KEY_r) {
+      key = KEY_other;
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
         sc_regInit();
-        restoreIgnoreAlarm();
+        setitimer(TIMER, &val, &oval);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10;
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
-        key  = KEY_other;
         continue;
       } else {
+        setitimer(TIMER, NULL, NULL);
         sc_regSet(FLAG_INTERRUPT, 1);
         position = instructionRegisterCount;
         cursorX = instructionRegisterCount / 10 ;
         cursorY = instructionRegisterCount % 10;
         refreshFlg = 0;
-        key  = KEY_other;
         continue;
 	    }
-      key  = KEY_other;
     }
     position = cursorY + cursorX * 10;
   }

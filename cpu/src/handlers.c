@@ -11,7 +11,6 @@ void timerHand(int sig)
 {
   int reg;
   sc_regGet(FLAG_INTERRUPT, &reg);
-  
   if (reg == 0) {
     CU();
     refreshGui(instructionRegisterCount);
@@ -30,6 +29,7 @@ void ursignalHand(int sig)
 /*---------------------------------------------------------------------------*/
 void ursignalHand2(int sig)
 {
+  setitimer(TIMER, NULL, NULL);
   sc_regSet(FLAG_INTERRUPT, 1);
 }
 /*---------------------------------------------------------------------------*/

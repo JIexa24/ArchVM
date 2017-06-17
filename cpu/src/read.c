@@ -15,7 +15,7 @@ int readMcell(int pos)
   int operand  = 0;
   int mem      = 0;
 
-  setIgnoreAlarm();
+  //setIgnoreAlarm();
   setEchoRegime();
   refreshGui(instructionRegisterCount);
   mt_gotoXY(1, 23);
@@ -27,6 +27,6 @@ int readMcell(int pos)
   readUse = 0;
 
   restoreEchoRegime();
-  restoreIgnoreAlarm();
+  //restoreIgnoreAlarm();
   return ret;
 }

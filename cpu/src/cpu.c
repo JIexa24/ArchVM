@@ -22,8 +22,8 @@ void CU()
 
   sc_memoryGet(instructionRegisterCount, &mem);
 
-  if (sc_commandDecode(mem, &command, &operand)
-      != 0) {
+  if (!(sc_commandDecode(mem, &command, &operand)
+      == 0)) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     return;

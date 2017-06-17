@@ -15,7 +15,7 @@ int asmTrans(int argc, char** argv)
   int counterTokens        = 0;
   int flagign              = 0;
   int i                    = 0;
-  int addres               = 5;
+  int addres               = 0;
   int value                = 0;
   int ret                  = 0;
 
@@ -34,6 +34,8 @@ int asmTrans(int argc, char** argv)
 
   i = 0;
   do {
+    value = 0;
+    addres = 0;
     read(input, &buffer[i], sizeof(char));
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
@@ -88,8 +90,8 @@ int asmTrans(int argc, char** argv)
       i++;
     }
   } while (1);
-
-  write(output, ram, sizeof(*ram) * sizeRAM);
+  
+  write(output, ram, sizeof(int) * sizeRAM);
 
   close(input);
   close(output);

@@ -89,6 +89,12 @@ void setSignals()
   act[9].sa_handler = SIG_DFL;
   act[9].sa_mask = set;
 
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGPROF);
+  act[10].sa_handler = timerHand;
+  act[10].sa_mask = set;
+
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -99,6 +105,7 @@ void setSignals()
   sigaction(SIGTSTP, &(act[7]), &(old[7]));  /*Ctrl-Z*/
   sigaction(SIGQUIT, &(act[8]), &(old[8]));  /*Ctrl-\*/
   sigaction(SIGSEGV, &(act[9]), &(old[9]));
+  sigaction(SIGPROF, &(act[10]), &(old[10]));
 
 }
 /*---------------------------------------------------------------------------*/
@@ -115,16 +122,13 @@ void signalsRestore()
   sigaction(SIGTSTP, &(old[7]), 0);
   sigaction(SIGQUIT, &(old[8]), 0);
   sigaction(SIGSEGV, &(old[9]), 0);
+  sigaction(SIGPROF, &(old[10]), 0);
 }
 /*---------------------------------------------------------------------------*/
 void setIgnoreAlarm()
 {
   if (alarmIgn == 0) {
-    sigemptyset(&setalrm);
-    sigaddset(&setalrm, SIGUSR1);
-    sigaddset(&setalrm, SIGALRM);
     newalarm.sa_handler = SIG_IGN;
-    newalarm.sa_mask = setalrm;
     sigaction(SIGALRM, &(newalarm), &(oldalarm));
     alarmIgn = 1;
  } else {
@@ -165,7 +169,6 @@ void restoreEchoRegime()
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
 {
-  setIgnoreAlarm();
   setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
@@ -174,6 +177,7 @@ int changeCell(int pos)
   int mem      = 0;
 
   if (readUse == 0) {
+    setIgnoreAlarm();
     refreshGui(pos);
     mt_gotoXY(1, 23);
     printLine(2);
@@ -184,8 +188,10 @@ int changeCell(int pos)
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
 
+    if (readUse == 0) {
+      restoreIgnoreAlarm();
+    }
     restoreEchoRegime();
-    restoreIgnoreAlarm();
     return -1;
   }
 
@@ -195,8 +201,11 @@ int changeCell(int pos)
       if (num & 0x80) {
         writeChar(2, "Operand is 7 bit wide ( <= 7F). ");
 
+        if (readUse == 0) {
+          restoreIgnoreAlarm();
+        }
+
         restoreEchoRegime();
-        restoreIgnoreAlarm();
         return -1;
       }
       operand = num & 0x7F;
@@ -204,8 +213,10 @@ int changeCell(int pos)
       if (sc_commandEncode(command, operand, &mem) != 0) {
         writeChar(2, "Wrong command. Aborted. ");
 
+        if (readUse == 0) {
+          restoreIgnoreAlarm();
+        }
         restoreEchoRegime();
-        restoreIgnoreAlarm();
         return -1;
       }
     } else {
@@ -213,19 +224,24 @@ int changeCell(int pos)
     }
 
     if(sc_memorySet(pos, mem) != 0) {
+      if (readUse == 0) {
+        restoreIgnoreAlarm();
+      }
       restoreEchoRegime();
-      restoreIgnoreAlarm();
       return -1;
     }
   } else {
     writeChar(2, "Memory cell is 15 bit wide");
+    if (readUse == 0) {
+      restoreIgnoreAlarm();
+    }
     restoreEchoRegime();
-    restoreIgnoreAlarm();
     return -1;
   }
-
+  if (readUse == 0) {
+    restoreIgnoreAlarm();
+  }
   restoreEchoRegime();
-  restoreIgnoreAlarm();
   return 0;
 }
 /*---------------------------------------------------------------------------*/

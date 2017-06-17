@@ -175,18 +175,26 @@ int sc_commandEncode(int command, int operand, int* value)
 /*---------------------------------------------------------------------------*/
 int sc_commandDecode(int value, int* command, int* operand)
 {
-  int *correctCommand;
+  int *correctCommand  = NULL;
   int attribute        = (value >> 14) & 1;
   int tmpCommand       = 0;
   int tmpOperand       = 0;
   int i                = 0;
+
+  if (value == 0) {
+    *command = 0;
+    *operand = 0;
+    return 2;
+  }
 
   if (command != NULL && operand != NULL) {
     if (attribute == 0) {
       tmpCommand = (value >> 7) & 0x7F;
       tmpOperand = value & 0x7F;
       for (i = 0; i < countCmd; i ++) {
-        if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
+        if (tmpCommand == correctCommands[i]) {
+          correctCommand = &(correctCommands[i]);
+        }
       }
 
       if (!(correctCommand == NULL)) {
@@ -656,7 +664,7 @@ int rk_readkey(enum keys *key)
   }
   readNum = read(STDIN_FILENO, buf, 5);
 
-  if (readNum < 0) {
+  if (readNum <= 0) {
     return -1;
   }
 
@@ -883,8 +891,8 @@ void CU()
 
   sc_memoryGet(instructionRegisterCount, &mem);
 
-  if (sc_commandDecode(mem, &command, &operand)
-      != 0) {
+  if (!(sc_commandDecode(mem, &command, &operand)
+      == 0)) {
     sc_regSet(FLAG_COMMAND, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
     return;
@@ -1284,7 +1292,7 @@ void printMemory(int x, int y, int position)
       }
 
       if (command == 0) {
-        sc_commandDecode(mem, &opcode, &operand);
+        int ret = sc_commandDecode(mem, &opcode, &operand);
         writeChar(1, "+");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
@@ -1297,7 +1305,7 @@ void printMemory(int x, int y, int position)
         mt_setfgcolor(clr_default);
         mt_setbgcolor(clr_default);
       }
-      
+
       if ((i + j * 10 ) == instructionRegisterCount) {
         mt_setfgcolor(clr_default);
       }
@@ -1323,7 +1331,6 @@ void timerHand(int sig)
 {
   int reg;
   sc_regGet(FLAG_INTERRUPT, &reg);
-  
   if (reg == 0) {
     CU();
     refreshGui(instructionRegisterCount);
@@ -1342,6 +1349,7 @@ void ursignalHand(int sig)
 /*---------------------------------------------------------------------------*/
 void ursignalHand2(int sig)
 {
+  setitimer(TIMER, NULL, NULL);
   sc_regSet(FLAG_INTERRUPT, 1);
 }
 /*---------------------------------------------------------------------------*/
@@ -1935,6 +1943,12 @@ void setSignals()
   act[9].sa_handler = SIG_DFL;
   act[9].sa_mask = set;
 
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGPROF);
+  act[10].sa_handler = timerHand;
+  act[10].sa_mask = set;
+
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -1945,6 +1959,7 @@ void setSignals()
   sigaction(SIGTSTP, &(act[7]), &(old[7]));  /*Ctrl-Z*/
   sigaction(SIGQUIT, &(act[8]), &(old[8]));  /*Ctrl-\*/
   sigaction(SIGSEGV, &(act[9]), &(old[9]));
+  sigaction(SIGPROF, &(act[10]), &(old[10]));
 
 }
 /*---------------------------------------------------------------------------*/
@@ -1961,16 +1976,13 @@ void signalsRestore()
   sigaction(SIGTSTP, &(old[7]), 0);
   sigaction(SIGQUIT, &(old[8]), 0);
   sigaction(SIGSEGV, &(old[9]), 0);
+  sigaction(SIGPROF, &(old[10]), 0);
 }
 /*---------------------------------------------------------------------------*/
 void setIgnoreAlarm()
 {
   if (alarmIgn == 0) {
-    sigemptyset(&setalrm);
-    sigaddset(&setalrm, SIGUSR1);
-    sigaddset(&setalrm, SIGALRM);
     newalarm.sa_handler = SIG_IGN;
-    newalarm.sa_mask = setalrm;
     sigaction(SIGALRM, &(newalarm), &(oldalarm));
     alarmIgn = 1;
  } else {
@@ -2011,7 +2023,6 @@ void restoreEchoRegime()
 /*---------------------------------------------------------------------------*/
 int changeCell(int pos)
 {
-  setIgnoreAlarm();
   setEchoRegime();
   int plusFlag = 0;
   int num      = 0;
@@ -2020,6 +2031,7 @@ int changeCell(int pos)
   int mem      = 0;
 
   if (readUse == 0) {
+    setIgnoreAlarm();
     refreshGui(pos);
     mt_gotoXY(1, 23);
     printLine(2);
@@ -2030,8 +2042,10 @@ int changeCell(int pos)
   if (scanNum(&plusFlag, &num) != 0) {
     writeChar(2, "Not a number!");
 
+    if (readUse == 0) {
+      restoreIgnoreAlarm();
+    }
     restoreEchoRegime();
-    restoreIgnoreAlarm();
     return -1;
   }
 
@@ -2041,8 +2055,11 @@ int changeCell(int pos)
       if (num & 0x80) {
         writeChar(2, "Operand is 7 bit wide ( <= 7F). ");
 
+        if (readUse == 0) {
+          restoreIgnoreAlarm();
+        }
+
         restoreEchoRegime();
-        restoreIgnoreAlarm();
         return -1;
       }
       operand = num & 0x7F;
@@ -2050,8 +2067,10 @@ int changeCell(int pos)
       if (sc_commandEncode(command, operand, &mem) != 0) {
         writeChar(2, "Wrong command. Aborted. ");
 
+        if (readUse == 0) {
+          restoreIgnoreAlarm();
+        }
         restoreEchoRegime();
-        restoreIgnoreAlarm();
         return -1;
       }
     } else {
@@ -2059,19 +2078,24 @@ int changeCell(int pos)
     }
 
     if(sc_memorySet(pos, mem) != 0) {
+      if (readUse == 0) {
+        restoreIgnoreAlarm();
+      }
       restoreEchoRegime();
-      restoreIgnoreAlarm();
       return -1;
     }
   } else {
     writeChar(2, "Memory cell is 15 bit wide");
+    if (readUse == 0) {
+      restoreIgnoreAlarm();
+    }
     restoreEchoRegime();
-    restoreIgnoreAlarm();
     return -1;
   }
-
+  if (readUse == 0) {
+    restoreIgnoreAlarm();
+  }
   restoreEchoRegime();
-  restoreIgnoreAlarm();
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -2340,7 +2364,7 @@ int readMcell(int pos)
   int operand  = 0;
   int mem      = 0;
 
-  setIgnoreAlarm();
+  //setIgnoreAlarm();
   setEchoRegime();
   refreshGui(instructionRegisterCount);
   mt_gotoXY(1, 23);
@@ -2352,7 +2376,7 @@ int readMcell(int pos)
   readUse = 0;
 
   restoreEchoRegime();
-  restoreIgnoreAlarm();
+  //restoreIgnoreAlarm();
   return ret;
 }
 ----------------cpu.h----------------
@@ -2407,7 +2431,7 @@ int readMcell(int pos)
 
 #define MKR(X)  (X * 1000000)
 #define TIMESLEEPUSEC 0.5
-#define TIMESLEEPSEC 1
+#define TIMESLEEPSEC 2
 
 void CU();
 int ALU(int command, int operand);
@@ -2471,7 +2495,7 @@ int asmTrans(int argc, char** argv)
   int counterTokens        = 0;
   int flagign              = 0;
   int i                    = 0;
-  int addres               = 5;
+  int addres               = 0;
   int value                = 0;
   int ret                  = 0;
 
@@ -2490,6 +2514,8 @@ int asmTrans(int argc, char** argv)
 
   i = 0;
   do {
+    value = 0;
+    addres = 0;
     read(input, &buffer[i], sizeof(char));
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
@@ -2544,8 +2570,8 @@ int asmTrans(int argc, char** argv)
       i++;
     }
   } while (1);
-
-  write(output, ram, sizeof(*ram) * sizeRAM);
+  
+  write(output, ram, sizeof(int) * sizeRAM);
 
   close(input);
   close(output);

@@ -345,7 +345,7 @@ void printMemory(int x, int y, int position)
       }
 
       if (command == 0) {
-        sc_commandDecode(mem, &opcode, &operand);
+        int ret = sc_commandDecode(mem, &opcode, &operand);
         writeChar(1, "+");
         writeInt(1, opcode, 16, 2);
         writeInt(1, operand, 16, 2);
@@ -358,7 +358,7 @@ void printMemory(int x, int y, int position)
         mt_setfgcolor(clr_default);
         mt_setbgcolor(clr_default);
       }
-      
+
       if ((i + j * 10 ) == instructionRegisterCount) {
         mt_setfgcolor(clr_default);
       }

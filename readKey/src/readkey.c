@@ -33,7 +33,7 @@ int rk_readkey(enum keys *key)
   }
   readNum = read(STDIN_FILENO, buf, 5);
 
-  if (readNum < 0) {
+  if (readNum <= 0) {
     return -1;
   }
 
