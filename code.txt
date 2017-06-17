@@ -1,0 +1,3359 @@
+--------libSimpleComputer.a--------
+----------------global.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/sc.h"
+
+int localRAM[sizeRAM];
+short int sc_register;
+int correctCommands[countCmd] = { 0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32,
+                                  0x33, 0x40, 0x41, 0x42, 0x43, 0x51, 0x52,
+                                  0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59,
+                                  0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66,
+                                  0x67, 0x68, 0x69, 0x70, 0x71, 0x72, 0x73,
+                                  0x74, 0x75, 0x76 };
+----------------sc_memory.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/sc_memory.h"
+#include "./../include/sc_register.h"
+
+extern int localRAM[];
+
+int sc_memoryInit(void)
+{
+  int i;
+  for (i = 0; i < sizeRAM; i++) {
+    localRAM[i] = 0;
+  }
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int sc_memorySet(int addres, int value)
+{
+  if ((addres < sizeRAM) & (addres >= 0)) {
+    localRAM[addres] = value;
+    return 0;
+  } else {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return ERR_WRONG_ADDR;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int sc_memoryGet(int addres, int* value)
+{
+  if ((addres < sizeRAM) & (addres >=0) & (value != NULL)) {
+    *value = localRAM[addres];
+    return 0;
+  } else {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return ERR_WRONG_ADDR;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int sc_memorySave(char* filename)
+{
+  FILE *data = NULL;
+  int write  = 0;
+
+  data = fopen(filename, "wb");
+
+  if (data == NULL) {
+    return ERR_OPEN_FILE;
+  } else {
+    write = fwrite(localRAM, sizeof(*localRAM) * sizeRAM, 1, data);
+    fclose(data);
+    if (write != 1)
+      return ERR_FILE;
+    else
+      return 0;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int sc_memoryLoad(char* filename)
+{
+  FILE *data       = NULL;
+  int read         = 0;
+  int i            = 0;
+  int ram[sizeRAM] = {0};
+
+  data = fopen(filename, "rb");
+  if (data == NULL) {
+    return ERR_OPEN_FILE;
+  }
+
+  read = fread(ram, sizeof(*ram) * sizeRAM, 1, data);
+
+  for (i = 0; i < sizeRAM; i++) {
+    ram[i] &= 0x7FFF;
+  }
+  fclose(data);
+  if (read != 1) {
+    return ERR_FILE;
+  } else {
+    for (i = 0; i < sizeRAM; i++) {
+      localRAM[i] = ram[i];
+    }
+    return 0;
+  }
+}
+----------------print.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/sc_register.h"
+
+extern short int sc_register;
+
+int sc_regInit(void)
+{
+  sc_register = 0;
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int sc_regSet(int scRegister, int value)
+{
+  if ((scRegister >= 0) && (scRegister <=5)) {
+    if (value == 1) {
+      BITSET(sc_register, scRegister);
+    } else if (value == 0) {
+      BITCLEAR(sc_register, scRegister);
+    } else {
+      return ERR_WRONG_FLAG;
+    }
+  }	else {
+    return ERR_WRONG_FLAG;
+  }
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int sc_regGet(int scRegister, int* value)
+{
+  if ((scRegister >= 0) && (scRegister <=5)) {
+    *value = BITCHECK(sc_register, scRegister);
+  } else {
+    return ERR_WRONG_FLAG;
+  }
+  return 0;
+}
+----------------handlers.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/sc_command.h"
+#include "./../include/sc_register.h"
+
+extern int correctCommands[];
+
+int sc_commandEncode(int command, int operand, int* value)
+{
+  int i           = 0;
+  int *commandPtr = NULL;
+
+  for (i = 0; i < countCmd; i++) {
+    if (command == correctCommands[i]) commandPtr = &(correctCommands[i]);
+  }
+
+  if (commandPtr != NULL) {
+    if (operand > 0x7F) {
+      operand &= 0x7F;
+      sc_regSet(FLAG_OVERFLOW,1);
+    }
+    if (value != NULL) {
+      *value = (command << 7) | operand;
+      sc_regSet(FLAG_COMMAND, 0);
+      return 0;
+    }
+  } else {
+    sc_regSet(FLAG_COMMAND, 1);
+    return ERR_UNCORRECT_COMMAND;
+  }
+  return ERR_WRONG_ADDR;
+}
+/*---------------------------------------------------------------------------*/
+int sc_commandDecode(int value, int* command, int* operand)
+{
+  int *correctCommand;
+  int attribute        = (value >> 14) & 1;
+  int tmpCommand       = 0;
+  int tmpOperand       = 0;
+  int i                = 0;
+
+  if (command != NULL && operand != NULL) {
+    if (attribute == 0) {
+      tmpCommand = (value >> 7) & 0x7F;
+      tmpOperand = value & 0x7F;
+      for (i = 0; i < countCmd; i ++) {
+        if (tmpCommand == correctCommands[i]) correctCommand = &(correctCommands[i]);
+      }
+
+      if (!(correctCommand == NULL)) {
+        *command = tmpCommand;
+        *operand = tmpOperand;
+      } else {
+        sc_regSet(FLAG_COMMAND, 1);
+        return ERR_UNCORRECT_COMMAND;
+      }
+      return 0;
+    } else {
+      return ERR_ATTRIBUTE_BIT;
+    }
+  }
+  return 0;
+}
+----------------sc.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef SC_H
+#define SC_H
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define sizeRAM  100 
+#define countCmd 38
+
+#define FLAG_OVERFLOW  0    // overflow flag
+#define FLAG_DIVISION  1    // ZERO
+#define FLAG_OUTMEM    2    // out of memory
+#define FLAG_INTERRUPT 3    // interrupt (ISIG)
+#define FLAG_COMMAND   4    // wrong command
+#define FLAG_ODD       5    //
+
+#define ERR_WRONG_ADDR        -1
+#define ERR_OPEN_FILE         -2
+#define ERR_FILE              -3
+#define ERR_UNCORRECT_COMMAND -4
+#define ERR_ATTRIBUTE_BIT     -5
+#define ERR_WRONG_FLAG        -6
+
+#define BITSET(A, B) (A =((A) | (1 << (B))))
+#define BITCLEAR(A, B) (A = ((A) & ~(1 << (B))))
+#define BITCHECK(A, B) (((A) >> B) & 1)
+
+#endif
+----------------sc_memory.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+/*
+ Operatioon with localMemory
+*/
+#ifndef SC_MEMORY_H
+#define SC_MEMORY_H
+
+#include "./sc.h"
+
+/*initialization RAM in 0*/
+int sc_memoryInit(void);
+
+/*initialization addres by value*/
+int sc_memorySet(int addres, int value);
+
+/*return value on addres to value*/
+int sc_memoryGet(int addres, int* value);
+
+/*save RAM in binary to file*/
+int sc_memorySave(char* filename);
+
+/*load RAM from file*/
+int sc_memoryLoad(char* filename);
+
+#endif
+----------------sc_register.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+
+/*
+Operation with register
+*/
+
+#ifndef SC_REGISTER_H
+#define SC_REGISTER_H
+
+#include "./sc.h"
+
+/*init register*/
+int sc_regInit(void);
+
+/*set register of flags*/
+int sc_regSet(int sc_register, int value);
+
+int sc_regGet(int sc_register, int* value);
+
+#endif
+----------------sc_command.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+/*
+  Operation with commandcode
+*/
+
+#ifndef SC_COMMAND_H
+#define SC_COMMAND_H
+
+#include "./sc.h"
+
+int sc_commandEncode(int command, int operand, int* value);
+
+int sc_commandDecode(int value, int* command, int* operand);
+
+#endif
+--------libTerm.a--------
+----------------term.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/term.h"
+
+int mt_clrscr()
+{
+  writeChar(1, "\E[H\E[2J");
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int mt_gotoXY(int x, int y)
+{
+  int rows = 0;
+  int cols = 0;
+  mt_getscreensize(&rows, &cols);
+  if (((y < rows) & (y >= 0)) & ((x < cols) & (x >= 0))) {
+    writeChar(1, "\E[");
+    writeInt(1, y, 10, -1);
+    writeChar(1, ";");
+    writeInt(1, x, 10, -1);
+    writeChar(1, "H");
+    return 0;
+  } else {
+    return -1;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int mt_getscreensize(int *rows, int *cols)
+{
+  struct winsize w;
+  if (!ioctl(STDOUT_FILENO, TIOCGWINSZ, &w)) {
+    *rows = w.ws_row;
+    *cols = w.ws_col;
+    return 0;
+  }  else {
+    return -1;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int mt_setfgcolor(enum colors color)
+{
+  if (color >= 0 & color <= 9) {
+    writeChar(1, "\E[");
+    writeInt(1, 30 + color, 10, -1);
+    writeChar(1, "m");
+    return 0;
+  } else {
+    return -1;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int mt_setbgcolor(enum colors color)
+{
+  if (color >= 0 & color <= 9) {
+    writeChar(1, "\E[");
+    writeInt(1, 40 + color, 10, -1);
+    writeChar(1, "m");
+    return 0;
+  } else {
+    return -1;
+  }
+}
+----------------term.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef CONSOLE_SC_H
+#define CONSOLE_SC_H
+
+#include <sys/ioctl.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "./../../print/include/write.h"
+
+enum colors {
+	clr_black      = 0,
+	clr_red        = 1,
+	clr_green      = 2,
+	clr_yellow     = 3,
+	clr_blue       = 4,
+	clr_purple     = 5,
+	clr_cyan       = 6,
+	clr_light_blue = 7,
+	clr_default    = 9
+};
+
+int mt_clrscr();
+int mt_gotoXY(int x, int y);
+int mt_getscreensize(int *rows, int *cols);
+int mt_setfgcolor(enum colors color);
+int mt_setbgcolor(enum colors color);
+
+#endif
+--------libBigChars.a--------
+----------------bc.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/bc.h"
+
+void swap(int* a, int* b)
+{
+  int tmp = 0;
+  tmp = *a;
+  *a = *b;
+  *b = tmp;
+}
+/*---------------------------------------------------------------------------*/
+int bc_printA(char *str)
+{
+  writeChar(1, "\E(0");
+  write(1, str, strlen(str));
+  writeChar(1, "\E(B");
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int bc_box(int x1, int y1, int x2, int y2)
+{
+  int maxx = 0;
+  int maxy = 0;
+  int i    = 0;
+  int j    = 0;
+
+  if (x1 > x2) {
+    swap(&x1, &x2);
+  }
+  if (y1 > y2) {
+    swap(&y1, &y2);
+  }
+
+  mt_getscreensize(&maxy, &maxx);
+
+  if ((x1 < 0) | (y1 < 0) | (x2 > maxx) | (y2 > maxy) | (x2 - x1 < 2) |
+      (y2 - y1 < 2)) {
+    return -1;
+  }
+
+  mt_gotoXY(x1, y1);
+  bc_printA(BOXCHAR_TL);
+
+  for (i = x1 + 1; i < x2; i++) {
+    bc_printA(BOXCHAR_HOR);
+  }
+
+  bc_printA(BOXCHAR_TR);
+
+  for (i = y1 +1; i < y2; i++) {
+    mt_gotoXY(x1, i);
+    bc_printA(BOXCHAR_VERT);
+    mt_gotoXY(x2, i);
+    bc_printA(BOXCHAR_VERT);
+  }
+
+  mt_gotoXY(x1, y2);
+  bc_printA(BOXCHAR_BL);
+
+  for (i = x1 + 1; i < x2; i++) {
+    bc_printA(BOXCHAR_HOR);
+  }
+
+  bc_printA(BOXCHAR_BR);
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg)
+{
+  int pos     = 0;
+  int bit     = 0;
+  int maxx    = 0;
+  int maxy    = 0;
+  int i       = 0;
+  int j       = 0;
+  char row[9] = {0};
+
+  mt_getscreensize(&maxy, &maxx);
+
+  if ((x < 0) | (y < 0) | (x + 8 > maxx) | (y + 8 > maxy)) {
+    return -1;
+  }
+
+  row[8] = '\0';
+
+  mt_setfgcolor(fg);
+  mt_setbgcolor(bg);
+
+  for (i = 0; i < 8; i++) {
+    for (j = 0; j < 8; j++) {
+      pos = i >> 2;
+      bit = (big[pos] >> ((i % 4) * 8 + j)) & 1;
+      if (bit == 0) {
+        row[j] = ' ';
+      } else {
+        row[j] = BOXCHAR_REC;
+      }
+    }
+    mt_gotoXY(x, y + i);
+    bc_printA(row);
+  }
+  mt_setfgcolor(clr_default);
+  mt_setbgcolor(clr_default);
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int bc_setbigcharpos(int *big, int x, int y, int value)
+{
+  int pos = 0;
+  if ((x < 0) | (y < 0) | (x > 7) | (y > 7) | (value < 0) | (value > 1)) {
+    return -1;
+  }
+
+  if (y <= 3) {
+    pos = 0;
+  } else {
+    pos = 1;
+  }
+
+  y = y % 4;
+
+  if (value == 0) {
+    big[pos] &= ~(1 << (y*8 + x));
+  } else {
+    big[pos] |= 1 << (y*8 + x);
+  }
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int bc_getbigcharpos(int *big, int x, int y, int *value)
+{
+  int pos = 0;
+
+  if ((x < 0) | (y < 0) | (x > 7) | (y > 7)) {
+    return -1;
+  }
+
+  if (y <= 3) {
+    pos = 0;
+  } else {
+    pos = 1;
+  }
+
+  y = y % 4;
+
+  *value = (big[pos] >> (y*8 + x)) & 1;
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int bc_bigcharwrite(int fd, int *big, int count)
+{
+  int err = 0;
+
+  err = write(fd, &count, sizeof(count));
+  if (err == -1) {
+    return -1;
+  }
+
+  err = write(fd, big, count * sizeof(int) * 2);
+  if (err == -1) {
+    return -1;
+  }
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int bc_bigcharread(int fd, int *big, int need_count, int *count)
+{
+  int n, cnt, err;
+
+  err = read(fd, &n, sizeof(n));
+  if ((err == -1) | (err != sizeof(n))) {
+    return -1;
+  }
+
+  cnt = read(fd, big, need_count * sizeof(int) * 2);
+  if (cnt == -1) {
+    return -1;
+  }
+  *count = cnt / (sizeof(int) * 2);
+
+  return 0;
+}
+----------------bc.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef BC_H
+#define BC_H
+
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+#include "./../../consoleSC/include/term.h"
+#include "./../../print/include/write.h"
+
+#define BOXCHAR_REC 'a'
+#define BOXCHAR_BR "j"
+#define BOXCHAR_BL "m"
+#define BOXCHAR_TR "k"
+#define BOXCHAR_TL "l"
+#define BOXCHAR_VERT "x"
+#define BOXCHAR_HOR "q"
+
+void swap(int* a, int* b);
+int bc_printA(char *str);
+int bc_box(int x1, int y1, int x2, int y2);
+int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg);
+int bc_setbigcharpos(int *big, int x, int y, int value);
+int bc_getbigcharpos(int *big, int x, int y, int *value);
+int bc_bigcharwrite(int fd, int *big, int count);
+int bc_bigcharread(int fd, int *big, int need_count, int *count);
+
+#endif 
+--------libReadKey.a--------
+----------------readkey.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/readkey.h"
+/*
+
+  tcflag_t c_iflag;      // режимы ввода
+  tcflag_t c_oflag;      // режимы вывода
+  tcflag_t c_cflag;      // режимы управления
+  tcflag_t c_lflag;      // режимы локали
+  cc_t c_cc[NCCS];       // управляющие символы
+
+  c_iflag - флаги констант:
+*/
+int rk_readkey(enum keys *key)
+{
+  struct termios orig_options;
+  char buf[16] = {0};
+  int readNum  = 0;
+/*---------------------------------------------------------------------------*/
+/*
+  tcgetattr(int fd, struct termios *termios_p) : получить параметры,
+  связанные с объектом, на который ссылается fd, и сохранить их в структуре
+  termios, на которую ссылается termios_p. Эта функция может быть запущена из
+  фонового процесса;однако, атрибуты терминала могут в дальнейшем изменяться
+  основным процессом.
+*/
+  if (tcgetattr(STDIN_FILENO, &orig_options) != 0) {
+    return -1;
+  }
+  if (rk_mytermregime(0, 0, 1, 0, 1) != 0) {
+    return -1;
+  }
+  readNum = read(STDIN_FILENO, buf, 5);
+
+  if (readNum < 0) {
+    return -1;
+  }
+
+  buf[readNum] = '\0';
+
+  if ((strcmp(buf, "l") == 0) | (strcmp(buf, "L") == 0)) {
+    *key = KEY_l;
+  } else if ((strcmp(buf, "s") == 0) | (strcmp(buf, "S") == 0)) {
+    *key = KEY_s;
+  } else if ((strcmp(buf, "r") == 0) | (strcmp(buf, "R") == 0)) {
+    *key = KEY_r;
+  } else if ((strcmp(buf, "t") == 0) | (strcmp(buf, "T") == 0)) {
+    *key = KEY_t;
+  } else if ((strcmp(buf, "i") == 0) | (strcmp(buf, "I") == 0)) {
+    *key = KEY_i;
+  } else if ((strcmp(buf, "q") == 0) | (strcmp(buf, "Q") == 0)) {
+    *key = KEY_q;
+  } else if ((strcmp(buf, "x") == 0) | (strcmp(buf, "X") == 0)) {
+    *key = KEY_x;
+  } else if ((strcmp(buf, "d") == 0) | (strcmp(buf, "D") == 0)) {
+    *key = KEY_d;
+  } else if ((strcmp(buf, "c") == 0) | (strcmp(buf, "C") == 0)) {
+    *key = KEY_c;
+  } else if ((strcmp(buf, "\n")) == 0) {
+    *key = KEY_enter;
+  } else if ((strcmp(buf, "\E[15~")) == 0) {
+    *key = KEY_f5;
+  } else if ((strcmp(buf, "\E[17~")) == 0) {
+    *key = KEY_f6;
+  } else if ((strcmp(buf, "\E[A")) == 0) {
+    *key = KEY_up;
+  } else if ((strcmp(buf, "\E[B")) == 0) {
+    *key = KEY_down;
+  } else if ((strcmp(buf, "\E[C")) == 0) {
+    *key = KEY_right;
+  } else if ((strcmp(buf, "\E[D")) == 0) {
+    *key = KEY_left;
+  } else if ((strcmp(buf, "\E")) == 0) {
+    *key = KEY_esc;
+  } else {
+    *key = KEY_other;
+  }
+/*
+  int tcsetattr(int fd, int optional_actions, struct termios *termios_p)
+  меняет параметры, связанные с терминалом (если требуется поддержка
+  используемого оборудования, которая недоступна), и параметры структуры
+  termios, связанной с termios_p. Для того, чтобы изменения вступили в силу,
+  необходимо указать optional_actions:
+*/
+  if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
+    return -1;
+  }
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int rk_mytermsave(void)
+{
+  struct termios options;
+  FILE *save = NULL;
+
+  if (tcgetattr(STDIN_FILENO, &options) != 0) {
+    return -1;
+  }
+  if ((save = fopen("termsettings", "wb")) == NULL) {
+    return -1;
+  }
+  fwrite(&options, sizeof(options), 1, save);
+  fclose(save);
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int rk_mytermrestore(void)
+{
+  struct termios options;
+  FILE *data = NULL;;
+
+  if ((data = fopen("termsettings", "rb")) == NULL) {
+    return -1;
+  } else {
+    if (fread(&options, sizeof(options), 1, data) > 0) {
+/*
+  TCSAFLUSH
+  изменения начинают работу после того, как на объект, на который указывает
+  fd, были переданы все данные, предназначенные для вывода на запись; все
+  данные, которые были приняты (но не считаны), будут отменены перед тем,
+  как произошли изменения.
+*/
+      if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &options) != 0) {
+        fclose(data);
+        return -1;
+      } else {
+        fclose(data);
+        return -1;
+      }
+    }
+    fclose(data);
+  }
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
+{
+  struct termios options;
+
+  if (tcgetattr(STDIN_FILENO, &options) != 0) {
+    return -1;
+  }
+  if (regime == 1) {
+    options.c_lflag |= ICANON;
+  } else if (regime == 0) {
+    options.c_lflag &= ~ICANON;
+  } else {
+    return -1;
+  }
+  if (regime == 0) {
+    options.c_cc[VTIME] = vtime;
+    options.c_cc[VMIN] = vmin;
+    if (echo == 1) {
+      options.c_lflag |= ECHO;
+    } else if (echo == 0) {
+      options.c_lflag &= ~ECHO;
+    } else {
+      return -1;
+    }
+    if (sigint == 1) {
+      options.c_lflag |= ISIG;
+    } else if (sigint == 0) {
+      options.c_lflag &= ~ISIG;
+    } else {
+      return -1;
+    }
+  }
+  if (tcsetattr(STDIN_FILENO, TCSANOW, &options) != 0) {
+    return -1;
+  }
+
+  return 0;
+}
+----------------readkey.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef READ_KEY_H
+#define READ_KEY_H
+
+#include "./../../simpleComputer/include/sc_register.h"
+#include "./../../simpleComputer/include/sc_command.h"
+#include "./../../simpleComputer/include/sc_memory.h"
+#include "./../../bc/include/bc.h"
+#include "./../../consoleSC/include/term.h"
+
+#include <stdio.h>
+#include <termios.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+
+/*
+
+    tcflag_t c_iflag;      // режимы ввода
+    tcflag_t c_oflag;      // режимы вывода
+    tcflag_t c_cflag;      // режимы управления
+    tcflag_t c_lflag;      // режимы локали
+    cc_t c_cc[NCCS];       // управляющие символы
+
+c_iflag - флаги констант:
+
+*/
+enum keys {
+  KEY_l = 0,
+  KEY_s,
+  KEY_r,
+  KEY_t,
+  KEY_i,
+  KEY_x,
+  KEY_d,
+  KEY_c,
+  KEY_q,
+  KEY_f5,
+  KEY_f6,
+  KEY_up,
+  KEY_down,
+  KEY_left,
+  KEY_right,
+  KEY_enter,
+  KEY_esc,
+  KEY_other
+};
+
+int rk_readkey(enum keys *key);
+int rk_mytermsave(void);
+int rk_mytermrestore(void);
+int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint);
+
+#endif
+--------libCPU.a--------
+----------------cpu.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/cpu.h"
+
+extern int accumulator;
+extern int instructionRegisterCount;
+
+void CU()
+{
+  int command;
+  int operand;
+  int mem;
+
+  if (instructionRegisterCount >= sizeRAM) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    sc_regSet(FLAG_INTERRUPT, 1);
+    refreshGui(instructionRegisterCount);
+    instructionRegisterCount = 0;
+    return;
+  }
+
+  sc_memoryGet(instructionRegisterCount, &mem);
+
+  if (sc_commandDecode(mem, &command, &operand)
+      != 0) {
+    sc_regSet(FLAG_COMMAND, 1);
+    sc_regSet(FLAG_INTERRUPT, 1);
+    return;
+  }
+
+  if ((operand < 0) | (operand >= sizeRAM)) {
+    sc_regSet(FLAG_COMMAND, 1);
+    sc_regSet(FLAG_INTERRUPT, 1);
+    return;
+  }
+
+  if ((command >= 0x30) & (command <= 0x33) |
+      (command >= 0x51) & (command <= 0x54) |
+      (command >= 0x60) & (command <= 0x70) |
+      (command >= 0x75) & (command <= 0x76)) {
+    if (ALU(command, operand) != 0)
+      sc_regSet(FLAG_INTERRUPT, 1);
+  } else {
+    commandHandler(command, operand);
+  }
+
+  instructionRegisterCount++;
+}
+/*---------------------------------------------------------------------------*/
+int ALU(int command, int operand)
+{
+  if ((operand < 0) | (operand >= sizeRAM)) {
+    sc_regSet(FLAG_OUTMEM,1);
+    return ERR_WRONG_ADDR;
+  } else {
+    if (commandHandler(command, operand) != 0) {
+      return -1;
+    }
+
+    if ((accumulator & 1) == 0) {
+      sc_regSet(FLAG_ODD, 0);
+    } else {
+      sc_regSet(FLAG_ODD, 1);
+    }
+
+    if ((accumulator > 0x3FFF) | (accumulator < 0)) {
+      accumulator &= 0x3FFF;
+      sc_regSet(FLAG_OVERFLOW, 1);
+    } else {
+      sc_regSet(FLAG_OVERFLOW, 0);
+    }
+
+    sc_regSet(FLAG_ODD, accumulator & 1);
+    return 0;
+  }
+}
+----------------print.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/cpu.h"
+
+extern int accumulator;
+extern int instructionRegisterCount;
+extern int bigChars[];
+extern int writeValue;
+extern int writeUse;
+extern int SCANPRINTRADIX;
+static int counterRefresh = 0;
+
+static void printWriteValue()
+{
+  int command = 0;
+  int opcode  = 0;
+  int operand = 0;
+  mt_gotoXY(1, 23);
+  printLine(2);
+
+  mt_gotoXY(1, 23);
+  command = (writeValue >> 14) & 1;
+  if (writeUse != 0) {
+    writeChar(1,"Last WRITE: ");
+    if (command == 0) {
+      sc_commandDecode(writeValue, &opcode, &operand);
+      writeChar(1,"+");
+      writeInt(1, opcode, 16, 2);
+      writeInt(1, operand, 16, 2);
+    } else {
+      writeChar(1," ");
+      writeInt(1, writeValue & 0x3FFF, SCANPRINTRADIX, 4);
+    }
+  }
+}
+/*---------------------------------------------------------------------------*/
+void printLine(int ctr){
+  int x = 0;
+  int y = 0;
+  int i = 0;
+  int j = 0;
+
+  mt_getscreensize(&y, &x);
+  for (j = 0; j < ctr; j++) {
+    for (i = 0; i < x; i++)
+      writeChar(1," ");
+    writeChar(1,"\n");
+  }
+}
+/*---------------------------------------------------------------------------*/
+void refreshGuiSt(int position)
+{
+  mt_clrscr();
+  printBoxes();
+  printLabels();
+  printKeys(48, 14);
+  printCounter();
+  printAccum();
+  printOperation(position);
+  printMemory(2, 2, position);
+  printFlags(66, 11);
+  printWriteValue();
+  mt_gotoXY(1, 23);
+}
+/*---------------------------------------------------------------------------*/
+void refreshGui(int position)
+{
+  counterRefresh++;
+  if (counterRefresh % REFRESH == 0) {
+    refreshGuiSt(position);
+    counterRefresh = 0;
+  } else {
+    printCounter();
+    printAccum();
+    printOperation(position);
+    printMemory(2, 2, position);
+    printFlags(66, 11);
+    printWriteValue();
+    mt_gotoXY(1, 23);
+  }
+}
+/*---------------------------------------------------------------------------*/
+void printAccum()
+{
+  mt_setfgcolor(ACCUMCOLORFG);
+  mt_gotoXY(68, 2);
+  writeChar(1, "     ");
+  mt_gotoXY(68, 2);
+  if (SCANPRINTRADIX == 16) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 4);
+  } else if (SCANPRINTRADIX == 10) {
+    writeInt(1, accumulator & 0x3FFF, SCANPRINTRADIX, 5);
+  }
+  mt_setfgcolor(clr_default);
+}
+/*---------------------------------------------------------------------------*/
+void printBoxes()
+{
+  bc_box(1, 1, 61, 12);
+  bc_box(62, 1, 79, 3);
+  bc_box(62, 4, 79, 6);
+  bc_box(62, 7, 79, 9);
+  bc_box(62, 10, 79, 12);
+  bc_box(1, 13, 46, 22);
+  bc_box(47, 13, 79, 22);
+}
+/*---------------------------------------------------------------------------*/
+void printCounter()
+{
+  mt_gotoXY(68, 5);
+  mt_setfgcolor(INSTREGCOLORFG);
+  writeInt(1, instructionRegisterCount, SCANPRINTRADIX, 4);
+  mt_setfgcolor(clr_default);
+}
+/*---------------------------------------------------------------------------*/
+void printKeys(int x, int y)
+{
+  mt_setfgcolor(KEYCOLORFG);
+  mt_gotoXY(x, y);
+  writeChar(1, "l  - load");
+  mt_gotoXY(x, y + 1);
+  writeChar(1, "s  - save");
+  mt_gotoXY(x, y + 2);
+  writeChar(1, "r  - run");
+  mt_gotoXY(x, y + 3);
+  writeChar(1, "t  - step");
+  mt_gotoXY(x, y + 4);
+  writeChar(1, "i  - reset");
+  mt_gotoXY(x, y + 5);
+  writeChar(1, "F5 - accumulator");
+  mt_gotoXY(x, y + 6);
+  writeChar(1, "F6 - instructionCounter");
+  mt_gotoXY(x, y + 7);
+  writeChar(1, "q  - quit");
+  mt_setfgcolor(clr_default);
+}
+/*---------------------------------------------------------------------------*/
+void printLabels()
+{
+  mt_setfgcolor(KEYCOLORFG);
+  mt_gotoXY(30, 1);
+  writeChar(1, " Memory ");
+  mt_gotoXY(64, 1);
+  writeChar(1, " accumulator ");
+  mt_gotoXY(65, 4);
+  writeChar(1, " instCounter ");
+  mt_gotoXY(65, 7);
+  writeChar(1, " Operation ");
+  mt_gotoXY(67, 10);
+  writeChar(1, " Flags ");
+  mt_gotoXY(48, 13);
+  writeChar(1, " Keys: ");
+  mt_gotoXY(2, 22);
+  writeChar(1, " Input/Output ");
+  mt_setfgcolor(clr_default);
+}
+/*---------------------------------------------------------------------------*/
+void printOperation(int position)
+{
+  int mem       = 0;
+  int command   = 0;
+  int operand   = 0;
+  int isCommand = (mem >> 14) & 1;
+  char c        = '+';
+
+  if ((position >= sizeRAM) & (position <= 0)) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return;
+  }
+  sc_memoryGet(position, &mem);
+
+
+  mt_gotoXY(68, 8);
+  if ((position >= 0) & (position < sizeRAM)) {
+    if (isCommand == 0) {
+      sc_commandDecode(mem, &command, &operand);
+      writeChar(1, "        ");
+      mt_gotoXY(68, 8);
+      mt_setfgcolor(COMMANDCOLORFG);
+      write(1, &c, 1);
+      writeInt(1, command, 16, 2);
+      writeChar(1, " : ");
+      mt_setfgcolor(OPERANDCOLORFG);
+      writeInt(1, operand, 16, 2);
+      mt_setfgcolor(clr_default);
+    } else {
+      mt_setfgcolor(COMMANDCOLORFG);
+      writeChar(1, "        ");
+      mt_gotoXY(68, 8);
+      writeInt(1, mem & 0x3FFF, 16, 4);
+      mt_setfgcolor(clr_default);
+    }
+  }
+}
+/*---------------------------------------------------------------------------*/
+void printFlags(int x, int y)
+{
+  int reg = 0;
+
+  mt_gotoXY(x, y);
+
+  sc_regGet(FLAG_OVERFLOW, &reg);
+  if (reg == 1) {
+    mt_setfgcolor(REGCOLORFG);
+    writeChar(1, "O");
+    mt_setfgcolor(clr_default);
+  } else {
+    writeChar(1, " ");
+  }
+
+  writeChar(1, " ");
+  sc_regGet(FLAG_COMMAND, &reg);
+  if (reg == 1) {
+    mt_setfgcolor(REGCOLORFG);
+    writeChar(1, "E");
+    mt_setfgcolor(clr_default);
+  } else {
+    writeChar(1, " ");
+  }
+
+  writeChar(1, " ");
+  sc_regGet(FLAG_INTERRUPT, &reg);
+  if (reg == 1) {
+    mt_setfgcolor(REGCOLORFG);
+    writeChar(1, "T");
+    mt_setfgcolor(clr_default);
+  } else {
+    writeChar(1, " ");
+  }
+
+  writeChar(1, " ");
+  sc_regGet(FLAG_OUTMEM, &reg);
+  if (reg == 1) {
+    mt_setfgcolor(REGCOLORFG);
+    writeChar(1, "M");
+    mt_setfgcolor(clr_default);
+  } else {
+    writeChar(1, " ");
+  }
+
+  writeChar(1, " ");
+  sc_regGet(FLAG_DIVISION, &reg);
+  if (reg == 1) {
+    mt_setfgcolor(REGCOLORFG);
+    writeChar(1, "Z");
+    mt_setfgcolor(clr_default);
+  } else {
+    writeChar(1, " ");
+  }
+}
+/*---------------------------------------------------------------------------*/
+int printMcell(int *bigchars, int pos)
+{
+  int command      = 0;
+  int mem          = 0;
+  int i            = 0;
+  int opcode       = 0;
+  int operand      = 0;
+  char str[10]     = {0};
+  char c           = 0;
+  int indexBigChar = 0;
+
+  mt_setfgcolor(KEYCOLORFG);
+  mt_gotoXY(14,13);
+  writeChar(1," Cell: ");
+  writeInt(1, pos, 16, 2);
+  writeChar(1,"( ");
+  writeInt(1, pos, 10, 2);
+  writeChar(1," ) ");
+  mt_setfgcolor(clr_default);
+
+  if ((pos >= sizeRAM) & (pos < 0)) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return 1;
+  }
+
+  sc_memoryGet(pos, &mem);
+  command = (mem >> 14) & 1;
+  mem &= 0x3FFF;
+
+  if (command == 0) {
+    sc_commandDecode(mem, &opcode, &operand);
+    str[0] = '+';
+    swriteInt(str + 1, opcode, 16, 2);
+    swriteInt(str + 3, operand, 16, 2);
+  } else {
+    str[0] = ' ';
+    swriteInt(str + 1, mem, 16, 4);
+  }
+
+  for (i = 0; i < 5; i++) {
+    mt_gotoXY(2 + 9 * i, 14);
+    indexBigChar = (str[i] == '+') ? 0 : (((str[i] >= '0') && (str[i] <= '9'))
+                                          ? (str[i] - '0' + 1)
+                                          : ((str[i] >= 'A') &&
+                                             (str[i] <= 'F'))
+                                             ? (str[i] - 'A' + 11) : -1);
+    bc_printbigchar(bigchars + (indexBigChar * 2), 2 + i*9, 14, BIGCHARSCOLORFG,
+                      BIGCHARSCOLORBG);
+  }
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+void printMemory(int x, int y, int position)
+{
+  int i       = 0;
+  int j       = 0;
+  int mem     = 0;
+  int command = 0;
+  int opcode  = 0;
+  int operand = 0;
+
+  mt_setfgcolor(KEYCOLORFG);
+  mt_gotoXY(68, 13);
+
+  if (SCANPRINTRADIX == 16) {
+    writeChar(1, " HEX ");
+  } else if (SCANPRINTRADIX == 10) {
+    writeChar(1, " DEC ");
+  }
+
+  mt_setfgcolor(clr_default);
+
+  if ((position >= sizeRAM) & (position < 0)) {
+    sc_regSet(FLAG_OUTMEM, 1);
+    return;
+  }
+
+  for (i = 0; i < 10; i++) {
+    mt_gotoXY(x, y + i);
+    for (j = 0; j < 10; j++) {
+      sc_memoryGet(i + j * 10, &mem);
+      command = (mem >> 14) & 1;
+      mem &= 0x3FFF;
+
+      if ((i + j * 10 ) == position) {
+        mt_setfgcolor(TEXTCOLORFG);
+        mt_setbgcolor(TEXTCOLORBG);
+      }
+
+      if ((i + j * 10 ) == instructionRegisterCount) {
+        mt_setfgcolor(INSTREGCOLORFG);
+      }
+
+      if (command == 0) {
+        sc_commandDecode(mem, &opcode, &operand);
+        writeChar(1, "+");
+        writeInt(1, opcode, 16, 2);
+        writeInt(1, operand, 16, 2);
+      } else if (command == 1) {
+        writeChar(1, " ");
+        writeInt(1, mem, 16, 4);
+      }
+
+      if ((i + j * 10) == position) {
+        mt_setfgcolor(clr_default);
+        mt_setbgcolor(clr_default);
+      }
+      
+      if ((i + j * 10 ) == instructionRegisterCount) {
+        mt_setfgcolor(clr_default);
+      }
+
+      if (j != 9) {
+        writeChar(1, " ");
+      }
+    }
+  }
+  printMcell(bigChars, position);
+}
+----------------handlers.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/cpu.h"
+
+extern int accumulator;
+extern int instructionRegisterCount;
+extern int writeUse;
+
+void timerHand(int sig)
+{
+  int reg;
+  sc_regGet(FLAG_INTERRUPT, &reg);
+  
+  if (reg == 0) {
+    CU();
+    refreshGui(instructionRegisterCount);
+  }
+}
+/*---------------------------------------------------------------------------*/
+void ursignalHand(int sig)
+{
+  sc_memoryInit();
+  sc_regInit();
+  sc_regSet(FLAG_INTERRUPT, 1);
+  accumulator = 0;
+  writeUse = 0;
+  instructionRegisterCount = 0;
+}
+/*---------------------------------------------------------------------------*/
+void ursignalHand2(int sig)
+{
+  sc_regSet(FLAG_INTERRUPT, 1);
+}
+/*---------------------------------------------------------------------------*/
+void windHand(int sig)
+{
+  refreshGuiSt(0);
+}
+/*---------------------------------------------------------------------------*/
+void killHand(int sig)
+{
+  setitimer(TIMER, NULL, NULL);
+  mt_clrscr();
+  rk_mytermrestore();
+  signalsRestore();
+  system("rm -f termsettings");
+  exit(0);
+}
+----------------command.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/cpu.h"
+
+extern int accumulator;
+extern int instructionRegisterCount;
+extern int writeUse;
+extern int writeValue;
+
+int commandHandler(int command, int operand)
+{
+  int tmp    = 0;
+  int tmpMem = 0;
+  int flag   = 0;
+
+  switch (command) {
+/*--------------------------------------------------------------------------1*/
+    case 0x10: /* READ */
+      while (readMcell(operand) != 0);
+    break;
+/*--------------------------------------------------------------------------2*/
+    case 0x11: /* WRITE */
+      writeUse = 1;
+      if (sc_memoryGet(operand, &writeValue) != 0) {
+        return -1;
+      }
+    break;
+/*--------------------------------------------------------------------------3*/
+    case 0x20: /* LOAD */
+      if (sc_memoryGet(operand, &accumulator) != 0) {
+        return -1;
+      }
+      accumulator &= 0x3FFF;
+    break;
+/*--------------------------------------------------------------------------4*/
+    case 0x21: /* STORE */
+      tmp = accumulator | (1 << 14);
+      if (sc_memorySet(operand, tmp) != 0) {
+        return -1;
+      }
+    break;
+/*--------------------------------------------------------------------------5*/
+    case 0x30: /* ADD */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      tmpMem &= 0x3FFF;
+      if (accumulator + tmpMem > 0x7FFF) {
+        sc_regSet(FLAG_OVERFLOW, 1);
+        accumulator += tmpMem;
+        accumulator &= 0x3FFF;
+      } else {
+        accumulator += tmpMem;
+      }
+    break;
+/*--------------------------------------------------------------------------6*/
+    case 0x31: /* SUB */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (((tmpMem >> 14) & 1) == 1) {
+        tmp = tmpMem | (~0x7FFF);
+      } else {
+        tmp = tmpMem;
+      }
+      accumulator -= tmp;
+      if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
+        accumulator &= 0x3FFF;
+      }
+    break;
+/*--------------------------------------------------------------------------7*/
+    case 0x32: /* DIV */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (((tmpMem >> 14) & 1) == 1) {
+        tmpMem = tmpMem & (0x3FFF);
+      } else {
+        tmpMem = tmpMem;
+      }
+      if (tmpMem > 0) {
+        accumulator = accumulator / tmpMem;
+      } else {
+        sc_regSet(FLAG_DIVISION, 1);
+        return -1;
+      }
+    break;
+/*--------------------------------------------------------------------------8*/
+    case 0x33: /* MUL */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      accumulator *= tmpMem;
+    break;
+/*--------------------------------------------------------------------------9*/
+    case 0x40: /* JUMP */
+      instructionRegisterCount = operand - 1;
+    break;
+/*-------------------------------------------------------------------------10*/
+    case 0x41: /* JNEG */
+      if (((accumulator >> 14) & 1) == 1) {
+        instructionRegisterCount = operand - 1;
+      }
+    break;
+/*-------------------------------------------------------------------------11*/
+    case 0x42: /* JZ */
+      if (accumulator == 0) {
+        instructionRegisterCount = operand - 1;
+      }
+    break;
+/*-------------------------------------------------------------------------12*/
+    case 0x43: /* HALT */
+      //flagHalt = 1;
+      sc_regSet(FLAG_INTERRUPT, 1);
+      instructionRegisterCount--;
+      refreshGui(instructionRegisterCount);
+    break;
+/*-------------------------------------------------------------------------13*/
+    case 0x51:  /* NOT */
+      accumulator = ~accumulator;
+      if (sc_memorySet(operand, accumulator) != 0) {
+        return -1;
+      }
+    break;
+/*-------------------------------------------------------------------------14*/
+    case 0x52:  /* AND */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      tmp = tmpMem;
+      if (tmp > 0x7FFF) {
+        tmp = tmp & 0x7FFF;
+      }
+      accumulator = accumulator & tmp;
+    break;
+/*-------------------------------------------------------------------------15*/
+    case 0x53:  /* OR */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      tmp = tmpMem;
+      if (tmp > 0x7FFF) {
+        tmp = tmp & 0x7FFF;
+      }
+      accumulator = accumulator | tmp;
+    break;
+/*-------------------------------------------------------------------------16*/
+    case 0x54:  /* XOR */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      tmp = tmpMem;
+      if (tmp > 0x7FFF) {
+        tmp = tmp & 0x7FFF;
+      }
+      accumulator = accumulator ^ tmp;
+    break;
+/*-------------------------------------------------------------------------17*/
+    case 0x55:  /* JNS */
+      if (accumulator > 0)
+        instructionRegisterCount = operand - 1;
+    break;
+/*-------------------------------------------------------------------------18*/
+    case 0x56:  /* JC */
+      sc_regGet(FLAG_OVERFLOW, &flag);
+      if (flag == 1) {
+        instructionRegisterCount = operand - 1;
+      }
+    break;
+/*-------------------------------------------------------------------------19*/
+    case 0x57:  /* JNC */
+      sc_regGet(FLAG_OVERFLOW, &flag);
+      if (flag == 0) {
+        instructionRegisterCount = operand - 1;
+      }
+    break;
+/*-------------------------------------------------------------------------20*/
+    case 0x58:  /* JP */
+      sc_regGet(FLAG_ODD, &flag);
+      if (flag == 0) {
+        instructionRegisterCount = operand - 1;
+      }
+    break;
+/*-------------------------------------------------------------------------21*/
+    case 0x59: /* JNP */
+      sc_regGet(FLAG_ODD, &flag);
+      if (flag == 1) {
+        instructionRegisterCount = operand - 1;
+      }
+    break;
+/*-------------------------------------------------------------------------22*/
+    case 0x60:  /* CHL */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) {
+        tmpMem = tmpMem << 1;
+        tmpMem &= 0x7FFF;
+      }
+      accumulator = tmpMem;
+    break;
+/*-------------------------------------------------------------------------23*/
+    case 0x61:  /* SHR */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      tmp = 0;
+      if (tmpMem) {
+        tmp = (tmpMem >> 14) & 1;
+        tmpMem &= 0x3FFF;
+        tmpMem = tmpMem >> 1;
+      }
+      accumulator = tmpMem | (tmp << 14);
+    break;
+/*-------------------------------------------------------------------------24*/
+    case 0x62:  /* RCL */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) {
+        tmp = (tmpMem >> 14) & 1;
+        tmpMem = tmpMem << 1 | ((tmpMem >> 13) & 1);
+        tmpMem = tmpMem | (tmp << 14);
+        tmpMem &= 0x7FFF;
+      }
+      accumulator = tmpMem;
+    break;
+/*-------------------------------------------------------------------------25*/
+    case 0x63:  /* RCR */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) {
+        tmp = tmpMem & 1;
+        tmpMem = tmpMem >> 1 | ((tmpMem & 1) << 13);
+        tmpMem = tmpMem | (tmp << 14);
+        tmpMem &= 0x7FFF;
+      }
+      accumulator = tmpMem;
+    break;
+/*-------------------------------------------------------------------------26*/
+    case 0x64:  /* NEG */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) {
+        tmpMem = (~tmpMem + 1);
+        tmpMem &= 0x7FFF;
+      }
+      accumulator = tmpMem;
+    break;
+/*-------------------------------------------------------------------------27*/
+    case 0x65:  /* ADDC */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      tmp = tmpMem;
+
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (tmp + tmpMem > 0x7FFF) {
+        sc_regSet(FLAG_OVERFLOW, 1);
+      } else {
+        accumulator = tmp + tmpMem;
+      }
+    break;
+/*-------------------------------------------------------------------------28*/
+    case 0x66:  /* SUBC */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      tmp = tmpMem;
+
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (((tmpMem >> 14) & 1) == 1) {
+        tmpMem = tmpMem | (~0x7FFF);
+      } else {
+        tmpMem = tmpMem;
+      }
+      accumulator = tmp - tmpMem;
+      if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
+        accumulator &= 0x7FFF;
+      }
+    break;
+/*-------------------------------------------------------------------------29*/
+    case 0x67:  /* LOGLC */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (tmpMem) {
+        tmp = (accumulator >> 14) & 1;
+        tmpMem &= 0x3FFF;
+        accumulator = (tmpMem << accumulator) | (tmp << 14);
+      } else {
+        accumulator = tmpMem;
+      }
+    break;
+/*-------------------------------------------------------------------------30*/
+    case 0x68:  /* LOGRC */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (tmpMem) {
+        tmp = (accumulator >> 14) & 1;
+        tmpMem &= 0x3FFF;
+        accumulator = tmpMem >> accumulator | (tmp << 14);
+      } else {
+        accumulator = tmpMem;
+      }
+    break;
+/*-------------------------------------------------------------------------31*/
+    case 0x69:  /* RCCL */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) {
+
+        if (sc_memoryGet(accumulator, &tmp) != 0) {
+          return -1;
+        }
+
+        int i = 0;
+        for (i = 0; i < tmp; i ++) {
+          tmpMem = (tmpMem << 1) & ((tmpMem >> 14) & 1);
+        }
+        accumulator = tmpMem;
+        accumulator &= 0x7FFF;
+      } else {
+        accumulator = tmpMem;
+        accumulator &= 0x7FFF;
+      }
+    break;
+/*-------------------------------------------------------------------------32*/
+    case 0x70:  /* RCCR */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmpMem) {
+        if (sc_memoryGet(accumulator, &tmp) != 0) {
+        return -1;
+        }
+
+        int i = 0;
+        for (i = 0; i < tmp; i ++) {
+          tmpMem = (tmpMem >> 1) & ((tmpMem & 1) << 14);
+        }
+
+        accumulator = tmpMem;
+        accumulator &= 0x3FFF;
+      } else {
+        accumulator = tmpMem;
+        accumulator &= 0x3FFF;
+      }
+    break;
+/*-------------------------------------------------------------------------33*/
+    case 0x71:  /* MOVA */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      if (accumulator == operand) {
+        return -1;
+      }
+
+      if (sc_memorySet(accumulator, tmpMem) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(operand, 0) != 0) {
+        return -1;
+      }
+    break;
+/*-------------------------------------------------------------------------34*/
+    case 0x72:  /* MOVR */
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+      if (accumulator == operand) {
+        return -1;
+      }
+      if (sc_memorySet(operand, tmpMem) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(accumulator, 0) != 0) {
+        return -1;
+      }
+    break;
+/*-------------------------------------------------------------------------35*/
+    case 0x73:  /* MOVCA */
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+      tmpMem &= 0x3FFF;
+      if (tmpMem == operand) {
+        return -1;
+      }
+      if (sc_memoryGet(operand, &tmp) != 0) {
+        return -1;
+      }
+
+      if (sc_memorySet(tmpMem, tmp) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(operand, 0) != 0) {
+        return -1;
+      }
+    break;
+/*-------------------------------------------------------------------------36*/
+    case 0x74:  /* MOVCR */
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+      tmpMem &= 0x3FFF;
+      if (tmpMem == operand) {
+        return -1;
+      }
+
+      if (sc_memoryGet(tmpMem, &tmp) != 0) {
+        return -1;
+      }
+
+      if (sc_memorySet(operand, tmp) != 0) {
+        return -1;
+      }
+      if (sc_memorySet(tmpMem, 0) != 0) {
+        return -1;
+      }
+    break;
+/*-------------------------------------------------------------------------37*/
+    case 0x75:  /* ADDC */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      tmpMem &= 0x3FFF;
+
+      tmp = tmpMem;
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+      if (tmp + tmpMem > 0x7FFF) {
+        sc_regSet(FLAG_OVERFLOW, 1);
+      } else {
+        accumulator = tmp + tmpMem;
+      }
+    break;
+/*-------------------------------------------------------------------------38*/
+    case 0x76:  /* SUBC */
+      if (sc_memoryGet(operand, &tmpMem) != 0) {
+        return -1;
+      }
+      tmpMem &= 0x3FFF;
+
+      tmp = tmpMem;
+
+      if (sc_memoryGet(accumulator, &tmpMem) != 0) {
+        return -1;
+      }
+
+      if (((tmpMem >> 14) & 1) == 1) {
+        tmpMem = tmpMem | (~0x7FFF);
+      } else {
+        tmpMem = tmpMem;
+      }
+      accumulator = tmp - tmpMem;
+      if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
+        accumulator &= 0x7FFF;
+      }
+    break;
+  }
+  return 0;
+}
+----------------change.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/cpu.h"
+
+extern int accumulator;
+extern int instructionRegisterCount;
+extern int SCANPRINTRADIX;
+
+static struct sigaction act[10];
+static struct sigaction old[10];
+static sigset_t set;
+
+static struct sigaction newalarm;
+static struct sigaction oldalarm;
+static sigset_t setalrm;
+
+static struct termios originalTerm;
+
+static int echoIgn = 0;
+static int alarmIgn = 0;
+
+extern int readUse;
+
+void setSignals()
+{
+  int i;
+  for (i = 0; i < 9; i++) {
+    memset(&(act[i]), 0, sizeof(act[i]));
+    memset(&(old[i]), 0, sizeof(old[i]));
+  }
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGALRM);
+  act[0].sa_handler = timerHand;
+  act[0].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGVTALRM);
+  act[1].sa_handler = timerHand;
+  act[1].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  act[2].sa_handler = ursignalHand;
+  act[2].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGUSR2);
+  act[3].sa_handler = ursignalHand2;
+  act[3].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGWINCH);
+  act[4].sa_handler = windHand;
+  act[4].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGTERM);
+  act[5].sa_handler = killHand;
+  act[5].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGINT);
+  act[6].sa_handler = killHand;
+  act[6].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGTSTP);
+  act[7].sa_handler = ursignalHand2;
+  act[7].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGQUIT);
+  act[8].sa_handler = killHand;
+  act[8].sa_mask = set;
+
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGSEGV);
+  act[9].sa_handler = SIG_DFL;
+  act[9].sa_mask = set;
+
+  sigaction(SIGALRM, &(act[0]), &(old[0]));
+  sigaction(SIGVTALRM, &(act[1]), &(old[1]));
+  sigaction(SIGUSR1, &(act[2]), &(old[2]));
+  sigaction(SIGUSR2, &(act[3]), &(old[3]));
+  sigaction(SIGWINCH, &(act[4]), &(old[4]));
+  sigaction(SIGTERM, &(act[5]), &(old[5]));  /*kill (default)*/
+  sigaction(SIGINT, &(act[6]), &(old[6]));   /*Ctrl-C*/
+  sigaction(SIGTSTP, &(act[7]), &(old[7]));  /*Ctrl-Z*/
+  sigaction(SIGQUIT, &(act[8]), &(old[8]));  /*Ctrl-\*/
+  sigaction(SIGSEGV, &(act[9]), &(old[9]));
+
+}
+/*---------------------------------------------------------------------------*/
+void signalsRestore()
+{
+  sigemptyset(&set);
+  sigaction(SIGALRM, &(old[0]), 0);
+  sigaction(SIGVTALRM, &(old[1]), 0);
+  sigaction(SIGUSR1, &(old[2]), 0);
+  sigaction(SIGUSR2, &(old[3]), 0);
+  sigaction(SIGWINCH, &(old[4]), 0);
+  sigaction(SIGTERM, &(old[5]), 0);
+  sigaction(SIGINT, &(old[6]), 0);
+  sigaction(SIGTSTP, &(old[7]), 0);
+  sigaction(SIGQUIT, &(old[8]), 0);
+  sigaction(SIGSEGV, &(old[9]), 0);
+}
+/*---------------------------------------------------------------------------*/
+void setIgnoreAlarm()
+{
+  if (alarmIgn == 0) {
+    sigemptyset(&setalrm);
+    sigaddset(&setalrm, SIGUSR1);
+    sigaddset(&setalrm, SIGALRM);
+    newalarm.sa_handler = SIG_IGN;
+    newalarm.sa_mask = setalrm;
+    sigaction(SIGALRM, &(newalarm), &(oldalarm));
+    alarmIgn = 1;
+ } else {
+   return;
+ }
+}
+/*---------------------------------------------------------------------------*/
+void restoreIgnoreAlarm()
+{
+  if (alarmIgn == 1) {
+    sigaction(SIGALRM, &(oldalarm), 0);
+    alarmIgn = 0;
+  } else {
+    return;
+  }
+}
+/*---------------------------------------------------------------------------*/
+void setEchoRegime()
+{
+  if (echoIgn == 0) {
+    while (tcgetattr(STDIN_FILENO, &originalTerm) != 0);
+    rk_mytermregime(0, 0, 1, 1, 1);
+    echoIgn = 1;
+  } else {
+   return;
+  }
+}
+/*---------------------------------------------------------------------------*/
+void restoreEchoRegime()
+{
+  if (echoIgn == 1) {
+    while (tcsetattr(STDIN_FILENO, TCSANOW, &originalTerm) != 0);
+    echoIgn = 0;
+  } else {
+    return;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int changeCell(int pos)
+{
+  setIgnoreAlarm();
+  setEchoRegime();
+  int plusFlag = 0;
+  int num      = 0;
+  int command  = 0;
+  int operand  = 0;
+  int mem      = 0;
+
+  if (readUse == 0) {
+    refreshGui(pos);
+    mt_gotoXY(1, 23);
+    printLine(2);
+    mt_gotoXY(1, 23);
+    writeChar(1, "Enter num: ");
+  }
+
+  if (scanNum(&plusFlag, &num) != 0) {
+    writeChar(2, "Not a number!");
+
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  if ((num >= 0) & (num < 0x8000)) {
+    if (plusFlag) {
+      command = (num >> 8) & 0x7F;
+      if (num & 0x80) {
+        writeChar(2, "Operand is 7 bit wide ( <= 7F). ");
+
+        restoreEchoRegime();
+        restoreIgnoreAlarm();
+        return -1;
+      }
+      operand = num & 0x7F;
+
+      if (sc_commandEncode(command, operand, &mem) != 0) {
+        writeChar(2, "Wrong command. Aborted. ");
+
+        restoreEchoRegime();
+        restoreIgnoreAlarm();
+        return -1;
+      }
+    } else {
+      mem = num | 0x4000;
+    }
+
+    if(sc_memorySet(pos, mem) != 0) {
+      restoreEchoRegime();
+      restoreIgnoreAlarm();
+      return -1;
+    }
+  } else {
+    writeChar(2, "Memory cell is 15 bit wide");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int changeAccumulator(int pos)
+{
+  int plusFlag = 0;
+  int num      = 0;
+
+  setIgnoreAlarm();
+  setEchoRegime();
+  refreshGui(pos);
+  mt_gotoXY(1, 23);
+  printLine(2);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "Change Accum (");
+  writeInt(1, SCANPRINTRADIX, 10, -1);
+  writeChar(1, "): ");
+
+  if (scanNum(&plusFlag, &num) != 0) {
+    writeChar(2, "Not a number!");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  if ((num >= 0) & (num < 0x8000)) {
+    accumulator = num;
+  } else {
+    writeChar(2, "Accumutalor is 15 bit wide");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int changeInstRegisterCount(int pos)
+{
+  int plusFlag = 0;
+  int num      = 0;
+
+  setIgnoreAlarm();
+  setEchoRegime();
+  refreshGui(pos);
+  mt_gotoXY(1, 23);
+  printLine(2);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "Change Register (");
+  writeInt(1, SCANPRINTRADIX, 10, -1);
+  writeChar(1, "): ");
+
+  if (scanNum(&plusFlag, &num) != 0) {
+    writeChar(2, "Not a number!");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  if ((num >= 0) & (num < sizeRAM)) {
+    instructionRegisterCount = num;
+  } else {
+    writeChar(2, "Instruction range: from 0 to 99 (0x63)");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int scanNum(int *plusFlag, int *n)
+{
+  char buffer[SIZE_BUFFER] = {0};
+  int pos                  = 0;
+  int i                    = 0;
+
+  setIgnoreAlarm();
+  setEchoRegime();
+
+  do {
+    read(0, &buffer[i++], 1);
+  } while (buffer[i - 1] != '\n');
+  buffer[i - 1] = '\0';
+
+  if (buffer[0] == '+') {
+    pos = 1;
+    *plusFlag = 1;
+  } else {
+     pos = 0;
+    *plusFlag = 0;
+  }
+
+  if (sreadInt(buffer + pos, n, SCANPRINTRADIX) != 1) {
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int memorySave(int position)
+{
+  char filename[SIZE_BUFFER] = {0};
+  int i                      = 0;
+
+  setIgnoreAlarm();
+  setEchoRegime();
+  refreshGui(position);
+  mt_gotoXY(1, 23);
+  printLine(2);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "Enter save file name: ");
+
+  do {
+    read(0, &filename[i++], 1);
+  } while (filename[i - 1] != '\n');
+  filename[i - 1] = '\0';
+
+  if (sc_memorySave(filename) == 0) {
+    refreshGui(position);
+    writeChar(1,"File successfully saved\n");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return 0;
+  } else {
+    writeChar(1,"Cannot save file: ");
+    writeChar(1, filename);
+    writeChar(1,"\n");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int memoryLoad(int position)
+{
+  char filename[SIZE_BUFFER] = {0};
+  int i                      = 0;
+  int err                    = 0;
+  setIgnoreAlarm();
+  setEchoRegime();
+  refreshGui(position);
+  mt_gotoXY(1, 23);
+  printLine(2);
+
+  mt_gotoXY(1, 23);
+  writeChar(1, "Enter load file name: ");
+
+  do {
+    read(0, &filename[i++], 1);
+  } while (filename[i - 1] != '\n');
+  filename[i - 1] = '\0';
+
+  char* ptr1 = strrchr(filename, '.');
+
+  if (ptr1 != NULL) {
+    if (strcmp(ptr1, ".sa") == 0) {
+      char* ptr = NULL;
+      int size = strlen(filename);
+      ptr = malloc(sizeof(char) * size);
+
+      for (i = 0; i < size; i++) {
+        ptr[i] = filename[i];
+      }
+      ptr1[1] = 'o';
+      ptr1[2] = '\0';
+
+      char* args[3];
+      args[0] = NULL;
+      args[1] = filename;
+      args[2] = ptr;
+      if (asmTrans(3, args) == 1) {
+        err = 1;  /* 0, file.o file.sa */
+      }
+      free(ptr);
+    } else if (strcmp(ptr1, ".sb") == 0) {
+      char src[SIZE_BUFFER];
+      char dest[SIZE_BUFFER];
+      strcpy(src, filename); /* file.sb */
+      strcpy(dest, filename);
+      char* ptr = strchr(dest, '.');
+      ptr[1] = 's';
+      ptr[2] = 'a';
+      ptr[3] = '\0';
+      char *argp[3] = {NULL, dest, src};
+      if (basicTrans(3, argp) == 1) { /* 0, file.sa file.sb */
+        err = 1;
+      } else {
+        ptr = strchr(src, '.');
+        ptr[1] = 's';
+        ptr[2] = 'a';
+        ptr[3] = '\0';
+        ptr = strchr(dest, '.');
+        ptr[1] = 'o';
+        ptr[2] = '\0';
+        argp[1] = dest;
+        argp[2] = src;
+        if (asmTrans(3, argp) == 1) {
+          err = 1;  /* 0, file.o file.sa */
+        } else {
+          ptr = strchr(filename, '.');
+          ptr[1] = 'o';
+          ptr[2] = '\0';
+        }
+      }
+    }
+  }
+
+  if (!err) {
+    if (sc_memoryLoad(filename) == 0) {
+      refreshGui(position);
+      writeChar(1, "File successfully loaded\n");
+      restoreEchoRegime();
+      restoreIgnoreAlarm();
+      return 0;
+    } else {
+      writeChar(1,"Cannot load file: ");
+      writeChar(1, filename);
+      writeChar(1,"\n");
+      restoreEchoRegime();
+      restoreIgnoreAlarm();
+      return -1;
+    }
+  } else if (err) {
+    writeChar(1,"Cannot load file: ");
+    writeChar(1, filename);
+    writeChar(1,"\n");
+    restoreEchoRegime();
+    restoreIgnoreAlarm();
+    return -1;
+  }
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return 0;
+}
+----------------read.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/cpu.h"
+
+extern int instructionRegisterCount;
+extern int readUse;
+
+int readMcell(int pos)
+{
+  int plusFlag = 0;
+  int num      = 0;
+  int ret      = 0;
+  int command  = 0;
+  int operand  = 0;
+  int mem      = 0;
+
+  setIgnoreAlarm();
+  setEchoRegime();
+  refreshGui(instructionRegisterCount);
+  mt_gotoXY(1, 23);
+  writeChar(1,"READ: ");
+  mt_gotoXY(1, 24);
+
+  readUse = 1;
+  ret = changeCell(pos);
+  readUse = 0;
+
+  restoreEchoRegime();
+  restoreIgnoreAlarm();
+  return ret;
+}
+----------------cpu.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef CPU_H
+#define CPU_H
+
+#include "./../../simpleComputer/include/sc_register.h"
+#include "./../../simpleComputer/include/sc_command.h"
+#include "./../../simpleComputer/include/sc_memory.h"
+#include "./../../bc/include/bc.h"
+#include "./../../consoleSC/include/term.h"
+#include "./../../readKey/include/readkey.h"
+#include "./../../print/include/write.h"
+#include "./../../scan/include/readInt.h"
+#include "./../../hardDrive/include/hardDrive.h"
+#include "./../../asm/include/asm.h"
+#include "./../../basic/include/basic.h"
+
+#include <signal.h>
+#include <fcntl.h>
+#include <time.h>
+#include <unistd.h>
+#include <sys/time.h>
+
+/* CPU */
+
+#define TIMER ITIMER_REAL
+
+#define REFRESH 500
+
+#define BIGCHARSCOLORFG clr_cyan
+#define BIGCHARSCOLORBG clr_default
+
+#define TEXTCOLORFG     clr_black
+#define TEXTCOLORBG     clr_green
+
+#define FLAGCOLORFG     clr_green
+
+#define KEYCOLORFG      clr_red
+
+#define INSTREGCOLORFG  clr_yellow
+
+#define REGCOLORFG      clr_blue
+
+#define COMMANDCOLORFG  clr_purple
+#define OPERANDCOLORFG  clr_light_blue
+
+#define ACCUMCOLORFG    clr_default
+
+#define MKR(X)  (X * 1000000)
+#define TIMESLEEPUSEC 0.5
+#define TIMESLEEPSEC 1
+
+void CU();
+int ALU(int command, int operand);
+
+void refreshGuiSt(int position);
+void refreshGui(int position);
+void printBoxes();
+void printCounter();
+void printAccum();
+void printKeys(int x, int y);
+void printLabels();
+void printOperation(int position);
+void printFlags(int x, int y);
+int printMcell(int *bigchars, int pos);
+void printLine(int ctr);
+void printMemory(int x, int y, int position);
+
+void setSignals();
+void signalsRestore();
+void setIgnoreAlarm();
+void restoreIgnoreAlarm();
+void setEchoRegime();
+void restoreEchoRegime();
+int changeAccumulator(int pos);
+int changeInstRegisterCount(int pos);
+int changeCell(int pos);
+int scanNum(int *plusFlag, int *n);
+
+int memorySave(int position);
+int memoryLoad(int position);
+
+static void printWriteValue();
+
+int commandHandler(int command, int operand);
+
+int readMcell(int pos);
+
+void timerHand(int sig);
+void ursignalHand(int sig);
+void ursignalHand2(int sig);
+void windHand(int sig);
+void killHand(int sig);
+
+#endif
+--------libAsm.a--------
+----------------asm.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/asm.h"
+
+int asmTrans(int argc, char** argv)
+{
+  if (testArgv(argv) == 1) {
+    return 1;
+  }
+  int input                = 0;
+  int output               = 0;
+  char buffer[SIZE_BUFFER] = {0};
+  int ram[sizeRAM]         = {0};
+  int counterTokens        = 0;
+  int flagign              = 0;
+  int i                    = 0;
+  int addres               = 5;
+  int value                = 0;
+  int ret                  = 0;
+
+
+  if ((input = open(argv[2], O_RDONLY)) == -1) {
+    return 1;
+  }
+
+  if ((output = open(argv[1], O_WRONLY)) == -1) {
+    return 1;
+  }
+
+  for (i = 0; i < sizeRAM; i++) {
+    ram[i] = 0;
+  }
+
+  i = 0;
+  do {
+    read(input, &buffer[i], sizeof(char));
+    if (buffer[i] == TOKENSYMB) {
+      if (buffer[i - 1] == TOKENSYMB) {
+        continue;
+      }
+    }
+    if (buffer[i] == ' ') {
+      if (buffer[i - 1] == ' ') {
+        continue;
+      }
+    }
+    if (buffer[i] == EOF & flagign == 0) {
+      if (counterTokens == 2) {
+        buffer[i] = '\0';
+        ret = parsingLine(buffer, &addres, &value);
+        if (!ret) {
+          ram[addres] = value;
+        }
+      }
+      break;
+    }
+    if (buffer[i] == '\n' & flagign == 1) {
+      flagign = 0;
+      i = 0;
+      counterTokens = 0;
+      continue;
+    }
+    if (flagign == 0) {
+      if (buffer[i] == TOKENSYMB & counterTokens < 2) {
+        counterTokens++;
+        if (counterTokens == 2) {
+          i++;
+        }
+      }
+      if (counterTokens == 2 & (buffer[i] == ';' | buffer[i] == '\n'
+          | buffer[i] == ' ' | buffer[i] == TOKENSYMB)) {
+        if (buffer[i] == ';' | buffer[i] == ' ' | buffer[i] == TOKENSYMB) {
+          flagign = 1;
+        }
+        buffer[i] = '\0';
+        ret = parsingLine(buffer, &addres, &value);
+        if (ret == 0 | ret == 2) {
+          ram[addres] = value;
+          if (ret == 2){
+            break;
+          }
+        }
+        counterTokens = 0;
+        i = 0;
+      }
+
+      i++;
+    }
+  } while (1);
+
+  write(output, ram, sizeof(*ram) * sizeRAM);
+
+  close(input);
+  close(output);
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int testArgv(char *argv[])
+{
+  char *ptr1 = NULL;
+  char *ptr2 = NULL;
+
+  ptr1 = strrchr(argv[1], '.');
+  ptr2 = strrchr(argv[2], '.');
+  if ((!(strcmp(ptr1, ".o") == 0)) | (!(strcmp(ptr2, ".sa") == 0))) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int asmCommand(char *str)
+{
+  int ret = 0;
+  if (strcmp(str, "READ") == 0) {
+    ret = 0x10;
+  } else if (strcmp(str, "WRITE") == 0) {
+    ret = 0x11;
+  } else if (strcmp(str, "LOAD") == 0) {
+    ret = 0x20;
+  } else if (strcmp(str, "STORE") == 0) {
+    ret = 0x21;
+  } else if (strcmp(str, "ADD") == 0) {
+    ret = 0x30;
+  } else if (strcmp(str, "SUB") == 0) {
+    ret = 0x31;
+  } else if (strcmp(str, "DIVIDE") == 0) {
+    ret = 0x32;
+  } else if (strcmp(str, "MUL") == 0) {
+    ret = 0x33;
+  } else if (strcmp(str, "JUMP") == 0) {
+    ret = 0x40;
+  } else if (strcmp(str, "JNEG") == 0) {
+    ret = 0x41;
+  } else if (strcmp(str, "JZ") == 0) {
+    ret = 0x42;
+  } else if (strcmp(str, "HALT") == 0) {
+    ret = 0x43;
+  } else if (strcmp(str, "NOT") == 0) {
+    ret = 0x51;
+  } else if (strcmp(str, "ADD") == 0) {
+    ret = 0x52;
+  } else if (strcmp(str, "OR") == 0) {
+    ret = 0x53;
+  } else if (strcmp(str, "XOR") == 0) {
+    ret = 0x54;
+  } else if (strcmp(str, "JNS") == 0) {
+    ret = 0x55;
+  } else if (strcmp(str, "JC") == 0) {
+    ret = 0x56;
+  } else if (strcmp(str, "JNC") == 0) {
+    ret = 0x57;
+  } else if (strcmp(str, "JP") == 0) {
+    ret = 0x58;
+  } else if (strcmp(str, "JNP") == 0) {
+    ret = 0x59;
+  } else if (strcmp(str, "CHL") == 0) {
+    ret = 0x60;
+  } else if (strcmp(str, "SHR") == 0) {
+    ret = 0x61;
+  } else if (strcmp(str, "RCL") == 0) {
+    ret = 0x62;
+  } else if (strcmp(str, "RCR") == 0) {
+    ret = 0x63;
+  } else if (strcmp(str, "NEG") == 0) {
+    ret = 0x64;
+  } else if (strcmp(str, "ADDC") == 0) {
+    ret = 0x65;
+  } else if (strcmp(str, "SUBC") == 0) {
+    ret = 0x66;
+  } else if (strcmp(str, "LOGLC") == 0) {
+    ret = 0x67;
+  } else if (strcmp(str, "LOGRC") == 0) {
+    ret = 0x68;
+  } else if (strcmp(str, "RCCL") == 0) {
+    ret = 0x69;
+  } else if (strcmp(str, "RCCR") == 0) {
+    ret = 0x70;
+  } else if (strcmp(str, "MOVA") == 0) {
+    ret = 0x71;
+  } else if (strcmp(str, "MOVR") == 0) {
+    ret = 0x72;
+  } else if (strcmp(str, "MOVCA") == 0) {
+    ret = 0x73;
+  } else if (strcmp(str, "MOVCR") == 0) {
+    ret = 0x74;
+  } else if (strcmp(str, "ADDCT") == 0) { /* !!! */
+    ret = 0x75;
+  } else if (strcmp(str, "SUBCT") == 0) { /* !!! */
+    ret = 0x76;
+  } else {
+    ret = -1;
+  }
+  return ret;
+}
+/*---------------------------------------------------------------------------*/
+int strToCommand(char* ptr, int* value)
+{
+  int command  = 0;
+  int operand  = 0;
+  int plusFlag = 0;
+  int position = 0;
+  int tmp      = 0;
+
+  if (*ptr == '+') {
+    position++;
+    plusFlag = 1;
+  }
+  if (sreadInt(ptr + position, &tmp, 16) != 1) {
+    return -1;
+  }
+
+  operand = tmp & 0x7F;
+  command = (tmp >> 8) & 0x7F;
+  sc_commandEncode(command, operand, value);
+  if (!plusFlag) {
+    *value |= 1 << 14;
+  }
+
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int parsingLine(char* str, int* addres, int* value)
+{
+  char* ptr       = str;
+  int command     = 0;
+  int operand     = 0;
+  int flagCommand = 0;
+  int i           = 0;
+  char* tmpPtr    = ptr;
+
+  while (1) {
+    if (tmpPtr[i] == TOKENSYMB) {
+      ptr = tmpPtr + i + 1;
+      tmpPtr[i] = '\0';
+      break;
+    }
+    i++;
+  }
+
+  sreadInt(tmpPtr, addres, 10);
+
+  if (*addres < 0 | *addres > sizeRAM) {
+    return -1;
+  }
+
+  i = 0;
+  tmpPtr = ptr;
+  if (*ptr == '=') {
+    flagCommand = 1;
+  }
+
+  if (flagCommand) {
+    while (1) {
+      if (tmpPtr[i] == TOKENSYMB) {
+        ptr = tmpPtr + i + 1;
+        tmpPtr[i] = '\0';
+        break;
+      }
+      i++;
+    }
+    tmpPtr = ptr + 1;
+
+    if (*tmpPtr == '+') {
+      char tmp = tmpPtr[3];
+
+      tmpPtr[3] = '\0';
+      sreadInt(tmpPtr + 1, &command, 16);
+      tmpPtr[3] = tmp;
+
+      tmpPtr = &tmpPtr[3];
+      tmp = tmpPtr[2];
+      tmpPtr[2] = '\0';
+      sreadInt(tmpPtr, &operand, 16);
+      tmpPtr[2] = tmp;
+
+      sc_commandEncode(command, operand, value);
+      *value &= 0x7FFF;
+    } else {
+      sreadInt(tmpPtr, value, 16);
+      *value |= (1 << 14);
+      *value &= 0x7FFF;
+    }
+
+  } else {
+    while (1) {
+      if (tmpPtr[i] == TOKENSYMB) {
+        ptr = tmpPtr + i + 1;
+        tmpPtr[i] = '\0';
+        break;
+      }
+      i++;
+    }
+    command = asmCommand(tmpPtr);
+
+    if (command == -1) {
+      return -1;
+    }
+    i = 0;
+    tmpPtr = ptr + 1;
+
+    if (sreadInt(tmpPtr, &operand, 10) == -1) {
+      return -1;
+    }
+    sc_commandEncode(command, operand, value);
+  }
+  if (command == 0x43) {
+    return 2;
+  }
+  return 0;
+}
+----------------main.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/asm.h"
+
+int main(int argc, char *argv[])
+{
+  asmTrans(argc, argv);
+  return 0;
+}
+----------------asm.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef ASM_H
+#define ASM_H
+
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+#include "./../../cpu/include/cpu.h"
+
+#define TOKENSYMB ' '
+
+int asmTrans(int argc, char** argv);
+int asmCommand(char *str);
+int parsingLine(char* str, int* addres, int* value);
+int strToCommand(char* ptr,int* value);
+int testArgv(char* argv[]);
+
+#endif
+--------libBasic.a--------
+----------------basic.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/basic.h"
+
+var alfabet[26];
+static int begin       = 0;
+static int end         = 99;
+static int tmp         = -1;
+static int tmp1        = 0;
+static char readc[11]  = "   READ   \n";
+static char writec[12] = "   WRITE   \n";
+static char jmpc[11]   = "   JUMP   \n";
+static char haltc[11]  = "   HALT   \n";
+static char load[11]  = "   LOAD   \n";
+static char store[12] = "   STORE   \n";
+
+int keywordCode(char *str)
+{
+  if (strcmp(str, "REM") == 0) {
+    return KEYW_REM;
+  } else if (strcmp(str, "INPUT") == 0) {
+    return KEYW_INPUT;
+  } else if (strcmp(str, "OUTPUT") == 0) {
+    return KEYW_OUTPUT;
+  } else if (strcmp(str, "GOTO") == 0) {
+    return KEYW_GOTO;
+  } else if (strcmp(str, "IF") == 0) {
+    return KEYW_IF;
+  } else if (strcmp(str, "LET") == 0) {
+    return KEYW_LET;
+  } else if ((strcmp(str, "END") == 0) || (strcmp(str, "END\n") == 0)) {
+    return KEYW_END;
+  } else {
+    return KEYW_E;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int testArgvB(char *argv[])
+{
+  char *ptr1 = NULL;
+  char *ptr2 = NULL;
+
+  ptr1 = strrchr(argv[1], '.');
+  ptr2 = strrchr(argv[2], '.');
+  if ((!(strcmp(ptr1, ".sa") == 0)) | (!(strcmp(ptr2, ".sb") == 0))) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int testFile(char* filename)
+{
+  int fd = open(filename, O_RDONLY);
+  char c = '\0';
+  while(c != EOF)
+  {
+    read(fd, &c, sizeof(c));
+    if (c >= 'a' & c <= 'z') {
+      close(fd);
+      return 1;
+    }
+  }
+  close(fd);
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int basicTrans(int argc, char *argv[])
+{
+  //if (testFile(argv[2])){return 1;}
+  int input                = 0;
+  int output               = 0;
+  char buffer[SIZE_BUFFER] = {0};
+  int i                    = 0;
+  int addres               = 5;
+  int value                = 0;
+  char *ptr                = NULL;
+  int ret                  = 0;
+  int BR                   = 0;
+  tmp                      = -1;
+  tmp1                     = 0;
+  begin                    = 0;
+  end                      = 99;
+
+  if ((input = open(argv[2], O_RDONLY)) == -1) {
+    return 1;
+  }
+
+  if ((output = open(argv[1], O_WRONLY)) == -1) {
+    return 1;
+  }
+
+  for (i = 0; i < 26; i++) {
+    alfabet[i].variable = 0;
+    alfabet[i].name[0] = 'A' + i;
+    alfabet[i].name[1] = '\0';
+  }
+
+  i = 0;
+
+  do {
+    read(input, &buffer[i], sizeof(char));
+    if (buffer[i] == TOKENSYMB) {
+      if (buffer[i - 1] == TOKENSYMB) {
+        continue;
+      }
+    }
+    if (buffer[i] == ' ') {
+      if (buffer[i - 1] == ' ') {
+        continue;
+      }
+    }
+    if (buffer[i] == '\n' | (buffer[i] == EOF) ) {
+      if (buffer[i] == EOF) {
+        BR = 1;
+      }
+      buffer[i] = '\0';
+      ret = parsingLineB(buffer, output);
+      BR = ret;
+      if (BR == 1) break;
+      if (BR == 2) return 1;
+      i = -1;
+    }
+    i++;
+  } while (1);
+
+  close(input);
+  close(output);
+  return 0;
+}
+/*---------------------------------------------------------------------------*/
+int parsingLineB(char* str, int output)
+{
+  char* ptr    = str;
+  int command  = 0;
+  int operand  = 0;
+  int i        = 0;
+  char* tmpPtr = ptr;
+  int ret      = 0;
+  int cmp      = 0;
+
+  while (1) {
+    if (tmpPtr[i] == TOKENSYMB) {
+      ptr = tmpPtr + i + 1;
+      tmpPtr[i] = '\0';
+      break;
+    } else if (tmpPtr[i] == EOF) {
+      return 0;
+    }
+    i++;
+  }
+  if (!(str[0] >= '0' & str[0] <= '9')) {
+    return 0;
+  }
+  if (tmp1 > 0)
+    tmp = tmp1;
+  sreadInt(tmpPtr, &tmp1, 10);
+  if (tmp1 <= tmp) {
+    return 2;
+  }
+
+  i = 0;
+  tmpPtr = ptr;
+  while (1) {
+    if (tmpPtr[i] == TOKENSYMB) {
+      ptr = tmpPtr + i + 1;
+      tmpPtr[i] = '\0';
+      break;
+    }
+    i++;
+  }
+  ret = keywordCode(tmpPtr);
+  tmpPtr = ptr;
+  if (ret == KEYW_REM) {
+    return 0;
+  } else if (ret == KEYW_INPUT) {
+    for (i = 0; i < 26; i++) {
+      if (!strcmp(alfabet[i].name, tmpPtr)) {
+        if (end - 1 < begin) {
+          return 2;
+        }
+        alfabet[i].cell = end--;
+        if (alfabet[i].variable == 0) {
+          alfabet[i].variable = 1;
+        }
+        readc[0] = begin / 10 + '0';
+        readc[1] = begin++ % 10 + '0';
+        readc[8] = alfabet[i].cell / 10 + '0';
+        readc[9] = alfabet[i].cell % 10 + '0';
+        write(output, readc, sizeof(char) * strlen(readc));
+        break;
+      }
+    }
+  } else if (ret == KEYW_OUTPUT) {
+    for (i = 0; i < 26; i++) {
+      if (!strcmp(alfabet[i].name, tmpPtr)) {
+        if (end - 1 < begin) {
+          return 2;
+        }
+
+        if (!(alfabet[i].variable == 1)) {
+          return 2;
+        }
+        writec[0] = begin / 10 + '0';
+        writec[1] = begin++ % 10 + '0';
+        writec[9] = alfabet[i].cell / 10 + '0';
+        writec[10] = alfabet[i].cell % 10 + '0';
+        write(output, writec, sizeof(char) * strlen(writec));
+        break;
+      }
+    }
+  } else if (ret == KEYW_GOTO) {
+    jmpc[0] = begin / 10 + '0';
+    jmpc[1] = begin % 10 + '0';
+    int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
+    cell = cell - tmp1;
+    cell = cell / 10;
+    jmpc[8] = (begin + cell) / 10 + '0';
+    jmpc[9] = (begin + cell) % 10 + '0';
+    ++begin;
+    write(output, jmpc, sizeof(char) * strlen(jmpc));
+  } else if (ret == KEYW_IF) {
+
+  } else if (ret == KEYW_LET) {
+    int j = 0;
+    i = 0;
+    tmpPtr = ptr;
+    while (1) {
+      if (tmpPtr[i] == TOKENSYMB) {
+        ptr = tmpPtr + i + 1;
+        tmpPtr[i] = '\0';
+        break;
+      }
+      i++;
+    }
+    for (i = 0; i < 26; i++) {
+      if (!strcmp(alfabet[i].name, tmpPtr)) {
+        if (end - 1 < begin) {
+          return 2;
+        }
+        alfabet[i].cell = end--;
+        if (alfabet[i].variable == 0) {
+          alfabet[i].variable = 1;
+        }
+
+        tmpPtr = ptr;
+        while (1) {
+          if (tmpPtr[i] == TOKENSYMB) {
+            ptr = tmpPtr + i + 1;
+            tmpPtr[i] = '\0';
+            break;
+          }
+          i++;
+        }
+        if (!(strcmp(tmpPtr,"=") == 0)) {
+          return 2;
+        }
+        tmpPtr = ptr;
+        while (1) {
+          if (tmpPtr[i] == TOKENSYMB) {
+            ptr = tmpPtr + i + 1;
+            tmpPtr[i] = '\0';
+            break;
+          }
+          i++;
+        }
+        for (j = 0; j < 26; j++) {
+          if (!strcmp(alfabet[i].name, tmpPtr)) {
+            if (end - 1 < begin) {
+              return 2;
+            }
+
+            if (!(alfabet[j].variable == 1)) {
+              return 2;
+            }
+
+          }
+        }
+        write(output, readc, sizeof(char) * strlen(readc));
+        break;
+        }
+      }
+  } else if (ret == KEYW_END) {
+    haltc[0] = begin / 10 + '0';
+    haltc[1] = begin++ % 10 + '0';
+    haltc[8] = '0';
+    haltc[9] = '0';
+    write(output, haltc, sizeof(char) * strlen(haltc));
+    return 1;
+  } else if (ret == KEYW_E) {
+    return 0;
+  }
+  return 0;
+}
+----------------main.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/basic.h"
+#include "./../../asm/include/asm.h"
+
+int main(int argc, char** argv)
+{
+  printf("%d %s %s\n", argc, argv[1], argv[2]);
+  char dest[SIZE_BUFFER];
+  char src[SIZE_BUFFER];
+  strcpy(dest, argv[1]);
+  strcpy(src, argv[2]);
+  char* ptr = strchr(dest, '.');
+  ptr[1] = 's';
+  ptr[2] = 'a';
+  ptr[3] = '\0';
+  char *argp[3] = {NULL, dest, src};
+  printf("%d %s %s\n", argc, argp[1], argp[2]);
+  basicTrans(argc, argp);
+  ptr = strchr(src, '.');
+  ptr[1] = 's';
+  ptr[2] = 'a';
+  ptr[3] = '\0';
+  ptr = strchr(dest, '.');
+  ptr[1] = 'o';
+  ptr[2] = '\0';
+  argp[1] = dest;
+  argp[2] = src;
+  printf("%d %s %s\n", argc, dest, src);
+  asmTrans(argc, argp);
+  return 0;
+}
+----------------basic.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef BASIC_H
+#define BASIC_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
+
+#include "./../../cpu/include/cpu.h"
+
+#define TOKENSYMB ' '
+
+enum keywords {
+  KEYW_REM = 1,
+  KEYW_INPUT = 2,
+  KEYW_OUTPUT = 3,
+  KEYW_GOTO = 4,
+  KEYW_IF = 5,
+  KEYW_LET = 6,
+  KEYW_END = 7,
+  KEYW_E = -1
+};
+
+typedef struct varBasic {
+  char name[2];
+  int cell;
+  int variable;
+} var;
+
+int keywordCode(char* str);
+int testArgvB(char* argv[]);
+int testFile(char* filename);
+int parsingLineB(char* str, int output );
+int basicTrans(int argc, char *argv[]);
+
+#endif
+--------libReadInt.a--------
+----------------readInt.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/readInt.h"
+
+int myPow(int a, int b)
+{
+  int tmp = a;
+  if (b == 0) {
+    return 1;
+  } else if (b == 1) {
+    return a;
+  } else {
+    int i = 1;
+
+    for (i = 1; i < b; i++)
+      a = a * tmp;
+    return a;
+  }
+}
+/*---------------------------------------------------------------------------*/
+int sreadInt(char* buffers, int* num, int radix)
+{
+  int size = strlen(buffers) - 1;
+  int i = size;
+  int k = 0;
+  
+  *num = 0;
+  for (i = size; i >= 0; i--) {
+    if ((buffers[i] >= '0') & (buffers[i] <= '9')) {
+      *num += myPow(radix, k++) * (buffers[i] - '0');
+    } else if ((buffers[i] >= 'A') & (buffers[i] <= 'F')) {
+      *num += myPow(radix, k++) * (buffers[i] - 'A' + 10);
+    } else {
+      return -1;
+    }
+  }
+
+  return 1;
+}
+----------------readInt.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef READ_INT_H
+#define READ_INT_H
+
+#include <unistd.h>
+#include <string.h>
+#include "./../../print/include/write.h"
+
+int sreadInt(char* buffers, int* num, int radix);
+int myPow(int a, int b);
+
+#endif
+--------libWrite.a--------
+----------------write.c----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#include "./../include/write.h"
+
+void writeChar(int fd, const char* str)
+{
+  write(fd, str, strlen(str));
+}
+/*---------------------------------------------------------------------------*/
+int writeInt(int std, int num, int radix, int znac)
+{
+  int i                    = 0;
+  char sign                = '-';
+  char buffer[SIZE_BUFFER] = {0};
+  int counter              = SIZE_BUFFER;
+
+  if (num == 0) {
+    if (znac == -1)
+      write(std, "0", 1);
+
+    for (i = 0; i < znac; i++)
+      write(std, "0", 1);
+    return i;
+  }
+
+
+  if (radix == 10) {
+    if (num < 0) {
+      write(std, &sign, 1);
+      num = -num;
+    }
+  }
+
+  while (num) {
+    if (num % radix > 9) {
+      buffer[--counter] = 'A' + num % radix - 10;
+      num /= radix;
+    } else {
+      buffer[--counter] = '0' + (num % radix);
+      num /= radix;
+    }
+  }
+  if (znac > -1) {
+    if ((SIZE_BUFFER - counter) < znac) {
+      znac = znac - SIZE_BUFFER + counter;
+      while (znac) {
+        write(std, "0", 1);
+        znac--;
+      }
+    }
+  }
+  write(std, &buffer[counter], SIZE_BUFFER - counter);
+  return counter;
+}
+/*---------------------------------------------------------------------------*/
+int swriteInt(char* buff, int num, int radix, int znac)
+{
+
+  char sign                = '-';
+  int i                    = 0;
+  int j                    = 0;
+  int k                    = 0;
+  char buffer[SIZE_BUFFER] = {0};
+  int counter              = SIZE_BUFFER;
+
+
+  if (num == 0) {
+    if (znac == -1)
+      buff[i] = '0';
+    for (i = 0; i < znac; i++)
+      buff[i] = '0';
+    return i;
+  }
+
+  if (radix == 10) {
+    if (num < 0) {
+      buff[0] = sign;
+      num = -num;
+    }
+  }
+
+  while (num) {
+    if (num % radix > 9) {
+      buffer[--counter] = 'A' + num % radix - 10;
+      num /= radix;
+    } else {
+      buffer[--counter] = '0' + (num % radix);
+      num /= radix;
+    }
+  }
+  if (znac > -1) {
+    if ((SIZE_BUFFER - counter) < znac) {
+      znac = znac - SIZE_BUFFER + counter;
+      while (znac) {
+        buff[i] = '0';
+        i++;
+        j++;
+        znac--;
+      }
+    }
+  }
+
+  while(i < SIZE_BUFFER - counter + j) {
+    buff[i] = buffer[counter + k++];
+    i++;
+  }
+
+  return counter;
+}
+----------------write.h----------------
+/*
+  Created by JIexa24 (Alexey R.)
+*/
+#ifndef WRITE_INT_H
+#define WRITE_INT_H
+
+#include <unistd.h>
+#include <string.h>
+
+#define SIZE_BUFFER 256
+
+void writeChar(int fd, const char* str);
+int writeInt(int std, int num, int radix, int znac);
+int swriteInt(char* buff, int num, int radix, int znac);
+
+#endif
