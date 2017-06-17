@@ -230,5 +230,16 @@ CTEST(sc_commandDecode, test_sc_commandDecode)
     ret = 1;
   }
 
+  retf = sc_commandDecode(0, &com, &op);
+  if (retf == 2) {
+    if (!(com == 0 && op == 0)) {
+      ret = 1;
+    } else {
+      ret = ret;
+    }
+  } else {
+    ret = 1;
+  }
+
   ASSERT_EQUAL(0, ret);
 }

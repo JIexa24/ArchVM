@@ -52,7 +52,7 @@ int test_sc_memorySet()
   } else {
     ret = ret;
   }
-  
+
   retf = sc_memorySet(-15, 6);
   if (!retf) {
     ret = 1;
@@ -293,6 +293,17 @@ int test_sc_commandDecode()
   retf = sc_commandDecode(0x0810, &com, &op);
   if (!retf) {
     if (!(com == 0x10 && op == 0x10)) {
+      ret = 1;
+    } else {
+      ret = ret;
+    }
+  } else {
+    ret = 1;
+  }
+
+  retf = sc_commandDecode(0, &com, &op);
+  if (retf == 2) {
+    if (!(com == 0 && op == 0)) {
       ret = 1;
     } else {
       ret = ret;
