@@ -46,7 +46,7 @@ int sc_commandDecode(int value, int* command, int* operand)
     return 2;
   }
 
-  if (command != NULL && operand != NULL) {
+  if (command != NULL & operand != NULL) {
     if (attribute == 0) {
       tmpCommand = (value >> 7) & 0x7F;
       tmpOperand = value & 0x7F;
