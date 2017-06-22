@@ -268,7 +268,7 @@ int changeAccumulator(int pos)
     return -1;
   }
 
-  if ((num >= 0) & (num < 0x8000)) {
+  if ((num >= 0) & (num < 0x4000)) {
     accumulator = num;
   } else {
     writeChar(2, "Accumutalor is 15 bit wide");
