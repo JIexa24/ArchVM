@@ -1,5 +1,8 @@
 #!/bin/bash
-echo "--------libSimpleComputer.a--------" > code.txt
+echo "--------Function main--------" > code.txt
+echo "----------------main.c----------------" >> code.txt
+cat ./main/src/main.c >> code.txt
+echo "--------libSimpleComputer.a--------" >> code.txt
 echo "----------------global.c----------------" >> code.txt
 cat ./simpleComputer/src/global.c >> code.txt
 echo "----------------sc_memory.c----------------" >> code.txt
@@ -78,4 +81,3 @@ echo "----------------write.c----------------" >> code.txt
 cat ./print/src/write.c >> code.txt
 echo "----------------write.h----------------" >> code.txt
 cat ./print/include/write.h >> code.txt
-
