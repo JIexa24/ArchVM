@@ -6,7 +6,7 @@
 #include "./../include/mainHeader.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int writeUsed;
 extern int writeValue;
 extern int bigChars[];
@@ -129,10 +129,10 @@ int main(int argc, char** argv)
 
         case KEY_t:
           CU();
-          refreshGui(instructionRegisterCount);
-          position = instructionRegisterCount;
-          cursorX = instructionRegisterCount / 10;
-          cursorY = instructionRegisterCount % 10;
+          refreshGui(instructionPointer);
+          position = instructionPointer;
+          cursorX = instructionPointer / 10;
+          cursorY = instructionPointer % 10;
           key  = KEY_other;
         break;
 
@@ -163,9 +163,9 @@ int main(int argc, char** argv)
       }
     }
     if (key == KEY_c) {
-      position = instructionRegisterCount;
-      cursorX = instructionRegisterCount / 10;
-      cursorY = instructionRegisterCount % 10;
+      position = instructionPointer;
+      cursorX = instructionPointer / 10;
+      cursorY = instructionPointer % 10;
       refreshFlg = 0;
       raise(SIGUSR2);
       key  = KEY_other;
@@ -178,17 +178,17 @@ int main(int argc, char** argv)
       if (regis) {
         sc_regInit();
         setitimer(TIMER, &val, &oval);
-        position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10;
-        cursorY = instructionRegisterCount % 10;
+        position = instructionPointer;
+        cursorX = instructionPointer / 10;
+        cursorY = instructionPointer % 10;
         refreshFlg = 0;
         continue;
       } else {
         setitimer(TIMER, NULL, NULL);
         sc_regSet(FLAG_INTERRUPT, 1);
-        position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10 ;
-        cursorY = instructionRegisterCount % 10;
+        position = instructionPointer;
+        cursorX = instructionPointer / 10 ;
+        cursorY = instructionPointer % 10;
         refreshFlg = 0;
         continue;
 	    }
@@ -1062,7 +1062,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint);
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 
 void CU()
 {
@@ -1070,15 +1070,15 @@ void CU()
   int operand;
   int mem;
 
-  if (instructionRegisterCount >= sizeRAM) {
+  if (instructionPointer >= sizeRAM) {
     sc_regSet(FLAG_OUTMEM, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
-    refreshGui(instructionRegisterCount);
-    instructionRegisterCount = 0;
+    refreshGui(instructionPointer);
+    instructionPointer = 0;
     return;
   }
 
-  sc_memoryGet(instructionRegisterCount, &mem);
+  sc_memoryGet(instructionPointer, &mem);
 
   if (!(sc_commandDecode(mem, &command, &operand)
       == 0)) {
@@ -1103,7 +1103,7 @@ void CU()
     commandHandler(command, operand);
   }
 
-  instructionRegisterCount++;
+  instructionPointer++;
 }
 /*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)
@@ -1140,7 +1140,7 @@ int ALU(int command, int operand)
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int bigChars[];
 extern int writeValue;
 extern int writeUse;
@@ -1191,7 +1191,7 @@ void refreshGuiSt(int position)
   printBoxes();
   printLabels();
   printKeys(48, 14);
-  printCounter();
+  printPointer();
   printAccum();
   printOperation(position);
   printMemory(2, 2, position);
@@ -1207,7 +1207,7 @@ void refreshGui(int position)
     refreshGuiSt(position);
     counterRefresh = 0;
   } else {
-    printCounter();
+    printPointer();
     printAccum();
     printOperation(position);
     printMemory(2, 2, position);
@@ -1242,11 +1242,11 @@ void printBoxes()
   bc_box(47, 13, 79, 22);
 }
 /*---------------------------------------------------------------------------*/
-void printCounter()
+void printPointer()
 {
   mt_gotoXY(68, 5);
   mt_setfgcolor(INSTREGCOLORFG);
-  writeInt(1, instructionRegisterCount, SCANPRINTRADIX, 4);
+  writeInt(1, instructionPointer, SCANPRINTRADIX, 4);
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
@@ -1266,7 +1266,7 @@ void printKeys(int x, int y)
   mt_gotoXY(x, y + 5);
   writeChar(1, "F5 - accumulator");
   mt_gotoXY(x, y + 6);
-  writeChar(1, "F6 - instructionCounter");
+  writeChar(1, "F6 - instructionPointer");
   mt_gotoXY(x, y + 7);
   writeChar(1, "q  - quit");
   mt_setfgcolor(clr_default);
@@ -1280,7 +1280,7 @@ void printLabels()
   mt_gotoXY(64, 1);
   writeChar(1, " accumulator ");
   mt_gotoXY(65, 4);
-  writeChar(1, " instCounter ");
+  writeChar(1, " instPointer ");
   mt_gotoXY(65, 7);
   writeChar(1, " Operation ");
   mt_gotoXY(67, 10);
@@ -1476,7 +1476,7 @@ void printMemory(int x, int y, int position)
         mt_setbgcolor(TEXTCOLORBG);
       }
 
-      if ((i + j * 10 ) == instructionRegisterCount) {
+      if ((i + j * 10 ) == instructionPointer) {
         mt_setfgcolor(INSTREGCOLORFG);
       }
 
@@ -1495,7 +1495,7 @@ void printMemory(int x, int y, int position)
         mt_setbgcolor(clr_default);
       }
 
-      if ((i + j * 10 ) == instructionRegisterCount) {
+      if ((i + j * 10 ) == instructionPointer) {
         mt_setfgcolor(clr_default);
       }
 
@@ -1513,7 +1513,7 @@ void printMemory(int x, int y, int position)
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int writeUse;
 
 void timerHand(int sig)
@@ -1522,7 +1522,7 @@ void timerHand(int sig)
   sc_regGet(FLAG_INTERRUPT, &reg);
   if (reg == 0) {
     CU();
-    refreshGui(instructionRegisterCount);
+    refreshGui(instructionPointer);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -1533,7 +1533,7 @@ void ursignalHand(int sig)
   sc_regSet(FLAG_INTERRUPT, 1);
   accumulator = 0;
   writeUse = 0;
-  instructionRegisterCount = 0;
+  instructionPointer = 0;
 }
 /*---------------------------------------------------------------------------*/
 void ursignalHand2(int sig)
@@ -1563,7 +1563,7 @@ void killHand(int sig)
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int writeUse;
 extern int writeValue;
 extern int position;
@@ -1658,29 +1658,29 @@ int commandHandler(int command, int operand)
     break;
 /*--------------------------------------------------------------------------9*/
     case 0x40: /* JUMP */
-      instructionRegisterCount = operand - 1;
+      instructionPointer = operand - 1;
     break;
 /*-------------------------------------------------------------------------10*/
     case 0x41: /* JNEG */
       if (((accumulator >> 14) & 1) == 1) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------11*/
     case 0x42: /* JZ */
       if (accumulator == 0) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------12*/
     case 0x43: /* HALT */
       //flagHalt = 1;
       sc_regSet(FLAG_INTERRUPT, 1);
-      instructionRegisterCount--;
-      position = instructionRegisterCount;
-      cursorX = instructionRegisterCount / 10;
-      cursorY = instructionRegisterCount % 10;
-      refreshGui(instructionRegisterCount);
+      instructionPointer--;
+      position = instructionPointer;
+      cursorX = instructionPointer / 10;
+      cursorY = instructionPointer % 10;
+      refreshGui(instructionPointer);
     break;
 /*-------------------------------------------------------------------------13*/
     case 0x51:  /* NOT */
@@ -1728,34 +1728,34 @@ int commandHandler(int command, int operand)
 /*-------------------------------------------------------------------------17*/
     case 0x55:  /* JNS */
       if (accumulator > 0)
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
     break;
 /*-------------------------------------------------------------------------18*/
     case 0x56:  /* JC */
       sc_regGet(FLAG_OVERFLOW, &flag);
       if (flag == 1) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------19*/
     case 0x57:  /* JNC */
       sc_regGet(FLAG_OVERFLOW, &flag);
       if (flag == 0) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------20*/
     case 0x58:  /* JP */
       sc_regGet(FLAG_ODD, &flag);
       if (flag == 0) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------21*/
     case 0x59: /* JNP */
       sc_regGet(FLAG_ODD, &flag);
       if (flag == 1) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------22*/
@@ -2053,7 +2053,7 @@ int commandHandler(int command, int operand)
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int SCANPRINTRADIX;
 
 static struct sigaction act[10];
@@ -2365,7 +2365,7 @@ int changeInstRegisterCount(int pos)
   }
 
   if ((num >= 0) & (num < sizeRAM)) {
-    instructionRegisterCount = num;
+    instructionPointer = num;
   } else {
     writeChar(2, "Instruction range: from 0 to 99 (0x63)");
     restoreEchoRegime();
@@ -2557,7 +2557,7 @@ int memoryLoad(int position)
 */
 #include "./../include/cpu.h"
 
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int readUse;
 
 int readMcell(int pos)
@@ -2646,7 +2646,7 @@ int ALU(int command, int operand);
 void refreshGuiSt(int position);
 void refreshGui(int position);
 void printBoxes();
-void printCounter();
+void printPointer();
 void printAccum();
 void printKeys(int x, int y);
 void printLabels();
