@@ -37,7 +37,7 @@ int main(int argc, char** argv)
   val.it_value.tv_sec = TIMESLEEPSEC;
   val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
 
-  if ((fd = open("ascibig", O_RDONLY)) == -1) {
+  if ((fd = open("bigchars.bin", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
     return -1;
   }

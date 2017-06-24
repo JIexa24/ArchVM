@@ -19,6 +19,8 @@ int readMcell(int pos)
   setEchoRegime();
   refreshGui(instructionRegisterCount);
   mt_gotoXY(1, 23);
+  printLine(2);
+  mt_gotoXY(1, 23);
   writeChar(1,"READ: ");
   mt_gotoXY(1, 24);
 

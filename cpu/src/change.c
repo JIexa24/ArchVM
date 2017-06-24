@@ -220,6 +220,16 @@ int changeCell(int pos)
         return -1;
       }
     } else {
+      if (num >= 0x4000) {
+        writeChar(1, "This number must be < 0x4000");
+
+        if (readUse == 0) {
+          restoreIgnoreAlarm();
+        }
+
+        restoreEchoRegime();
+        return -1;
+      }
       mem = num | 0x4000;
     }
 
