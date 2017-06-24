@@ -17,14 +17,7 @@ int rk_readkey(enum keys *key)
   struct termios orig_options;
   char buf[16] = {0};
   int readNum  = 0;
-/*---------------------------------------------------------------------------*/
-/*
-  tcgetattr(int fd, struct termios *termios_p) : получить параметры,
-  связанные с объектом, на который ссылается fd, и сохранить их в структуре
-  termios, на которую ссылается termios_p. Эта функция может быть запущена из
-  фонового процесса;однако, атрибуты терминала могут в дальнейшем изменяться
-  основным процессом.
-*/
+
   if (tcgetattr(STDIN_FILENO, &orig_options) != 0) {
     return -1;
   }
@@ -76,13 +69,7 @@ int rk_readkey(enum keys *key)
   } else {
     *key = KEY_other;
   }
-/*
-  int tcsetattr(int fd, int optional_actions, struct termios *termios_p)
-  меняет параметры, связанные с терминалом (если требуется поддержка
-  используемого оборудования, которая недоступна), и параметры структуры
-  termios, связанной с termios_p. Для того, чтобы изменения вступили в силу,
-  необходимо указать optional_actions:
-*/
+
   if (tcsetattr(STDIN_FILENO, TCSANOW, &orig_options) != 0) {
     return -1;
   }
@@ -116,13 +103,7 @@ int rk_mytermrestore(void)
     return -1;
   } else {
     if (fread(&options, sizeof(options), 1, data) > 0) {
-/*
-  TCSAFLUSH
-  изменения начинают работу после того, как на объект, на который указывает
-  fd, были переданы все данные, предназначенные для вывода на запись; все
-  данные, которые были приняты (но не считаны), будут отменены перед тем,
-  как произошли изменения.
-*/
+
       if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &options) != 0) {
         fclose(data);
         return -1;
@@ -144,6 +125,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
   if (tcgetattr(STDIN_FILENO, &options) != 0) {
     return -1;
   }
+
   if (regime == 1) {
     options.c_lflag |= ICANON;
   } else if (regime == 0) {
@@ -151,9 +133,11 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
   } else {
     return -1;
   }
+
   if (regime == 0) {
     options.c_cc[VTIME] = vtime;
     options.c_cc[VMIN] = vmin;
+
     if (echo == 1) {
       options.c_lflag |= ECHO;
     } else if (echo == 0) {
@@ -161,6 +145,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
     } else {
       return -1;
     }
+
     if (sigint == 1) {
       options.c_lflag |= ISIG;
     } else if (sigint == 0) {
@@ -169,6 +154,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
       return -1;
     }
   }
+  
   if (tcsetattr(STDIN_FILENO, TCSANOW, &options) != 0) {
     return -1;
   }
