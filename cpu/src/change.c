@@ -4,7 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int SCANPRINTRADIX;
 
 static struct sigaction act[10];
@@ -316,7 +316,7 @@ int changeInstRegisterCount(int pos)
   }
 
   if ((num >= 0) & (num < sizeRAM)) {
-    instructionRegisterCount = num;
+    instructionPointer = num;
   } else {
     writeChar(2, "Instruction range: from 0 to 99 (0x63)");
     restoreEchoRegime();

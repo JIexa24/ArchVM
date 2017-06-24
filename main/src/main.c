@@ -4,7 +4,7 @@
 #include "./../include/mainHeader.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int writeUsed;
 extern int writeValue;
 extern int bigChars[];
@@ -127,10 +127,10 @@ int main(int argc, char** argv)
 
         case KEY_t:
           CU();
-          refreshGui(instructionRegisterCount);
-          position = instructionRegisterCount;
-          cursorX = instructionRegisterCount / 10;
-          cursorY = instructionRegisterCount % 10;
+          refreshGui(instructionPointer);
+          position = instructionPointer;
+          cursorX = instructionPointer / 10;
+          cursorY = instructionPointer % 10;
           key  = KEY_other;
         break;
 
@@ -161,9 +161,9 @@ int main(int argc, char** argv)
       }
     }
     if (key == KEY_c) {
-      position = instructionRegisterCount;
-      cursorX = instructionRegisterCount / 10;
-      cursorY = instructionRegisterCount % 10;
+      position = instructionPointer;
+      cursorX = instructionPointer / 10;
+      cursorY = instructionPointer % 10;
       refreshFlg = 0;
       raise(SIGUSR2);
       key  = KEY_other;
@@ -176,17 +176,17 @@ int main(int argc, char** argv)
       if (regis) {
         sc_regInit();
         setitimer(TIMER, &val, &oval);
-        position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10;
-        cursorY = instructionRegisterCount % 10;
+        position = instructionPointer;
+        cursorX = instructionPointer / 10;
+        cursorY = instructionPointer % 10;
         refreshFlg = 0;
         continue;
       } else {
         setitimer(TIMER, NULL, NULL);
         sc_regSet(FLAG_INTERRUPT, 1);
-        position = instructionRegisterCount;
-        cursorX = instructionRegisterCount / 10 ;
-        cursorY = instructionRegisterCount % 10;
+        position = instructionPointer;
+        cursorX = instructionPointer / 10 ;
+        cursorY = instructionPointer % 10;
         refreshFlg = 0;
         continue;
 	    }

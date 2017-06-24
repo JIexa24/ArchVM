@@ -57,7 +57,7 @@ int ALU(int command, int operand);
 void refreshGuiSt(int position);
 void refreshGui(int position);
 void printBoxes();
-void printCounter();
+void printPointer();
 void printAccum();
 void printKeys(int x, int y);
 void printLabels();

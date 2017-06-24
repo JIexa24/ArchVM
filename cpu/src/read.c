@@ -3,7 +3,7 @@
 */
 #include "./../include/cpu.h"
 
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int readUse;
 
 int readMcell(int pos)

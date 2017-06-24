@@ -4,7 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int writeUse;
 extern int writeValue;
 extern int position;
@@ -99,29 +99,29 @@ int commandHandler(int command, int operand)
     break;
 /*--------------------------------------------------------------------------9*/
     case 0x40: /* JUMP */
-      instructionRegisterCount = operand - 1;
+      instructionPointer = operand - 1;
     break;
 /*-------------------------------------------------------------------------10*/
     case 0x41: /* JNEG */
       if (((accumulator >> 14) & 1) == 1) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------11*/
     case 0x42: /* JZ */
       if (accumulator == 0) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------12*/
     case 0x43: /* HALT */
       //flagHalt = 1;
       sc_regSet(FLAG_INTERRUPT, 1);
-      instructionRegisterCount--;
-      position = instructionRegisterCount;
-      cursorX = instructionRegisterCount / 10;
-      cursorY = instructionRegisterCount % 10;
-      refreshGui(instructionRegisterCount);
+      instructionPointer--;
+      position = instructionPointer;
+      cursorX = instructionPointer / 10;
+      cursorY = instructionPointer % 10;
+      refreshGui(instructionPointer);
     break;
 /*-------------------------------------------------------------------------13*/
     case 0x51:  /* NOT */
@@ -169,34 +169,34 @@ int commandHandler(int command, int operand)
 /*-------------------------------------------------------------------------17*/
     case 0x55:  /* JNS */
       if (accumulator > 0)
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
     break;
 /*-------------------------------------------------------------------------18*/
     case 0x56:  /* JC */
       sc_regGet(FLAG_OVERFLOW, &flag);
       if (flag == 1) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------19*/
     case 0x57:  /* JNC */
       sc_regGet(FLAG_OVERFLOW, &flag);
       if (flag == 0) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------20*/
     case 0x58:  /* JP */
       sc_regGet(FLAG_ODD, &flag);
       if (flag == 0) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------21*/
     case 0x59: /* JNP */
       sc_regGet(FLAG_ODD, &flag);
       if (flag == 1) {
-        instructionRegisterCount = operand - 1;
+        instructionPointer = operand - 1;
       }
     break;
 /*-------------------------------------------------------------------------22*/

@@ -4,7 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int bigChars[];
 extern int writeValue;
 extern int writeUse;
@@ -55,7 +55,7 @@ void refreshGuiSt(int position)
   printBoxes();
   printLabels();
   printKeys(48, 14);
-  printCounter();
+  printPointer();
   printAccum();
   printOperation(position);
   printMemory(2, 2, position);
@@ -71,7 +71,7 @@ void refreshGui(int position)
     refreshGuiSt(position);
     counterRefresh = 0;
   } else {
-    printCounter();
+    printPointer();
     printAccum();
     printOperation(position);
     printMemory(2, 2, position);
@@ -106,11 +106,11 @@ void printBoxes()
   bc_box(47, 13, 79, 22);
 }
 /*---------------------------------------------------------------------------*/
-void printCounter()
+void printPointer()
 {
   mt_gotoXY(68, 5);
   mt_setfgcolor(INSTREGCOLORFG);
-  writeInt(1, instructionRegisterCount, SCANPRINTRADIX, 4);
+  writeInt(1, instructionPointer, SCANPRINTRADIX, 4);
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
@@ -130,7 +130,7 @@ void printKeys(int x, int y)
   mt_gotoXY(x, y + 5);
   writeChar(1, "F5 - accumulator");
   mt_gotoXY(x, y + 6);
-  writeChar(1, "F6 - instructionCounter");
+  writeChar(1, "F6 - instructionPointer");
   mt_gotoXY(x, y + 7);
   writeChar(1, "q  - quit");
   mt_setfgcolor(clr_default);
@@ -144,7 +144,7 @@ void printLabels()
   mt_gotoXY(64, 1);
   writeChar(1, " accumulator ");
   mt_gotoXY(65, 4);
-  writeChar(1, " instCounter ");
+  writeChar(1, " instPointer ");
   mt_gotoXY(65, 7);
   writeChar(1, " Operation ");
   mt_gotoXY(67, 10);
@@ -340,7 +340,7 @@ void printMemory(int x, int y, int position)
         mt_setbgcolor(TEXTCOLORBG);
       }
 
-      if ((i + j * 10 ) == instructionRegisterCount) {
+      if ((i + j * 10 ) == instructionPointer) {
         mt_setfgcolor(INSTREGCOLORFG);
       }
 
@@ -359,7 +359,7 @@ void printMemory(int x, int y, int position)
         mt_setbgcolor(clr_default);
       }
 
-      if ((i + j * 10 ) == instructionRegisterCount) {
+      if ((i + j * 10 ) == instructionPointer) {
         mt_setfgcolor(clr_default);
       }
 

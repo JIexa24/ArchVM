@@ -4,7 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 extern int writeUse;
 
 void timerHand(int sig)
@@ -13,7 +13,7 @@ void timerHand(int sig)
   sc_regGet(FLAG_INTERRUPT, &reg);
   if (reg == 0) {
     CU();
-    refreshGui(instructionRegisterCount);
+    refreshGui(instructionPointer);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -24,7 +24,7 @@ void ursignalHand(int sig)
   sc_regSet(FLAG_INTERRUPT, 1);
   accumulator = 0;
   writeUse = 0;
-  instructionRegisterCount = 0;
+  instructionPointer = 0;
 }
 /*---------------------------------------------------------------------------*/
 void ursignalHand2(int sig)

@@ -4,7 +4,7 @@
 #include "./../include/cpu.h"
 
 extern int accumulator;
-extern int instructionRegisterCount;
+extern int instructionPointer;
 
 void CU()
 {
@@ -12,15 +12,15 @@ void CU()
   int operand;
   int mem;
 
-  if (instructionRegisterCount >= sizeRAM) {
+  if (instructionPointer >= sizeRAM) {
     sc_regSet(FLAG_OUTMEM, 1);
     sc_regSet(FLAG_INTERRUPT, 1);
-    refreshGui(instructionRegisterCount);
-    instructionRegisterCount = 0;
+    refreshGui(instructionPointer);
+    instructionPointer = 0;
     return;
   }
 
-  sc_memoryGet(instructionRegisterCount, &mem);
+  sc_memoryGet(instructionPointer, &mem);
 
   if (!(sc_commandDecode(mem, &command, &operand)
       == 0)) {
@@ -45,7 +45,7 @@ void CU()
     commandHandler(command, operand);
   }
 
-  instructionRegisterCount++;
+  instructionPointer++;
 }
 /*---------------------------------------------------------------------------*/
 int ALU(int command, int operand)
