@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(SOURCE_LIB src/main_ctest.c src/testsAsm_ctest.c src/testsSC_ctest.c
+set(SOURCE_LIB src/main_ctest.c src/testsSC_ctest.c src/testsAsm_ctest.c
     src/testsBasic_ctest.c)
 set(CTEST_HEAD ../thirdparty/ctest.h)
 

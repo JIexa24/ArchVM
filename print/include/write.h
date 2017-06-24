@@ -1,8 +1,8 @@
 /*
   Created by JIexa24 (Alexey R.)
 */
-#ifndef WRITE_INT_H
-#define WRITE_INT_H
+#ifndef WRITE_H
+#define WRITE_H
 
 #include <unistd.h>
 #include <string.h>
