@@ -10,3 +10,6 @@ int writeUse                 = 0;
 int writeValue               = 0;
 int SCANPRINTRADIX           = 16;
 int readUse                  = 0;
+int position                 = 0;
+int cursorX                  = 0;
+int cursorY                  = 0;

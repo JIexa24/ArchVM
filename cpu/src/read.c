@@ -17,7 +17,7 @@ int readMcell(int pos)
 
   //setIgnoreAlarm();
   setEchoRegime();
-  refreshGui(instructionRegisterCount);
+  refreshGui(pos);
   mt_gotoXY(1, 23);
   printLine(2);
   mt_gotoXY(1, 23);

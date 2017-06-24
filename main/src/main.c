@@ -9,6 +9,9 @@ extern int writeUsed;
 extern int writeValue;
 extern int bigChars[];
 extern int SCANPRINTRADIX;
+extern int position;
+extern int cursorX;
+extern int cursorY;
 
 struct itimerval val, oval;
 
@@ -20,8 +23,6 @@ int main(int argc, char** argv)
   rk_mytermsave();
   sc_regSet(FLAG_INTERRUPT, 1);
 
-  int cursorX    = 0;
-  int cursorY    = 0;
   int position   = 0;
   int fd         = 0;
   int cn         = 0;

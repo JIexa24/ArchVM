@@ -7,6 +7,9 @@ extern int accumulator;
 extern int instructionRegisterCount;
 extern int writeUse;
 extern int writeValue;
+extern int position;
+extern int cursorX;
+extern int cursorY;
 
 int commandHandler(int command, int operand)
 {
@@ -92,7 +95,7 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-      accumulator *= tmpMem;
+      accumulator = accumulator * (tmpMem & 0x3FFF);
     break;
 /*--------------------------------------------------------------------------9*/
     case 0x40: /* JUMP */
@@ -115,6 +118,9 @@ int commandHandler(int command, int operand)
       //flagHalt = 1;
       sc_regSet(FLAG_INTERRUPT, 1);
       instructionRegisterCount--;
+      position = instructionRegisterCount;
+      cursorX = instructionRegisterCount / 10;
+      cursorY = instructionRegisterCount % 10;
       refreshGui(instructionRegisterCount);
     break;
 /*-------------------------------------------------------------------------13*/
