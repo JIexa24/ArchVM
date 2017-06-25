@@ -36,7 +36,10 @@ int asmTrans(int argc, char** argv)
   do {
     value = 0;
     addres = 0;
-    read(input, &buffer[i], sizeof(char));
+    int readcount = read(input, &buffer[i], sizeof(char));
+    if (readcount == 0) {
+      break;
+    }
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
         continue;
