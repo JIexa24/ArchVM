@@ -316,7 +316,7 @@ int changeAccumulator(int pos)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int changeInstRegisterCount(int pos)
+int changeInstructionPointer(int pos)
 {
   int plusFlag = 0;
   int num      = 0;
@@ -328,7 +328,7 @@ int changeInstRegisterCount(int pos)
   printLine(2);
 
   mt_gotoXY(1, 23);
-  writeChar(1, "Change Register (");
+  writeChar(1, "Change Pointer (");
   writeInt(1, SCANPRINTRADIX, 10, -1);
   writeChar(1, "): ");
 
@@ -342,7 +342,7 @@ int changeInstRegisterCount(int pos)
   if ((num >= 0) & (num < sizeRAM)) {
     instructionPointer = num;
   } else {
-    writeChar(2, "Instruction range: from 0 to 99 (0x63)");
+    writeChar(2, "Instruction Pointer range: from 0 to 99 (0x63)");
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;

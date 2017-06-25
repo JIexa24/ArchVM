@@ -80,7 +80,7 @@ void setEchoRegime();
 void restoreEchoRegime();
 
 int changeAccumulator(int pos);
-int changeInstRegisterCount(int pos);
+int changeInstructionPointer(int pos);
 int changeCell(int pos);
 int scanNum(int *plusFlag, int *n);
 

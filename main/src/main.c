@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         break;
 
         case KEY_f6:
-          refreshFlg = changeInstRegisterCount(position);
+          refreshFlg = changeInstructionPointer(position);
           key  = KEY_other;
         break;
 
