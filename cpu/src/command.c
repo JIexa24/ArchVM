@@ -62,15 +62,12 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-
-      if (((tmpMem >> 14) & 1) == 1) {
-        tmp = tmpMem | (~0x7FFF);
+      tmpMem &= 0x3FFF;
+      if (accumulator - tmp < 0) {
+        sc_regSet(FLAG_OVERFLOW, 1);
+        accumulator = 0;
       } else {
-        tmp = tmpMem;
-      }
-      accumulator -= tmp;
-      if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
-        accumulator &= 0x3FFF;
+        accumulator -= tmpMem;
       }
     break;
 /*--------------------------------------------------------------------------7*/
