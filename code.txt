@@ -582,8 +582,6 @@ int mt_setbgcolor(enum colors color)
 #define CONSOLE_SC_H
 
 #include <sys/ioctl.h>
-#include <stdio.h>
-#include <unistd.h>
 #include "./../../print/include/write.h"
 
 enum colors {
@@ -612,7 +610,7 @@ int mt_setbgcolor(enum colors color);
 */
 #include "./../include/bc.h"
 
-void swap(int* a, int* b)
+static void swap(int* a, int* b)
 {
   int tmp = 0;
   tmp = *a;
@@ -799,10 +797,6 @@ int bc_bigcharread(int fd, int *big, int need_count, int *count)
 #ifndef BC_H
 #define BC_H
 
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
 #include "./../../consoleSC/include/term.h"
 #include "./../../print/include/write.h"
 
@@ -814,7 +808,7 @@ int bc_bigcharread(int fd, int *big, int need_count, int *count)
 #define BOXCHAR_VERT "x"
 #define BOXCHAR_HOR "q"
 
-void swap(int* a, int* b);
+static void swap(int* a, int* b);
 int bc_printA(char *str);
 int bc_box(int x1, int y1, int x2, int y2);
 int bc_printbigchar(int *big, int x, int y, enum colors fg, enum colors bg);
@@ -823,7 +817,7 @@ int bc_getbigcharpos(int *big, int x, int y, int *value);
 int bc_bigcharwrite(int fd, int *big, int count);
 int bc_bigcharread(int fd, int *big, int need_count, int *count);
 
-#endif 
+#endif
 --------libReadKey.a--------
 ----------------readkey.c----------------
 /*
@@ -1002,13 +996,7 @@ int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint)
 #include "./../../bc/include/bc.h"
 #include "./../../consoleSC/include/term.h"
 
-#include <stdio.h>
 #include <termios.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <string.h>
-#include <unistd.h>
 
 /*
 
@@ -2604,8 +2592,8 @@ int readMcell(int pos)
 #include "./../../simpleComputer/include/sc_register.h"
 #include "./../../simpleComputer/include/sc_command.h"
 #include "./../../simpleComputer/include/sc_memory.h"
-#include "./../../bc/include/bc.h"
 #include "./../../consoleSC/include/term.h"
+#include "./../../bc/include/bc.h"
 #include "./../../readKey/include/readkey.h"
 #include "./../../print/include/write.h"
 #include "./../../scan/include/readInt.h"
@@ -2613,6 +2601,10 @@ int readMcell(int pos)
 #include "./../../asm/include/asm.h"
 #include "./../../basic/include/basic.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <time.h>
@@ -2620,6 +2612,14 @@ int readMcell(int pos)
 #include <sys/time.h>
 
 /* CPU */
+
+#ifndef TOKENSYMB
+#define TOKENSYMB ' '
+#endif
+
+#ifndef SIZE_BUFFER
+#define SIZE_BUFFER 256
+#endif
 
 #define TIMER ITIMER_REAL
 
@@ -2737,7 +2737,10 @@ int asmTrans(int argc, char** argv)
   do {
     value = 0;
     addres = 0;
-    read(input, &buffer[i], sizeof(char));
+    int readcount = read(input, &buffer[i], sizeof(char));
+    if (readcount == 0) {
+      break;
+    }
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
         continue;
@@ -3029,13 +3032,7 @@ int main(int argc, char *argv[])
 #ifndef ASM_H
 #define ASM_H
 
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-
 #include "./../../cpu/include/cpu.h"
-
-#define TOKENSYMB ' '
 
 int asmTrans(int argc, char** argv);
 int asmCommand(char *str);
@@ -3382,14 +3379,7 @@ int main(int argc, char** argv)
 #ifndef BASIC_H
 #define BASIC_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-
 #include "./../../cpu/include/cpu.h"
-
-#define TOKENSYMB ' '
 
 enum keywords {
   KEYW_REM = 1,
@@ -3464,8 +3454,6 @@ int sreadInt(char* buffers, int* num, int radix)
 #ifndef READ_INT_H
 #define READ_INT_H
 
-#include <unistd.h>
-#include <string.h>
 #include "./../../print/include/write.h"
 
 int sreadInt(char* buffers, int* num, int radix);
