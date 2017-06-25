@@ -49,7 +49,7 @@ int commandHandler(int command, int operand)
         return -1;
       }
       tmpMem &= 0x3FFF;
-      if (accumulator + tmpMem > 0x7FFF) {
+      if (accumulator + tmpMem > 0x3FFF) {
         sc_regSet(FLAG_OVERFLOW, 1);
         accumulator += tmpMem;
         accumulator &= 0x3FFF;
