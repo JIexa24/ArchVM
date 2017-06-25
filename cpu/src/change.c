@@ -7,8 +7,8 @@ extern int accumulator;
 extern int instructionPointer;
 extern int SCANPRINTRADIX;
 
-static struct sigaction act[10];
-static struct sigaction old[10];
+static struct sigaction act[11];
+static struct sigaction old[11];
 static sigset_t set;
 
 static struct sigaction newalarm;
@@ -95,6 +95,12 @@ void setSignals()
   act[10].sa_handler = timerHand;
   act[10].sa_mask = set;
 
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGSTOP);
+  act[11].sa_handler = killHand;
+  act[11].sa_mask = set;
+
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -106,6 +112,7 @@ void setSignals()
   sigaction(SIGQUIT, &(act[8]), &(old[8]));  /*Ctrl-\*/
   sigaction(SIGSEGV, &(act[9]), &(old[9]));
   sigaction(SIGPROF, &(act[10]), &(old[10]));
+  sigaction(SIGSTOP, &(act[11]), &(old[11]));
 
 }
 /*---------------------------------------------------------------------------*/
@@ -123,6 +130,7 @@ void signalsRestore()
   sigaction(SIGQUIT, &(old[8]), 0);
   sigaction(SIGSEGV, &(old[9]), 0);
   sigaction(SIGPROF, &(old[10]), 0);
+  sigaction(SIGSTOP, &(old[11]), 0);
 }
 /*---------------------------------------------------------------------------*/
 void setIgnoreAlarm()
