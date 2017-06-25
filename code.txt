@@ -94,7 +94,7 @@ int main(int argc, char** argv)
         break;
 
         case KEY_f6:
-          refreshFlg = changeInstRegisterCount(position);
+          refreshFlg = changeInstructionPointer(position);
           key  = KEY_other;
         break;
 
@@ -1116,7 +1116,7 @@ int ALU(int command, int operand)
       sc_regSet(FLAG_ODD, 1);
     }
 
-    if ((accumulator > 0x3FFF) | (accumulator < 0)) {
+    if ((accumulator > 0x3FFF)) {
       accumulator &= 0x3FFF;
       sc_regSet(FLAG_OVERFLOW, 1);
     } else {
@@ -1248,11 +1248,11 @@ void printKeys(int x, int y)
 {
   mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(x, y);
-  writeChar(1, "l  - load");
+  writeChar(1, "l  - load    | c   - stop");
   mt_gotoXY(x, y + 1);
-  writeChar(1, "s  - save");
+  writeChar(1, "s  - save    | x/d - radix");
   mt_gotoXY(x, y + 2);
-  writeChar(1, "r  - run");
+  writeChar(1, "r  - run / stop");
   mt_gotoXY(x, y + 3);
   writeChar(1, "t  - step");
   mt_gotoXY(x, y + 4);
@@ -1260,9 +1260,9 @@ void printKeys(int x, int y)
   mt_gotoXY(x, y + 5);
   writeChar(1, "F5 - accumulator");
   mt_gotoXY(x, y + 6);
-  writeChar(1, "F6 - instructionPointer");
+  writeChar(1, "F6 - instruction Pointer");
   mt_gotoXY(x, y + 7);
-  writeChar(1, "q  - quit");
+  writeChar(1, "q  - quit    | Ctrl - \\/z/c");
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/
@@ -1291,7 +1291,7 @@ void printOperation(int position)
   int mem       = 0;
   int command   = 0;
   int operand   = 0;
-  int isCommand = (mem >> 14) & 1;
+  int isCommand;
   char c        = '+';
 
   if ((position >= sizeRAM) & (position <= 0)) {
@@ -1299,7 +1299,7 @@ void printOperation(int position)
     return;
   }
   sc_memoryGet(position, &mem);
-
+  isCommand = (mem >> 14) & 1;
 
   mt_gotoXY(68, 8);
   if ((position >= 0) & (position < sizeRAM)) {
@@ -1602,7 +1602,7 @@ int commandHandler(int command, int operand)
         return -1;
       }
       tmpMem &= 0x3FFF;
-      if (accumulator + tmpMem > 0x7FFF) {
+      if (accumulator + tmpMem > 0x3FFF) {
         sc_regSet(FLAG_OVERFLOW, 1);
         accumulator += tmpMem;
         accumulator &= 0x3FFF;
@@ -1615,28 +1615,18 @@ int commandHandler(int command, int operand)
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-
-      if (((tmpMem >> 14) & 1) == 1) {
-        tmp = tmpMem | (~0x7FFF);
-      } else {
-        tmp = tmpMem;
-      }
-      accumulator -= tmp;
-      if ((accumulator > ((int)(~0x7FFF))) && (accumulator <= 0x7FFF)) {
-        accumulator &= 0x3FFF;
-      }
+      tmpMem &= 0x3FFF;
+      accumulator -= tmpMem;
     break;
 /*--------------------------------------------------------------------------7*/
     case 0x32: /* DIV */
       if (sc_memoryGet(operand, &tmpMem) != 0) {
         return -1;
       }
-      if (((tmpMem >> 14) & 1) == 1) {
-        tmpMem = tmpMem & (0x3FFF);
-      } else {
-        tmpMem = tmpMem;
-      }
-      if (tmpMem > 0) {
+
+      tmpMem &= 0x3FFF;
+
+      if (!(tmpMem == 0)) {
         accumulator = accumulator / tmpMem;
       } else {
         sc_regSet(FLAG_DIVISION, 1);
@@ -2133,7 +2123,7 @@ void setSignals()
   sigemptyset(&set);
   sigaddset(&set, SIGUSR1);
   sigaddset(&set, SIGTSTP);
-  act[7].sa_handler = ursignalHand2;
+  act[7].sa_handler = killHand;
   act[7].sa_mask = set;
 
   sigemptyset(&set);
@@ -2359,7 +2349,7 @@ int changeAccumulator(int pos)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int changeInstRegisterCount(int pos)
+int changeInstructionPointer(int pos)
 {
   int plusFlag = 0;
   int num      = 0;
@@ -2371,7 +2361,7 @@ int changeInstRegisterCount(int pos)
   printLine(2);
 
   mt_gotoXY(1, 23);
-  writeChar(1, "Change Register (");
+  writeChar(1, "Change Pointer (");
   writeInt(1, SCANPRINTRADIX, 10, -1);
   writeChar(1, "): ");
 
@@ -2385,7 +2375,7 @@ int changeInstRegisterCount(int pos)
   if ((num >= 0) & (num < sizeRAM)) {
     instructionPointer = num;
   } else {
-    writeChar(2, "Instruction range: from 0 to 99 (0x63)");
+    writeChar(2, "Instruction Pointer range: from 0 to 99 (0x63)");
     restoreEchoRegime();
     restoreIgnoreAlarm();
     return -1;
@@ -2687,7 +2677,7 @@ void setEchoRegime();
 void restoreEchoRegime();
 
 int changeAccumulator(int pos);
-int changeInstRegisterCount(int pos);
+int changeInstructionPointer(int pos);
 int changeCell(int pos);
 int scanNum(int *plusFlag, int *n);
 
@@ -2790,9 +2780,6 @@ int asmTrans(int argc, char** argv)
         ret = parsingLine(buffer, &addres, &value);
         if (ret == 0 | ret == 2) {
           ram[addres] = value;
-          if (ret == 2){
-            break;
-          }
         }
         counterTokens = 0;
         i = 0;
@@ -2801,7 +2788,7 @@ int asmTrans(int argc, char** argv)
       i++;
     }
   } while (1);
-  
+
   write(output, ram, sizeof(int) * sizeRAM);
 
   close(input);
