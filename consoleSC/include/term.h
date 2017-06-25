@@ -5,8 +5,6 @@
 #define CONSOLE_SC_H
 
 #include <sys/ioctl.h>
-#include <stdio.h>
-#include <unistd.h>
 #include "./../../print/include/write.h"
 
 enum colors {

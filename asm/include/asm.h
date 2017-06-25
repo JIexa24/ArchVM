@@ -4,13 +4,7 @@
 #ifndef ASM_H
 #define ASM_H
 
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-
 #include "./../../cpu/include/cpu.h"
-
-#define TOKENSYMB ' '
 
 int asmTrans(int argc, char** argv);
 int asmCommand(char *str);

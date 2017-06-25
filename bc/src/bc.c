@@ -3,7 +3,7 @@
 */
 #include "./../include/bc.h"
 
-void swap(int* a, int* b)
+static void swap(int* a, int* b)
 {
   int tmp = 0;
   tmp = *a;

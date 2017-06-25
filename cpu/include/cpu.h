@@ -7,8 +7,8 @@
 #include "./../../simpleComputer/include/sc_register.h"
 #include "./../../simpleComputer/include/sc_command.h"
 #include "./../../simpleComputer/include/sc_memory.h"
-#include "./../../bc/include/bc.h"
 #include "./../../consoleSC/include/term.h"
+#include "./../../bc/include/bc.h"
 #include "./../../readKey/include/readkey.h"
 #include "./../../print/include/write.h"
 #include "./../../scan/include/readInt.h"
@@ -16,6 +16,10 @@
 #include "./../../asm/include/asm.h"
 #include "./../../basic/include/basic.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <time.h>
@@ -23,6 +27,14 @@
 #include <sys/time.h>
 
 /* CPU */
+
+#ifndef TOKENSYMB
+#define TOKENSYMB ' '
+#endif
+
+#ifndef SIZE_BUFFER
+#define SIZE_BUFFER 256
+#endif
 
 #define TIMER ITIMER_REAL
 
