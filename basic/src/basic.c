@@ -5,6 +5,7 @@
 
 static var alfabet[26];
 static memMap map[100];
+static int collision   = 0;
 static int indexmap    = 0;
 static int begin       = 0;
 static int end         = 99;
@@ -14,8 +15,8 @@ static char readc[11]  = "   READ   \n";
 static char writec[12] = "   WRITE   \n";
 static char jmpc[11]   = "   JUMP   \n";
 static char haltc[11]  = "   HALT   \n";
-static char load[11]  = "   LOAD   \n";
-static char store[12] = "   STORE   \n";
+static char load[11]   = "   LOAD   \n";
+static char store[12]  = "   STORE   \n";
 
 int keywordCode(char *str)
 {
@@ -87,6 +88,8 @@ int basicTrans(int argc, char *argv[])
   tmp1                     = 0;
   begin                    = 0;
   end                      = 99;
+  collision                = 0;
+  indexmap                 = 0;
 
   if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
@@ -182,6 +185,10 @@ int parsingLineB(char* str, int output)
   ret = keywordCode(tmpPtr);
   tmpPtr = ptr;
   if (ret == KEYW_REM) {
+    map[indexmap].real = -1;
+    map[indexmap].expect = tmp1;
+    ++indexmap;
+  //  ++collision;
     return 0;
   } else if (ret == KEYW_INPUT) {
     for (i = 0; i < 26; i++) {
@@ -196,8 +203,8 @@ int parsingLineB(char* str, int output)
         map[indexmap].real = begin;
         map[indexmap].expect = tmp1;
         ++indexmap;
-        readc[0] = begin / 10 + '0';
-        readc[1] = begin++ % 10 + '0';
+        readc[0] = (begin - collision) / 10 + '0';
+        readc[1] = (begin++ - collision) % 10 + '0';
         readc[8] = alfabet[i].cell / 10 + '0';
         readc[9] = alfabet[i].cell % 10 + '0';
         write(output, readc, sizeof(char) * strlen(readc));
@@ -217,8 +224,8 @@ int parsingLineB(char* str, int output)
         map[indexmap].real = begin;
         map[indexmap].expect = tmp1;
         ++indexmap;
-        writec[0] = begin / 10 + '0';
-        writec[1] = begin++ % 10 + '0';
+        writec[0] = (begin - collision) / 10 + '0';
+        writec[1] = (begin++ - collision) % 10 + '0';
         writec[9] = alfabet[i].cell / 10 + '0';
         writec[10] = alfabet[i].cell % 10 + '0';
         write(output, writec, sizeof(char) * strlen(writec));
@@ -226,36 +233,39 @@ int parsingLineB(char* str, int output)
       }
     }
   } else if (ret == KEYW_GOTO) {
-    jmpc[0] = begin / 10 + '0';
-    jmpc[1] = begin % 10 + '0';
+    jmpc[0] = (begin - collision) / 10 + '0';
+    jmpc[1] = (begin - collision) % 10 + '0';
     map[indexmap].real = begin;
     map[indexmap].expect = tmp1;
     ++indexmap;
     int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
     for (i = 0; i < indexmap; i++) {
       if ((cell == map[i].expect)) {
-        cell = (map[i].real * 10) - tmp1;
-        cell = cell / 10;
-        jmpc[8] = (begin + cell) / 10 + '0';
-        jmpc[9] = (begin + cell) % 10 + '0';
+        if (map[i].real == -1) {
+          return 2;
+        }
+        cell = (map[i].real);
+        jmpc[8] = (cell) / 10 + '0';
+        jmpc[9] = (cell) % 10 + '0';
+        break;
       }
     }
     ++begin;
     write(output, jmpc, sizeof(char) * strlen(jmpc));
   } else if (ret == KEYW_IF) {
-    
+
   } else if (ret == KEYW_LET) {
 
   } else if (ret == KEYW_END) {
     map[indexmap].real = begin;
     map[indexmap].expect = tmp1;
     ++indexmap;
-    haltc[0] = begin / 10 + '0';
-    haltc[1] = begin++ % 10 + '0';
+    haltc[0] = (begin - collision) / 10 + '0';
+    haltc[1] = (begin++ - collision) % 10 + '0';
     haltc[8] = '0';
     haltc[9] = '0';
     write(output, haltc, sizeof(char) * strlen(haltc));
-    return 1;
+    return 0;
   } else if (ret == KEYW_E) {
     return 0;
   }
