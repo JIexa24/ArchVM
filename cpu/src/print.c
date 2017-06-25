@@ -118,11 +118,11 @@ void printKeys(int x, int y)
 {
   mt_setfgcolor(KEYCOLORFG);
   mt_gotoXY(x, y);
-  writeChar(1, "l  - load");
+  writeChar(1, "l  - load    | c   - stop");
   mt_gotoXY(x, y + 1);
-  writeChar(1, "s  - save");
+  writeChar(1, "s  - save    | x/d - radix");
   mt_gotoXY(x, y + 2);
-  writeChar(1, "r  - run");
+  writeChar(1, "r  - run / stop");
   mt_gotoXY(x, y + 3);
   writeChar(1, "t  - step");
   mt_gotoXY(x, y + 4);
@@ -130,9 +130,9 @@ void printKeys(int x, int y)
   mt_gotoXY(x, y + 5);
   writeChar(1, "F5 - accumulator");
   mt_gotoXY(x, y + 6);
-  writeChar(1, "F6 - instructionPointer");
+  writeChar(1, "F6 - instruction Pointer");
   mt_gotoXY(x, y + 7);
-  writeChar(1, "q  - quit");
+  writeChar(1, "q  - quit    | Ctrl - \\/z/c");
   mt_setfgcolor(clr_default);
 }
 /*---------------------------------------------------------------------------*/

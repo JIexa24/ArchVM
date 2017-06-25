@@ -90,7 +90,7 @@ void setSignals()
   sigemptyset(&set);
   sigaddset(&set, SIGUSR1);
   sigaddset(&set, SIGTSTP);
-  act[7].sa_handler = ursignalHand2;
+  act[7].sa_handler = killHand;
   act[7].sa_mask = set;
 
   sigemptyset(&set);
