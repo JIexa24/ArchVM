@@ -21,8 +21,7 @@ int sc_commandEncode(int command, int operand, int* value)
       sc_regSet(FLAG_OVERFLOW,1);
     }
     if (value != NULL) {
-      *value = (command << 7) | operand;
-      sc_regSet(FLAG_COMMAND, 0);
+      *value = ((command << 7) | operand) & 0x3FFF;
       return 0;
     }
   } else {
