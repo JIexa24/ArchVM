@@ -161,7 +161,7 @@ void printOperation(int position)
   int mem       = 0;
   int command   = 0;
   int operand   = 0;
-  int isCommand = (mem >> 14) & 1;
+  int isCommand;
   char c        = '+';
 
   if ((position >= sizeRAM) & (position <= 0)) {
@@ -169,7 +169,7 @@ void printOperation(int position)
     return;
   }
   sc_memoryGet(position, &mem);
-
+  isCommand = (mem >> 14) & 1;
 
   mt_gotoXY(68, 8);
   if ((position >= 0) & (position < sizeRAM)) {
