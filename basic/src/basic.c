@@ -4,7 +4,7 @@
 #include "./../include/basic.h"
 
 static var alfabet[26];
-static memMap map[100];
+static memMap map[SIZE_BUFFER];
 static int collision   = 0;
 static int indexmap    = 0;
 static int begin       = 0;
