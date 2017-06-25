@@ -35,11 +35,6 @@ int main(int argc, char** argv)
   int regisProg  = 0;
   enum keys key  = KEY_other;
 
-  val.it_interval.tv_sec = TIMESLEEPSEC;
-  val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
-  val.it_value.tv_sec = TIMESLEEPSEC;
-  val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
-
   if ((fd = open("bigchars.bin", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
     return -1;
@@ -177,14 +172,14 @@ int main(int argc, char** argv)
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
         sc_regInit();
-        setitimer(TIMER, &val, &oval);
+        frequencyGenerator(START);
         position = instructionPointer;
         cursorX = instructionPointer / 10;
         cursorY = instructionPointer % 10;
         refreshFlg = 0;
         continue;
       } else {
-        setitimer(TIMER, NULL, NULL);
+        frequencyGenerator(STOP);
         sc_regSet(FLAG_INTERRUPT, 1);
         position = instructionPointer;
         cursorX = instructionPointer / 10 ;
@@ -195,9 +190,9 @@ int main(int argc, char** argv)
     }
     position = cursorY + cursorX * 10;
   }
+  frequencyGenerator(STOP);
   rk_mytermrestore();
   signalsRestore();
-  setitimer(TIMER, NULL, NULL);
   system("rm -f termsettings");
   return 0;
 }
@@ -365,8 +360,7 @@ int sc_commandEncode(int command, int operand, int* value)
       sc_regSet(FLAG_OVERFLOW,1);
     }
     if (value != NULL) {
-      *value = (command << 7) | operand;
-      sc_regSet(FLAG_COMMAND, 0);
+      *value = ((command << 7) | operand) & 0x3FFF;
       return 0;
     }
   } else {
@@ -1153,7 +1147,7 @@ static void printWriteValue()
   int opcode  = 0;
   int operand = 0;
   mt_gotoXY(1, 23);
-  printLine(2);
+  printLine(3);
 
   mt_gotoXY(1, 23);
   command = (writeValue >> 14) & 1;
@@ -2056,8 +2050,8 @@ extern int accumulator;
 extern int instructionPointer;
 extern int SCANPRINTRADIX;
 
-static struct sigaction act[10];
-static struct sigaction old[10];
+static struct sigaction act[11];
+static struct sigaction old[11];
 static sigset_t set;
 
 static struct sigaction newalarm;
@@ -2071,6 +2065,22 @@ static int alarmIgn = 0;
 
 extern int readUse;
 
+static struct itimerval val;
+static struct itimerval oval;
+
+void frequencyGenerator (int status)
+{
+  if (status == START) {
+    val.it_interval.tv_sec = TIMESLEEPSEC;
+    val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
+    val.it_value.tv_sec = TIMESLEEPSEC;
+    val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
+    setitimer(TIMER, &val, &oval);
+  } else if (status == STOP ) {
+    setitimer(TIMER, NULL, NULL);
+  }
+}
+/*---------------------------------------------------------------------------*/
 void setSignals()
 {
   int i;
@@ -2144,6 +2154,12 @@ void setSignals()
   act[10].sa_handler = timerHand;
   act[10].sa_mask = set;
 
+  sigemptyset(&set);
+  sigaddset(&set, SIGUSR1);
+  sigaddset(&set, SIGSTOP);
+  act[11].sa_handler = killHand;
+  act[11].sa_mask = set;
+
   sigaction(SIGALRM, &(act[0]), &(old[0]));
   sigaction(SIGVTALRM, &(act[1]), &(old[1]));
   sigaction(SIGUSR1, &(act[2]), &(old[2]));
@@ -2155,6 +2171,7 @@ void setSignals()
   sigaction(SIGQUIT, &(act[8]), &(old[8]));  /*Ctrl-\*/
   sigaction(SIGSEGV, &(act[9]), &(old[9]));
   sigaction(SIGPROF, &(act[10]), &(old[10]));
+  sigaction(SIGSTOP, &(act[11]), &(old[11]));
 
 }
 /*---------------------------------------------------------------------------*/
@@ -2172,6 +2189,7 @@ void signalsRestore()
   sigaction(SIGQUIT, &(old[8]), 0);
   sigaction(SIGSEGV, &(old[9]), 0);
   sigaction(SIGPROF, &(old[10]), 0);
+  sigaction(SIGSTOP, &(old[11]), 0);
 }
 /*---------------------------------------------------------------------------*/
 void setIgnoreAlarm()
@@ -2573,7 +2591,7 @@ int readMcell(int pos)
   setEchoRegime();
   refreshGui(pos);
   mt_gotoXY(1, 23);
-  printLine(2);
+  printLine(3);
   mt_gotoXY(1, 23);
   writeChar(1,"READ: ");
   mt_gotoXY(1, 24);
@@ -2617,6 +2635,9 @@ int readMcell(int pos)
 
 #define REFRESH 500
 
+#define START 1
+#define STOP 0
+
 #define BIGCHARSCOLORFG clr_cyan
 #define BIGCHARSCOLORBG clr_default
 
@@ -2643,6 +2664,8 @@ int readMcell(int pos)
 void CU();
 int ALU(int command, int operand);
 
+void frequencyGenerator (int status);
+
 void refreshGuiSt(int position);
 void refreshGui(int position);
 void printBoxes();
@@ -2662,6 +2685,7 @@ void setIgnoreAlarm();
 void restoreIgnoreAlarm();
 void setEchoRegime();
 void restoreEchoRegime();
+
 int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
 int changeCell(int pos);
