@@ -17,6 +17,7 @@ static char jmpc[11]   = "   JUMP   \n";
 static char haltc[11]  = "   HALT   \n";
 static char load[11]   = "   LOAD   \n";
 static char store[12]  = "   STORE   \n";
+static char sub[10]    = "   SUB   \n";
 
 int keywordCode(char *str)
 {
@@ -148,6 +149,7 @@ int parsingLineB(char* str, int output)
   int command  = 0;
   int operand  = 0;
   int i        = 0;
+  int j        = 0;
   char* tmpPtr = ptr;
   int ret      = 0;
   int cmp      = 0;
@@ -184,6 +186,88 @@ int parsingLineB(char* str, int output)
   }
   ret = keywordCode(tmpPtr);
   tmpPtr = ptr;
+
+  if (ret == KEYW_IF) {
+    i = 0;
+    while (1) {
+      if (tmpPtr[i] == TOKENSYMB) {
+        ptr = tmpPtr + i + 1;
+        tmpPtr[i] = '\0';
+        break;
+      }
+      i++;
+    }
+    for (i = 0; i < 26; i++) {
+      if (!strcmp(alfabet[i].name, tmpPtr)) {
+        if (!(alfabet[i].variable == 1)) {
+          return 2;
+        }
+        tmpPtr = ptr;
+        j = 0;
+        while (1) {
+          if (tmpPtr[j] == TOKENSYMB) {
+            ptr = tmpPtr + j + 1;
+            tmpPtr[j] = '\0';
+            break;
+          }
+          j++;
+        }
+        char* op = tmpPtr;
+        tmpPtr = ptr;
+        load[0] = (begin - collision) / 10 + '0';
+        load[1] = (begin++ - collision) % 10 + '0';
+        load[8] = alfabet[i].cell / 10 + '0';
+        load[9] = alfabet[i].cell % 10 + '0';
+        write(output, load, sizeof(char) * strlen(load));
+        j = 0;
+        while (1) {
+          if (tmpPtr[j] == TOKENSYMB) {
+            ptr = tmpPtr + j + 1;
+            tmpPtr[j] = '\0';
+            break;
+          }
+          j++;
+        }
+        //if (*tmpPtr > 'A' & *tmpPtr < 'Z') {
+          for (j = 0; j < 26; i++) {
+            if (!strcmp(alfabet[j].name, tmpPtr)) {
+              tmpPtr = ptr;
+              if (!(alfabet[j].variable == 1)) {
+                return 2;
+              }
+              sub[0] = (begin - collision) / 10 + '0';
+              sub[1] = (begin++ - collision) % 10 + '0';
+              sub[7] = alfabet[j].cell / 10 + '0';
+              sub[8] = alfabet[j].cell % 10 + '0';
+              write(output, sub, sizeof(char) * strlen(sub));
+              break;
+            }
+          }
+        //}
+        if (!strcmp(">", op)) {
+
+        } else if (!strcmp("=", op)) {
+
+        } else if (!strcmp("<", op)) {
+
+        } else {
+          return 2;
+        }
+      }
+    }
+    j = 0;
+    while (1) {
+      if (tmpPtr[j] == TOKENSYMB) {
+        ptr = tmpPtr + j + 1;
+        tmpPtr[j] = '\0';
+        break;
+      }
+      j++;
+    }
+    ret = keywordCode(tmpPtr);
+    tmpPtr = ptr;
+  }
+
   if (ret == KEYW_REM) {
     map[indexmap].real = -1;
     map[indexmap].expect = tmp1;
@@ -252,8 +336,6 @@ int parsingLineB(char* str, int output)
     }
     ++begin;
     write(output, jmpc, sizeof(char) * strlen(jmpc));
-  } else if (ret == KEYW_IF) {
-
   } else if (ret == KEYW_LET) {
 
   } else if (ret == KEYW_END) {
