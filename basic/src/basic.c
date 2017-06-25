@@ -3,7 +3,9 @@
 */
 #include "./../include/basic.h"
 
-var alfabet[26];
+static var alfabet[26];
+static memMap map[100];
+static int indexmap    = 0;
 static int begin       = 0;
 static int end         = 99;
 static int tmp         = -1;
@@ -54,9 +56,10 @@ int testFile(char* filename)
 {
   int fd = open(filename, O_RDONLY);
   char c = '\0';
-  while(c != EOF)
+  int count = 1;
+  while(count != 0)
   {
-    read(fd, &c, sizeof(c));
+    count = read(fd, &c, sizeof(c));
     if (c >= 'a' & c <= 'z') {
       close(fd);
       return 1;
@@ -68,7 +71,9 @@ int testFile(char* filename)
 /*---------------------------------------------------------------------------*/
 int basicTrans(int argc, char *argv[])
 {
-  //if (testFile(argv[2])){return 1;}
+  if (testFile(argv[2])) {
+    return 1;
+  }
   int input                = 0;
   int output               = 0;
   char buffer[SIZE_BUFFER] = {0};
@@ -100,7 +105,11 @@ int basicTrans(int argc, char *argv[])
   i = 0;
 
   do {
-    read(input, &buffer[i], sizeof(char));
+    int readcount = read(input, &buffer[i], sizeof(char));
+    if (readcount == 0) {
+      break;
+    }
+
     if (buffer[i] == TOKENSYMB) {
       if (buffer[i - 1] == TOKENSYMB) {
         continue;
@@ -184,6 +193,9 @@ int parsingLineB(char* str, int output)
         if (alfabet[i].variable == 0) {
           alfabet[i].variable = 1;
         }
+        map[indexmap].real = begin;
+        map[indexmap].expect = tmp1;
+        ++indexmap;
         readc[0] = begin / 10 + '0';
         readc[1] = begin++ % 10 + '0';
         readc[8] = alfabet[i].cell / 10 + '0';
@@ -202,6 +214,9 @@ int parsingLineB(char* str, int output)
         if (!(alfabet[i].variable == 1)) {
           return 2;
         }
+        map[indexmap].real = begin;
+        map[indexmap].expect = tmp1;
+        ++indexmap;
         writec[0] = begin / 10 + '0';
         writec[1] = begin++ % 10 + '0';
         writec[9] = alfabet[i].cell / 10 + '0';
@@ -213,75 +228,28 @@ int parsingLineB(char* str, int output)
   } else if (ret == KEYW_GOTO) {
     jmpc[0] = begin / 10 + '0';
     jmpc[1] = begin % 10 + '0';
+    map[indexmap].real = begin;
+    map[indexmap].expect = tmp1;
+    ++indexmap;
     int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
-    cell = cell - tmp1;
-    cell = cell / 10;
-    jmpc[8] = (begin + cell) / 10 + '0';
-    jmpc[9] = (begin + cell) % 10 + '0';
+    for (i = 0; i < indexmap; i++) {
+      if ((cell == map[i].expect)) {
+        cell = (map[i].real * 10) - tmp1;
+        cell = cell / 10;
+        jmpc[8] = (begin + cell) / 10 + '0';
+        jmpc[9] = (begin + cell) % 10 + '0';
+      }
+    }
     ++begin;
     write(output, jmpc, sizeof(char) * strlen(jmpc));
   } else if (ret == KEYW_IF) {
-
+    
   } else if (ret == KEYW_LET) {
-    int j = 0;
-    i = 0;
-    tmpPtr = ptr;
-    while (1) {
-      if (tmpPtr[i] == TOKENSYMB) {
-        ptr = tmpPtr + i + 1;
-        tmpPtr[i] = '\0';
-        break;
-      }
-      i++;
-    }
-    for (i = 0; i < 26; i++) {
-      if (!strcmp(alfabet[i].name, tmpPtr)) {
-        if (end - 1 < begin) {
-          return 2;
-        }
-        alfabet[i].cell = end--;
-        if (alfabet[i].variable == 0) {
-          alfabet[i].variable = 1;
-        }
 
-        tmpPtr = ptr;
-        while (1) {
-          if (tmpPtr[i] == TOKENSYMB) {
-            ptr = tmpPtr + i + 1;
-            tmpPtr[i] = '\0';
-            break;
-          }
-          i++;
-        }
-        if (!(strcmp(tmpPtr,"=") == 0)) {
-          return 2;
-        }
-        tmpPtr = ptr;
-        while (1) {
-          if (tmpPtr[i] == TOKENSYMB) {
-            ptr = tmpPtr + i + 1;
-            tmpPtr[i] = '\0';
-            break;
-          }
-          i++;
-        }
-        for (j = 0; j < 26; j++) {
-          if (!strcmp(alfabet[i].name, tmpPtr)) {
-            if (end - 1 < begin) {
-              return 2;
-            }
-
-            if (!(alfabet[j].variable == 1)) {
-              return 2;
-            }
-
-          }
-        }
-        write(output, readc, sizeof(char) * strlen(readc));
-        break;
-        }
-      }
   } else if (ret == KEYW_END) {
+    map[indexmap].real = begin;
+    map[indexmap].expect = tmp1;
+    ++indexmap;
     haltc[0] = begin / 10 + '0';
     haltc[1] = begin++ % 10 + '0';
     haltc[8] = '0';

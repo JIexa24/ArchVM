@@ -23,6 +23,11 @@ typedef struct varBasic {
   int variable;
 } var;
 
+typedef struct memoryMap {
+  int real;
+  int expect;
+} memMap;
+
 int keywordCode(char* str);
 int testArgvB(char* argv[]);
 int testFile(char* filename);
