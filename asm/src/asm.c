@@ -79,9 +79,6 @@ int asmTrans(int argc, char** argv)
         ret = parsingLine(buffer, &addres, &value);
         if (ret == 0 | ret == 2) {
           ram[addres] = value;
-          if (ret == 2){
-            break;
-          }
         }
         counterTokens = 0;
         i = 0;
@@ -90,7 +87,7 @@ int asmTrans(int argc, char** argv)
       i++;
     }
   } while (1);
-  
+
   write(output, ram, sizeof(int) * sizeRAM);
 
   close(input);
