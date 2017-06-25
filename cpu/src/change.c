@@ -22,6 +22,22 @@ static int alarmIgn = 0;
 
 extern int readUse;
 
+static struct itimerval val;
+static struct itimerval oval;
+
+void frequencyGenerator (int status)
+{
+  if (status == START) {
+    val.it_interval.tv_sec = TIMESLEEPSEC;
+    val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
+    val.it_value.tv_sec = TIMESLEEPSEC;
+    val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
+    setitimer(TIMER, &val, &oval);
+  } else if (status == STOP ) {
+    setitimer(TIMER, NULL, NULL);
+  }
+}
+/*---------------------------------------------------------------------------*/
 void setSignals()
 {
   int i;

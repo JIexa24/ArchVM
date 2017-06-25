@@ -17,7 +17,7 @@ static void printWriteValue()
   int opcode  = 0;
   int operand = 0;
   mt_gotoXY(1, 23);
-  printLine(2);
+  printLine(3);
 
   mt_gotoXY(1, 23);
   command = (writeValue >> 14) & 1;

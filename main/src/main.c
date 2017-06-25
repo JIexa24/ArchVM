@@ -33,11 +33,6 @@ int main(int argc, char** argv)
   int regisProg  = 0;
   enum keys key  = KEY_other;
 
-  val.it_interval.tv_sec = TIMESLEEPSEC;
-  val.it_interval.tv_usec = MKR(TIMESLEEPUSEC);
-  val.it_value.tv_sec = TIMESLEEPSEC;
-  val.it_value.tv_usec = MKR(TIMESLEEPUSEC);
-
   if ((fd = open("bigchars.bin", O_RDONLY)) == -1) {
     writeChar(2,"Cannot open ascibig\n");
     return -1;
@@ -175,14 +170,14 @@ int main(int argc, char** argv)
       sc_regGet(FLAG_INTERRUPT, &regis);
       if (regis) {
         sc_regInit();
-        setitimer(TIMER, &val, &oval);
+        frequencyGenerator(START);
         position = instructionPointer;
         cursorX = instructionPointer / 10;
         cursorY = instructionPointer % 10;
         refreshFlg = 0;
         continue;
       } else {
-        setitimer(TIMER, NULL, NULL);
+        frequencyGenerator(STOP);
         sc_regSet(FLAG_INTERRUPT, 1);
         position = instructionPointer;
         cursorX = instructionPointer / 10 ;
@@ -193,9 +188,9 @@ int main(int argc, char** argv)
     }
     position = cursorY + cursorX * 10;
   }
+  frequencyGenerator(STOP);
   rk_mytermrestore();
   signalsRestore();
-  setitimer(TIMER, NULL, NULL);
   system("rm -f termsettings");
   return 0;
 }

@@ -28,6 +28,9 @@
 
 #define REFRESH 500
 
+#define START 1
+#define STOP 0
+
 #define BIGCHARSCOLORFG clr_cyan
 #define BIGCHARSCOLORBG clr_default
 
@@ -54,6 +57,8 @@
 void CU();
 int ALU(int command, int operand);
 
+void frequencyGenerator (int status);
+
 void refreshGuiSt(int position);
 void refreshGui(int position);
 void printBoxes();
@@ -73,6 +78,7 @@ void setIgnoreAlarm();
 void restoreIgnoreAlarm();
 void setEchoRegime();
 void restoreEchoRegime();
+
 int changeAccumulator(int pos);
 int changeInstRegisterCount(int pos);
 int changeCell(int pos);
