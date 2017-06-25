@@ -14,10 +14,12 @@ static int tmp1        = 0;
 static char readc[11]  = "   READ   \n";
 static char writec[12] = "   WRITE   \n";
 static char jmpc[11]   = "   JUMP   \n";
+static char jneg[11]   = "   JNEG   \n";
 static char haltc[11]  = "   HALT   \n";
 static char load[11]   = "   LOAD   \n";
 static char store[12]  = "   STORE   \n";
 static char sub[10]    = "   SUB   \n";
+static char jz[9]   = "   JZ   \n";
 
 int keywordCode(char *str)
 {
