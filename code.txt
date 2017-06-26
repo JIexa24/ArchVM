@@ -297,7 +297,7 @@ volatile int sc_memoryLoad(char* filename)
     return 0;
   }
 }
-----------------print.c----------------
+----------------sc_register.c----------------
 /*
   Created by JIexa24 (Alexey R.)
 */
@@ -336,7 +336,7 @@ int sc_regGet(int scRegister, int* value)
   }
   return 0;
 }
-----------------handlers.c----------------
+----------------sc_command.c----------------
 /*
   Created by JIexa24 (Alexey R.)
 */

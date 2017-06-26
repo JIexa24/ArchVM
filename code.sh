@@ -7,9 +7,9 @@ echo "----------------global.c----------------" >> code.txt
 cat ./simpleComputer/src/global.c >> code.txt
 echo "----------------sc_memory.c----------------" >> code.txt
 cat ./simpleComputer/src/sc_memory.c >> code.txt
-echo "----------------print.c----------------" >> code.txt
+echo "----------------sc_register.c----------------" >> code.txt
 cat ./simpleComputer/src/sc_register.c >> code.txt
-echo "----------------handlers.c----------------" >> code.txt
+echo "----------------sc_command.c----------------" >> code.txt
 cat ./simpleComputer/src/sc_command.c >> code.txt
 echo "----------------sc.h----------------" >> code.txt
 cat ./simpleComputer/include/sc.h >> code.txt

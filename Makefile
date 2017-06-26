@@ -1,5 +1,6 @@
 all:
 	rm -f ./bin/s*
+	@./travis-build.sh
 	make -C build
 	@echo " "
 	make test -C build
