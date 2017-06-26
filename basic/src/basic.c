@@ -95,15 +95,11 @@ volatile int basicTrans(int argc, char *argv[])
   collision                = 0;
   indexmap                 = 0;
 
-  FILE* Crutch = fopen(argv[2], "r");
-  fclose(Crutch);
   if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
   }
 
-  Crutch = fopen(argv[1], "w");
-  fclose(Crutch);
-  if ((output = open(argv[1], O_WRONLY)) == -1) {
+  if ((output = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1) {
     return 1;
   }
 

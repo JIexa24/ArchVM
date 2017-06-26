@@ -6,8 +6,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
 
-#define sizeRAM  100 
+#define sizeRAM  100
 #define countCmd 38
 
 #define FLAG_OVERFLOW  0    // overflow flag

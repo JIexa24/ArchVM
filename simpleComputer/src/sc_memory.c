@@ -39,42 +39,40 @@ int sc_memoryGet(int addres, int* value)
 /*---------------------------------------------------------------------------*/
 volatile int sc_memorySave(char* filename)
 {
-  FILE *data = NULL;
-  int write  = 0;
+  int data        = 0;
+  int writecount  = 0;
 
-  data = fopen(filename, "wb");
-
-  if (data == NULL) {
+  if ((data = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1) {
     return ERR_OPEN_FILE;
+  }
+
+  writecount = write(data, localRAM, sizeof(int) * sizeRAM);
+  close(data);
+
+  if (writecount != sizeof(int) * sizeRAM) {
+    return ERR_FILE;
   } else {
-    write = fwrite(localRAM, sizeof(*localRAM) * sizeRAM, 1, data);
-    fclose(data);
-    if (write != 1)
-      return ERR_FILE;
-    else
-      return 0;
+    return 0;
   }
 }
 /*---------------------------------------------------------------------------*/
 volatile int sc_memoryLoad(char* filename)
 {
-  FILE *data       = NULL;
-  int read         = 0;
+  int data         = 0;
+  int readcount    = 0;
   int i            = 0;
   int ram[sizeRAM] = {0};
 
-  data = fopen(filename, "rb");
-  if (data == NULL) {
+  if ((data = open(filename, O_RDONLY)) == -1) {
     return ERR_OPEN_FILE;
   }
 
-  read = fread(ram, sizeof(*ram) * sizeRAM, 1, data);
-
+  readcount = read(data, ram, sizeof(int) * sizeRAM);
+  close(data);
   for (i = 0; i < sizeRAM; i++) {
     ram[i] &= 0x7FFF;
   }
-  fclose(data);
-  if (read != 1) {
+  if (readcount != sizeof(int) * sizeRAM) {
     return ERR_FILE;
   } else {
     for (i = 0; i < sizeRAM; i++) {
