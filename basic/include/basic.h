@@ -33,8 +33,8 @@ typedef struct memoryMap {
 volatile int keywordCode(char* str);
 int testArgvB(char* argv[]);
 int testFile(char* filename);
-volatile int parsingLineB(char* str, int output );
+volatile int parsingLineB(char* str, int output);
 volatile int basicTrans(int argc, char *argv[]);
-volatile int ifoperation(int output, char* op);
+volatile int ifoperation(int output, char* op, int let);
 
 #endif
