@@ -11,6 +11,10 @@ static int begin       = 0;
 static int end         = 99;
 static int tmp         = -1;
 static int tmp1        = 0;
+static int flagrepeatjump = 0;
+static int indexjmp    = 0;
+static int flagend    = 0;
+static int celljmp     = 0;
 static char readc[11]  = "   READ   \n";
 static char writec[12] = "   WRITE   \n";
 static char jmpc[11]   = "   JUMP   \n";
@@ -97,6 +101,9 @@ volatile int basicTrans(int argc, char *argv[])
   end                      = 99;
   collision                = 0;
   indexmap                 = 0;
+  celljmp                  = 0;
+  flagend                  = 0;
+  flagrepeatjump           = 0;
 
   if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
@@ -244,7 +251,7 @@ volatile int parsingLineB(char* str, int output)
             j++;
           }
           if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
-            for (j = 0; j < 26; i++) {
+            for (j = 0; j < 26; j++) {
               if (!strcmp(alfabet[j].name, tmpPtr)) {
                 tmpPtr = ptr;
                 if (!(alfabet[j].variable == 1)) {
@@ -323,7 +330,7 @@ volatile int parsingLineB(char* str, int output)
         j++;
       }
       if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
-        for (j = 0; j < 26; i++) {
+        for (j = 0; j < 26; j++) {
           if (!strcmp(alfabet[j].name, tmpPtr)) {
             tmpPtr = ptr;
             if (!(alfabet[j].variable == 1)) {
@@ -371,6 +378,47 @@ volatile int parsingLineB(char* str, int output)
     ret = keywordCode(tmpPtr);
     tmpPtr = ptr;
     flagJump = 1;
+  }
+
+  if (ret == KEYW_GOTO | (flagrepeatjump == 1 & flagend == 1)) {
+    if (flagJump == 1) {
+      flagJump = 0;
+      int ret = ifoperation(output, op, 0);
+      if (ret == -1) {
+        return -1;
+      }
+    }
+    if (flagrepeatjump == 0) {
+      jmpc[0] = (begin - collision) / 10 + '0';
+      jmpc[1] = (begin - collision) % 10 + '0';
+      map[indexmap].real = begin;
+      map[indexmap].expect = tmp1;
+      ++indexmap;
+    } else {
+      jmpc[0] = (indexjmp - collision) / 10 + '0';
+      jmpc[1] = (indexjmp - collision) % 10 + '0';
+    }
+    flagrepeatjump = 0;
+    int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
+    for (i = 0; i < indexmap; i++) {
+      if ((cell == map[i].expect)) {
+        if (map[i].real == -1) {
+          return 2;
+        }
+        cell = (map[i].real);
+        jmpc[8] = (cell) / 10 + '0';
+        jmpc[9] = (cell) % 10 + '0';
+        break;
+      }
+    }
+    if (i == indexmap) {
+      flagrepeatjump = 1;
+      indexjmp = begin;
+      ++begin;
+    } else {
+      ++begin;
+      write(output, jmpc, sizeof(char) * strlen(jmpc));
+    }
   }
 
   if (ret == KEYW_REM) {
@@ -436,33 +484,6 @@ volatile int parsingLineB(char* str, int output)
         break;
       }
     }
-  } else if (ret == KEYW_GOTO) {
-    if (flagJump == 1) {
-      flagJump = 0;
-      int ret = ifoperation(output, op, 0);
-      if (ret == -1) {
-        return -1;
-      }
-    }
-    jmpc[0] = (begin - collision) / 10 + '0';
-    jmpc[1] = (begin - collision) % 10 + '0';
-    map[indexmap].real = begin;
-    map[indexmap].expect = tmp1;
-    ++indexmap;
-    int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
-    for (i = 0; i < indexmap; i++) {
-      if ((cell == map[i].expect)) {
-        if (map[i].real == -1) {
-          return 2;
-        }
-        cell = (map[i].real);
-        jmpc[8] = (cell) / 10 + '0';
-        jmpc[9] = (cell) % 10 + '0';
-        break;
-      }
-    }
-    ++begin;
-    write(output, jmpc, sizeof(char) * strlen(jmpc));
   } else if (ret == KEYW_LET) {
     if (flagJump == 1) {
       flagJump = 0;
@@ -548,7 +569,7 @@ volatile int parsingLineB(char* str, int output)
                 j++;
               }
               if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
-                for (j = 0; j < 26; i++) {
+                for (j = 0; j < 26; j++) {
                   if (!strcmp(alfabet[j].name, tmpPtr)) {
                     tmpPtr = ptr;
                     if (!(alfabet[j].variable == 1)) {
@@ -671,7 +692,7 @@ volatile int parsingLineB(char* str, int output)
             j++;
           }
           if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
-            for (j = 0; j < 26; i++) {
+            for (j = 0; j < 26; j++) {
               if (!strcmp(alfabet[j].name, tmpPtr)) {
                 tmpPtr = ptr;
                 if (!(alfabet[j].variable == 1)) {
@@ -760,6 +781,7 @@ volatile int parsingLineB(char* str, int output)
     }
     if (k == 26) return 2;
   } else if (ret == KEYW_END) {
+    flagend = 1;
     if (flagJump == 1) {
       flagJump = 0;
       int ret = ifoperation(output, op, 0);
