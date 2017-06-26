@@ -388,17 +388,11 @@ volatile int parsingLineB(char* str, int output)
         return -1;
       }
     }
-    if (flagrepeatjump == 0) {
-      jmpc[0] = (begin - collision) / 10 + '0';
-      jmpc[1] = (begin - collision) % 10 + '0';
-      map[indexmap].real = begin;
-      map[indexmap].expect = tmp1;
-      ++indexmap;
-    } else {
-      jmpc[0] = (indexjmp - collision) / 10 + '0';
-      jmpc[1] = (indexjmp - collision) % 10 + '0';
-    }
-    flagrepeatjump = 0;
+    jmpc[0] = (begin - collision) / 10 + '0';
+    jmpc[1] = (begin - collision) % 10 + '0';
+    map[indexmap].real = begin;
+    map[indexmap].expect = tmp1;
+    ++indexmap;
     int cell = (tmpPtr[0] - '0') * 10 + (tmpPtr[1] - '0');
     for (i = 0; i < indexmap; i++) {
       if ((cell == map[i].expect)) {
@@ -412,13 +406,12 @@ volatile int parsingLineB(char* str, int output)
       }
     }
     if (i == indexmap) {
-      flagrepeatjump = 1;
-      indexjmp = begin;
-      ++begin;
-    } else {
+    jmpc[8] = (cell) / 10 + '?';
+    jmpc[9] = (cell) % 10 + '?';
+    }
       ++begin;
       write(output, jmpc, sizeof(char) * strlen(jmpc));
-    }
+
   }
 
   if (ret == KEYW_REM) {
