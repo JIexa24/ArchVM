@@ -379,6 +379,13 @@ volatile int parsingLineB(char* str, int output)
   //  ++collision;
     return 0;
   } else if (ret == KEYW_INPUT) {
+    if (flagJump == 1) {
+      flagJump = 0;
+      int ret = ifoperation(output, op);
+      if (ret == -1) {
+        return -1;
+      }
+    }
     for (i = 0; i < 26; i++) {
       if (!strcmp(alfabet[i].name, tmpPtr)) {
         if (end - 1 < begin) {
@@ -400,6 +407,20 @@ volatile int parsingLineB(char* str, int output)
       }
     }
   } else if (ret == KEYW_OUTPUT) {
+    if (flagJump == 1) {
+      flagJump = 0;
+      int ret = ifoperation(output, op);
+      if (ret == -1) {
+        return -1;
+      }
+    }
+      if (flagJump == 1) {
+        flagJump = 0;
+        int ret = ifoperation(output, op);
+        if (ret == -1) {
+          return -1;
+        }
+      }
     for (i = 0; i < 26; i++) {
       if (!strcmp(alfabet[i].name, tmpPtr)) {
         if (end - 1 < begin) {
@@ -423,41 +444,9 @@ volatile int parsingLineB(char* str, int output)
   } else if (ret == KEYW_GOTO) {
     if (flagJump == 1) {
       flagJump = 0;
-      if (!strcmp(op, ">")) {
-        jz[0] = (begin - collision) / 10 + '0';
-        jz[1] = (begin - collision) % 10 + '0';
-        jz[6] = (begin + 3) / 10 + '0';
-        jz[7] = (begin++ + 3) % 10 + '0';
-        write(output, jz, sizeof(char) * strlen(jz));
-        jneg[0] = (begin - collision) / 10 + '0';
-        jneg[1] = (begin - collision) % 10 + '0';
-        jneg[8] = (begin + 2) / 10 + '0';
-        jneg[9] = (begin++ + 2) % 10 + '0';
-        write(output, jneg, sizeof(char) * strlen(jneg));
-      } else if (!strcmp(op, "<")) {
-        jns[0] = (begin - collision) / 10 + '0';
-        jns[1] = (begin - collision) % 10 + '0';
-        jns[7] = (begin + 3) / 10 + '0';
-        jns[8] = (begin++ + 3) % 10 + '0';
-        write(output, jns, sizeof(char) * strlen(jns));
-        jz[0] = (begin - collision) / 10 + '0';
-        jz[1] = (begin - collision) % 10 + '0';
-        jz[6] = (begin + 2) / 10 + '0';
-        jz[7] = (begin++ + 2) % 10 + '0';
-        write(output, jz, sizeof(char) * strlen(jz));
-      } else if (!strcmp(op, "=")) {
-        jneg[0] = (begin - collision) / 10 + '0';
-        jneg[1] = (begin - collision) % 10 + '0';
-        jneg[8] = (begin + 3) / 10 + '0';
-        jneg[9] = (begin++ + 3) % 10 + '0';
-        write(output, jneg, sizeof(char) * strlen(jneg));
-        jns[0] = (begin - collision) / 10 + '0';
-        jns[1] = (begin - collision) % 10 + '0';
-        jns[7] = (begin + 2) / 10 + '0';
-        jns[8] = (begin++ + 2) % 10 + '0';
-        write(output, jns, sizeof(char) * strlen(jns));
-      } else {
-        return 1;
+      int ret = ifoperation(output, op);
+      if (ret == -1) {
+        return -1;
       }
     }
     jmpc[0] = (begin - collision) / 10 + '0';
@@ -482,6 +471,13 @@ volatile int parsingLineB(char* str, int output)
   } else if (ret == KEYW_LET) {
 
   } else if (ret == KEYW_END) {
+    if (flagJump == 1) {
+      flagJump = 0;
+      int ret = ifoperation(output, op);
+      if (ret == -1) {
+        return -1;
+      }
+    }
     map[indexmap].real = begin;
     map[indexmap].expect = tmp1;
     ++indexmap;
@@ -495,4 +491,47 @@ volatile int parsingLineB(char* str, int output)
     return 0;
   }
   return 0;
+}
+/*---------------------------------------------------------------------------*/
+volatile int ifoperation(int output, char* op)
+{
+  if (!strcmp(op, ">")) {
+    jz[0] = (begin - collision) / 10 + '0';
+    jz[1] = (begin - collision) % 10 + '0';
+    jz[6] = (begin + 3) / 10 + '0';
+    jz[7] = (begin++ + 3) % 10 + '0';
+    write(output, jz, sizeof(char) * strlen(jz));
+    jneg[0] = (begin - collision) / 10 + '0';
+    jneg[1] = (begin - collision) % 10 + '0';
+    jneg[8] = (begin + 2) / 10 + '0';
+    jneg[9] = (begin++ + 2) % 10 + '0';
+    write(output, jneg, sizeof(char) * strlen(jneg));
+    return 0;
+  } else if (!strcmp(op, "<")) {
+    jns[0] = (begin - collision) / 10 + '0';
+    jns[1] = (begin - collision) % 10 + '0';
+    jns[7] = (begin + 3) / 10 + '0';
+    jns[8] = (begin++ + 3) % 10 + '0';
+    write(output, jns, sizeof(char) * strlen(jns));
+    jz[0] = (begin - collision) / 10 + '0';
+    jz[1] = (begin - collision) % 10 + '0';
+    jz[6] = (begin + 2) / 10 + '0';
+    jz[7] = (begin++ + 2) % 10 + '0';
+    write(output, jz, sizeof(char) * strlen(jz));
+    return 0;
+  } else if (!strcmp(op, "=")) {
+    jneg[0] = (begin - collision) / 10 + '0';
+    jneg[1] = (begin - collision) % 10 + '0';
+    jneg[8] = (begin + 3) / 10 + '0';
+    jneg[9] = (begin++ + 3) % 10 + '0';
+    write(output, jneg, sizeof(char) * strlen(jneg));
+    jns[0] = (begin - collision) / 10 + '0';
+    jns[1] = (begin - collision) % 10 + '0';
+    jns[7] = (begin + 2) / 10 + '0';
+    jns[8] = (begin++ + 2) % 10 + '0';
+    write(output, jns, sizeof(char) * strlen(jns));
+    return 0;
+  } else {
+    return 1;
+  }
 }
