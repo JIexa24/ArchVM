@@ -4,7 +4,7 @@ CFLAGS = -g3
 all:  ./../bin/sbt
 
 ./../bin/sbt: ./obj/main.o  ./../lib/libBasic.a
-	$(CC) ./obj/main.o -o ./../bin/sbt -lBasic -lAsm -lSimpleComputer -lReadInt -lm -L../lib
+	$(CC) ./obj/main.o -o ./../bin/sbt -lBasic -lAsm -lSimpleComputer -lReadInt -lTerm -lWrite -lm -L../lib
 
 ./../lib/libBasic.a: ./obj/basic.o
 	ar rvs ./../lib/libBasic.a ./obj/basic.o

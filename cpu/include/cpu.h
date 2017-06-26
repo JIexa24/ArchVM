@@ -32,6 +32,10 @@
 #define TOKENSYMB ' '
 #endif
 
+#ifndef TOKENSYMBS
+#define TOKENSYMBS " "
+#endif
+
 #ifndef SIZE_BUFFER
 #define SIZE_BUFFER 256
 #endif

@@ -3,7 +3,7 @@
 */
 #include "./../include/asm.h"
 
-int asmTrans(int argc, char** argv)
+volatile int asmTrans(int argc, char** argv)
 {
   if (testArgv(argv) == 1) {
     return 1;
@@ -20,10 +20,14 @@ int asmTrans(int argc, char** argv)
   int ret                  = 0;
 
 
+  FILE* Crutch = fopen(argv[2], "r");
+  fclose(Crutch);
   if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
   }
 
+  Crutch = fopen(argv[1], "w");
+  fclose(Crutch);
   if ((output = open(argv[1], O_WRONLY)) == -1) {
     return 1;
   }
@@ -113,7 +117,7 @@ int testArgv(char *argv[])
   }
 }
 /*---------------------------------------------------------------------------*/
-int asmCommand(char *str)
+volatile int asmCommand(char *str)
 {
   int ret = 0;
   if (strcmp(str, "READ") == 0) {
@@ -224,7 +228,7 @@ int strToCommand(char* ptr, int* value)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int parsingLine(char* str, int* addres, int* value)
+volatile int parsingLine(char* str, int* addres, int* value)
 {
   char* ptr       = str;
   int command     = 0;

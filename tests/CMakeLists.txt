@@ -7,7 +7,7 @@ set(CTEST_HEAD ../thirdparty/ctest.h)
 include_directories(include)
 
 add_executable(../../tests/bin/tests_ctest ${SOURCE_LIB} ${CTEST_HEAD})
-target_link_libraries(../../tests/bin/tests_ctest CPU Term SimpleComputer Asm Basic
-Write ReadInt BigChars ReadKey)
+target_link_libraries(../../tests/bin/tests_ctest Basic Asm CPU Term SimpleComputer Write ReadInt
+                      BigChars ReadKey)
 
 add_test(NAME tests_ctest COMMAND ../../tests/bin/tests_ctest)

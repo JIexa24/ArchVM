@@ -4,7 +4,9 @@
 #ifndef BASIC_H
 #define BASIC_H
 
+#include "./../../print/include/write.h"
 #include "./../../cpu/include/cpu.h"
+
 
 enum keywords {
   KEYW_REM = 1,
@@ -28,10 +30,10 @@ typedef struct memoryMap {
   int expect;
 } memMap;
 
-int keywordCode(char* str);
+volatile int keywordCode(char* str);
 int testArgvB(char* argv[]);
 int testFile(char* filename);
-int parsingLineB(char* str, int output );
-int basicTrans(int argc, char *argv[]);
+volatile int parsingLineB(char* str, int output );
+volatile int basicTrans(int argc, char *argv[]);
 
 #endif

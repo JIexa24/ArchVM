@@ -26,8 +26,8 @@ target_link_libraries(../bin/sat Asm CPU Term SimpleComputer Write ReadInt
 
 include_directories(basic/include)
 add_executable(../bin/sbt basic/src/main.c)
-target_link_libraries(../bin/sbt Asm CPU Term SimpleComputer Write ReadInt
-                      BigChars ReadKey Basic)
+target_link_libraries(../bin/sbt Basic Asm CPU Term SimpleComputer Write ReadInt
+                      BigChars ReadKey)
 
 include_directories(hardDrive/include)
 add_executable(../bin/hard hardDrive/src/main.c)

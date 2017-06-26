@@ -19,9 +19,9 @@ int sc_memorySet(int addres, int value);
 int sc_memoryGet(int addres, int* value);
 
 /*save RAM in binary to file*/
-int sc_memorySave(char* filename);
+volatile int sc_memorySave(char* filename);
 
 /*load RAM from file*/
-int sc_memoryLoad(char* filename);
+volatile int sc_memoryLoad(char* filename);
 
 #endif

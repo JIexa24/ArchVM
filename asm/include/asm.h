@@ -6,9 +6,9 @@
 
 #include "./../../cpu/include/cpu.h"
 
-int asmTrans(int argc, char** argv);
-int asmCommand(char *str);
-int parsingLine(char* str, int* addres, int* value);
+volatile int asmTrans(int argc, char** argv);
+volatile int asmCommand(char *str);
+volatile int parsingLine(char* str, int* addres, int* value);
 int strToCommand(char* ptr,int* value);
 int testArgv(char* argv[]);
 

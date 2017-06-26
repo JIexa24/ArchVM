@@ -15,13 +15,14 @@ static char readc[11]  = "   READ   \n";
 static char writec[12] = "   WRITE   \n";
 static char jmpc[11]   = "   JUMP   \n";
 static char jneg[11]   = "   JNEG   \n";
+static char jns[10]    = "   JNS   \n";
 static char haltc[11]  = "   HALT   \n";
 static char load[11]   = "   LOAD   \n";
 static char store[12]  = "   STORE   \n";
 static char sub[10]    = "   SUB   \n";
-static char jz[9]   = "   JZ   \n";
+static char jz[9]      = "   JZ   \n";
 
-int keywordCode(char *str)
+volatile int keywordCode(char *str)
 {
   if (strcmp(str, "REM") == 0) {
     return KEYW_REM;
@@ -73,7 +74,7 @@ int testFile(char* filename)
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int basicTrans(int argc, char *argv[])
+volatile int basicTrans(int argc, char *argv[])
 {
   if (testFile(argv[2])) {
     return 1;
@@ -94,10 +95,14 @@ int basicTrans(int argc, char *argv[])
   collision                = 0;
   indexmap                 = 0;
 
+  FILE* Crutch = fopen(argv[2], "r");
+  fclose(Crutch);
   if ((input = open(argv[2], O_RDONLY)) == -1) {
     return 1;
   }
 
+  Crutch = fopen(argv[1], "w");
+  fclose(Crutch);
   if ((output = open(argv[1], O_WRONLY)) == -1) {
     return 1;
   }
@@ -106,6 +111,10 @@ int basicTrans(int argc, char *argv[])
     alfabet[i].variable = 0;
     alfabet[i].name[0] = 'A' + i;
     alfabet[i].name[1] = '\0';
+  }
+  for (i = 0; i < SIZE_BUFFER; i++) {
+    map[i].real = -1;
+    map[i].expect = -1;
   }
 
   i = 0;
@@ -145,7 +154,7 @@ int basicTrans(int argc, char *argv[])
   return 0;
 }
 /*---------------------------------------------------------------------------*/
-int parsingLineB(char* str, int output)
+volatile int parsingLineB(char* str, int output)
 {
   char* ptr    = str;
   int command  = 0;
@@ -155,6 +164,8 @@ int parsingLineB(char* str, int output)
   char* tmpPtr = ptr;
   int ret      = 0;
   int cmp      = 0;
+  int flagJump = 0;
+  char* op     = NULL;
 
   while (1) {
     if (tmpPtr[i] == TOKENSYMB) {
@@ -199,64 +210,154 @@ int parsingLineB(char* str, int output)
       }
       i++;
     }
-    for (i = 0; i < 26; i++) {
-      if (!strcmp(alfabet[i].name, tmpPtr)) {
-        if (!(alfabet[i].variable == 1)) {
-          return 2;
-        }
-        tmpPtr = ptr;
-        j = 0;
-        while (1) {
-          if (tmpPtr[j] == TOKENSYMB) {
-            ptr = tmpPtr + j + 1;
-            tmpPtr[j] = '\0';
-            break;
+    if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
+      for (i = 0; i < 26; i++) {
+        if (!strcmp(alfabet[i].name, tmpPtr)) {
+          if (!(alfabet[i].variable == 1)) {
+            return 2;
           }
-          j++;
-        }
-        char* op = tmpPtr;
-        tmpPtr = ptr;
-        load[0] = (begin - collision) / 10 + '0';
-        load[1] = (begin++ - collision) % 10 + '0';
-        load[8] = alfabet[i].cell / 10 + '0';
-        load[9] = alfabet[i].cell % 10 + '0';
-        write(output, load, sizeof(char) * strlen(load));
-        j = 0;
-        while (1) {
-          if (tmpPtr[j] == TOKENSYMB) {
-            ptr = tmpPtr + j + 1;
-            tmpPtr[j] = '\0';
-            break;
-          }
-          j++;
-        }
-        //if (*tmpPtr > 'A' & *tmpPtr < 'Z') {
-          for (j = 0; j < 26; i++) {
-            if (!strcmp(alfabet[j].name, tmpPtr)) {
-              tmpPtr = ptr;
-              if (!(alfabet[j].variable == 1)) {
-                return 2;
-              }
-              sub[0] = (begin - collision) / 10 + '0';
-              sub[1] = (begin++ - collision) % 10 + '0';
-              sub[7] = alfabet[j].cell / 10 + '0';
-              sub[8] = alfabet[j].cell % 10 + '0';
-              write(output, sub, sizeof(char) * strlen(sub));
+          tmpPtr = ptr;
+          j = 0;
+          while (1) {
+            if (tmpPtr[j] == TOKENSYMB) {
+              ptr = tmpPtr + j + 1;
+              tmpPtr[j] = '\0';
               break;
             }
+            j++;
           }
-        //}
-        if (!strcmp(">", op)) {
+          op = tmpPtr;
+          tmpPtr = ptr;
+          load[0] = (begin - collision) / 10 + '0';
+          load[1] = (begin++ - collision) % 10 + '0';
+          load[8] = alfabet[i].cell / 10 + '0';
+          load[9] = alfabet[i].cell % 10 + '0';
+          write(output, load, sizeof(char) * strlen(load));
+          j = 0;
+          while (1) {
+            if (tmpPtr[j] == TOKENSYMB) {
+              ptr = tmpPtr + j + 1;
+              tmpPtr[j] = '\0';
+              break;
+            }
+            j++;
+          }
+          if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
+            for (j = 0; j < 26; i++) {
+              if (!strcmp(alfabet[j].name, tmpPtr)) {
+                tmpPtr = ptr;
+                if (!(alfabet[j].variable == 1)) {
+                  return 2;
+                }
+                sub[0] = (begin - collision) / 10 + '0';
+                sub[1] = (begin++ - collision) % 10 + '0';
+                sub[7] = alfabet[j].cell / 10 + '0';
+                sub[8] = alfabet[j].cell % 10 + '0';
+                write(output, sub, sizeof(char) * strlen(sub));
+                break;
+              }
+            }
+          } else {
+            int number = atoi(tmpPtr);
+            int addr = end--;
+            char buf[4];
+            swriteInt(buf, number, 16, 4);
+            char s = (addr) / 10 + '0';
+            write(output, &s, 1);
+            s = (addr) % 10 + '0';
+            write(output, &s, 1);
+            write(output, TOKENSYMBS, 1);
+            write(output, "=", 1);
+            write(output, TOKENSYMBS, 1);
+            write(output, buf, 4);
+            write(output, "\n", 1);
 
-        } else if (!strcmp("=", op)) {
-
-        } else if (!strcmp("<", op)) {
-
-        } else {
-          return 2;
+            sub[0] = (begin - collision) / 10 + '0';
+            sub[1] = (begin++ - collision) % 10 + '0';
+            sub[7] = addr / 10 + '0';
+            sub[8] = addr % 10 + '0';
+            write(output, sub, sizeof(char) * strlen(sub));
+          }
         }
       }
+    } else {
+      int number = atoi(tmpPtr);
+      int addr = end--;
+      char buf[4];
+      swriteInt(buf, number, 16, 4);
+      char s = (addr) / 10 + '0';
+      write(output, &s, 1);
+      s = (addr) % 10 + '0';
+      write(output, &s, 1);
+      write(output, TOKENSYMBS, 1);
+      write(output, "=", 1);
+      write(output, TOKENSYMBS, 1);
+      write(output, buf, 4);
+      write(output, "\n", 1);
+      load[0] = (begin - collision) / 10 + '0';
+      load[1] = (begin++ - collision) % 10 + '0';
+      load[8] = addr / 10 + '0';
+      load[9] = addr % 10 + '0';
+      write(output, load, sizeof(char) * strlen(load));
+
+      tmpPtr = ptr;
+      j = 0;
+      while (1) {
+        if (tmpPtr[j] == TOKENSYMB) {
+          ptr = tmpPtr + j + 1;
+          tmpPtr[j] = '\0';
+          break;
+        }
+        j++;
+      }
+       op = tmpPtr;
+      tmpPtr = ptr;
+      j = 0;
+      while (1) {
+        if (tmpPtr[j] == TOKENSYMB) {
+          ptr = tmpPtr + j + 1;
+          tmpPtr[j] = '\0';
+          break;
+        }
+        j++;
+      }
+      if (*tmpPtr >= 'A' & *tmpPtr <= 'Z') {
+        for (j = 0; j < 26; i++) {
+          if (!strcmp(alfabet[j].name, tmpPtr)) {
+            tmpPtr = ptr;
+            if (!(alfabet[j].variable == 1)) {
+              return 2;
+            }
+            sub[0] = (begin - collision) / 10 + '0';
+            sub[1] = (begin++ - collision) % 10 + '0';
+            sub[7] = alfabet[j].cell / 10 + '0';
+            sub[8] = alfabet[j].cell % 10 + '0';
+            write(output, sub, sizeof(char) * strlen(sub));
+            break;
+          }
+        }
+      } else {
+        number = atoi(tmpPtr);
+        addr = end--;
+
+        swriteInt(buf, number, 16, 4);
+        char s = (addr) / 10 + '0';
+        write(output, &s, 1);
+        s = (addr) % 10 + '0';
+        write(output, &s, 1);
+        write(output, TOKENSYMBS, 1);
+        write(output, "=", 1);
+        write(output, TOKENSYMBS, 1);
+        write(output, buf, 4);
+        write(output, "\n", 1);
+        sub[0] = (begin - collision) / 10 + '0';
+        sub[1] = (begin++ - collision) % 10 + '0';
+        sub[7] = addr / 10 + '0';
+        sub[8] = addr % 10 + '0';
+        write(output, sub, sizeof(char) * strlen(sub));
+      }
     }
+    tmpPtr = ptr;
     j = 0;
     while (1) {
       if (tmpPtr[j] == TOKENSYMB) {
@@ -268,6 +369,7 @@ int parsingLineB(char* str, int output)
     }
     ret = keywordCode(tmpPtr);
     tmpPtr = ptr;
+    flagJump = 1;
   }
 
   if (ret == KEYW_REM) {
@@ -319,6 +421,45 @@ int parsingLineB(char* str, int output)
       }
     }
   } else if (ret == KEYW_GOTO) {
+    if (flagJump == 1) {
+      flagJump = 0;
+      if (!strcmp(op, ">")) {
+        jz[0] = (begin - collision) / 10 + '0';
+        jz[1] = (begin - collision) % 10 + '0';
+        jz[6] = (begin + 3) / 10 + '0';
+        jz[7] = (begin++ + 3) % 10 + '0';
+        write(output, jz, sizeof(char) * strlen(jz));
+        jneg[0] = (begin - collision) / 10 + '0';
+        jneg[1] = (begin - collision) % 10 + '0';
+        jneg[8] = (begin + 2) / 10 + '0';
+        jneg[9] = (begin++ + 2) % 10 + '0';
+        write(output, jneg, sizeof(char) * strlen(jneg));
+      } else if (!strcmp(op, "<")) {
+        jns[0] = (begin - collision) / 10 + '0';
+        jns[1] = (begin - collision) % 10 + '0';
+        jns[7] = (begin + 3) / 10 + '0';
+        jns[8] = (begin++ + 3) % 10 + '0';
+        write(output, jns, sizeof(char) * strlen(jns));
+        jz[0] = (begin - collision) / 10 + '0';
+        jz[1] = (begin - collision) % 10 + '0';
+        jz[6] = (begin + 2) / 10 + '0';
+        jz[7] = (begin++ + 2) % 10 + '0';
+        write(output, jz, sizeof(char) * strlen(jz));
+      } else if (!strcmp(op, "=")) {
+        jneg[0] = (begin - collision) / 10 + '0';
+        jneg[1] = (begin - collision) % 10 + '0';
+        jneg[8] = (begin + 3) / 10 + '0';
+        jneg[9] = (begin++ + 3) % 10 + '0';
+        write(output, jneg, sizeof(char) * strlen(jneg));
+        jns[0] = (begin - collision) / 10 + '0';
+        jns[1] = (begin - collision) % 10 + '0';
+        jns[7] = (begin + 2) / 10 + '0';
+        jns[8] = (begin++ + 2) % 10 + '0';
+        write(output, jns, sizeof(char) * strlen(jns));
+      } else {
+        return 1;
+      }
+    }
     jmpc[0] = (begin - collision) / 10 + '0';
     jmpc[1] = (begin - collision) % 10 + '0';
     map[indexmap].real = begin;

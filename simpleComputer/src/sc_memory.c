@@ -37,7 +37,7 @@ int sc_memoryGet(int addres, int* value)
   }
 }
 /*---------------------------------------------------------------------------*/
-int sc_memorySave(char* filename)
+volatile int sc_memorySave(char* filename)
 {
   FILE *data = NULL;
   int write  = 0;
@@ -56,7 +56,7 @@ int sc_memorySave(char* filename)
   }
 }
 /*---------------------------------------------------------------------------*/
-int sc_memoryLoad(char* filename)
+volatile int sc_memoryLoad(char* filename)
 {
   FILE *data       = NULL;
   int read         = 0;
