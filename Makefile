@@ -1,5 +1,6 @@
 all:
 	rm -f ./bin/s*
+	@chmod +x ./travis-build.sh
 	@./travis-build.sh
 	make -C build
 	@echo " "
