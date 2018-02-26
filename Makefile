@@ -64,3 +64,4 @@ clean:
 	make clean -C asm
 	make clean -C basic
 	make clean -C main
+	rm -f ./lib/*.a
