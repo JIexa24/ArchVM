@@ -41,7 +41,7 @@ void frequencyGenerator (int status)
 void setSignals()
 {
   int i;
-  for (i = 0; i < 9; i++) {
+  for (i = 0; i < 11; i++) {
     memset(&(act[i]), 0, sizeof(act[i]));
     memset(&(old[i]), 0, sizeof(old[i]));
   }
