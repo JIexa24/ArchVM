@@ -124,9 +124,9 @@ volatile int basicTrans(int argc, char *argv[])
   }
 
   i = 0;
-
+int readcount;
   do {
-    int readcount = read(input, &buffer[i], sizeof(char));
+    readcount = read(input, &buffer[i], sizeof(char));
     if (readcount == 0) {
       break;
     }
@@ -156,6 +156,40 @@ volatile int basicTrans(int argc, char *argv[])
   } while (1);
 
   close(input);
+  close(output);
+
+  if ((output = open(argv[1], O_RDONLY, 0666)) == -1) {
+      return 1;
+  }
+  char c[4096];
+
+  i = 0;
+  do {
+    readcount = read(output, &c[i++], 1);
+    printf("%c", c[i-1]);
+  } while (readcount > 0);
+  close(output);
+  if ((output = open(argv[1], O_WRONLY | O_TRUNC, 0666)) == -1) {
+    return 1;
+  }
+  int j,e;
+  int cl = -1;
+  for (j = 0; j < i; j++){
+    if (0 <= c[j] - '!' && c[j] - '!' <= 9) {
+      cl = (c[j] - '!') * 10 + (c[j+1] - '!');
+      break;
+    }
+  }
+
+  for (e = 0; e < indexmap; ++e)
+    if (map[e].expect == cl){ cl = map[e].real; break;}
+
+  c[j] = cl / 10 + '0';
+  c[j + 1] = cl % 10 + '0';
+  e = 0;
+  while (e < i) {
+    write(output,&c[e++],1);
+  }
   close(output);
   return 0;
 }
@@ -406,8 +440,8 @@ volatile int parsingLineB(char* str, int output)
       }
     }
     if (i == indexmap) {
-    jmpc[8] = (cell) / 10 + '?';
-    jmpc[9] = (cell) % 10 + '?';
+    jmpc[8] = (cell) / 10 + '!';
+    jmpc[9] = (cell) % 10 + '!';
     }
       ++begin;
       write(output, jmpc, sizeof(char) * strlen(jmpc));
