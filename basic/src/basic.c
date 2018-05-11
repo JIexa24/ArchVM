@@ -166,7 +166,7 @@ int readcount;
   i = 0;
   do {
     readcount = read(output, &c[i++], 1);
-    printf("%c", c[i-1]);
+    //printf("%c", c[i-1]);
   } while (readcount > 0);
   close(output);
   if ((output = open(argv[1], O_WRONLY | O_TRUNC, 0666)) == -1) {
