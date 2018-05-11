@@ -4,5 +4,7 @@
 30 IF A > B LET A = A - B
 40 IF B > A LET B = B - A
 50 GOTO 20
-60 OUTPUT A
-70 END
+60 IF A > B LET C = B - 0
+70 IF B > A LET C = A - 0
+80 OUTPUT C
+90 END
